@@ -41,6 +41,7 @@
     <module>src/user</module>
     <module>src/shop</module>
     <module>src/main</module>
+    <module>src/common</module>
   </modules>
 
 </project>
