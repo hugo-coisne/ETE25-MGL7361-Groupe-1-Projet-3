@@ -1,11 +1,10 @@
 package main;
 
-import persistence.OrderPersistence;
+import shop.presentation.BookAPIImpl;
 
 public class Main {
     public static void main(String[] args) {
-        OrderPersistence orderPersistence = new OrderPersistence();
-        orderPersistence.getOrders();
-        
+        BookAPIImpl bookAPIImpl = new BookAPIImpl();
+        bookAPIImpl.createBook("Les Misérables", "un grand livre un peu chiant à lire", "12");
     }
 }

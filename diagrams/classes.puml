@@ -1,141 +1,189 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-package "Users" {
-    class Account {
-        - firstName
-        - lastName
-        - phone
-        - email
-        - password
+'skinparam package {
+'    BackgroundColor #lightgrey/white
+'    ArrowColor SeaGreen
+'    BorderColor #black
+'    BackgroundColor<<business>> #orange\white 
+'}
+
+package users {
+
+    package users.presentation { 
+
+        interface CartAPI {
+
+        }
+
+        class CartAPIImpl implements CartAPI
+
+        interface AccountAPI {
+
+        }
+
+        class AccountAPIImpl implements AccountAPI
     }
 
-    class Cart {
-        - totalPrice
-    }
-}
+    package users.business<<business>>{
+        package users.business.services{
+            class CartService {
 
-package "Shop" {
-    package "Persistence" {
-        class Category {
-            - name
-        }
-        class Publisher {
-            - name
-        }
-        class Book {
-            - title
-            - description
-            - isbn
-            - publicationDate
-            - price
-            - stockQuantity
-        }
-        class Author {
-            - name
-        }
-    }
+            }
 
-    package "Presentation" {
-        interface BookInterface {
-            + getBooksBy(criteria: Map<BookAttribute, String>): List<Book>
 
-            + createBook(title: String, description: String, isbn: String): book
+            class AccountService {
 
-            + setPropertiesFor(book: Book, properties: Map<BookProperty, List<String>>): void
-            + removePropertiesFrom(book: Book, properties: Map<BookProperty, List<String>>): void
-
-    '       Save to database
-            + addBook(book: Book): void
-    '       Delete from database
-            + deleteBook(book: Book): void
+            }
         }
 
-        class BookAPI implements BookInterface
-        BookInterface -- BookAttribute
-        BookInterface -- BookProperty
+        package users.business.entities {
+            class Account {
+                - firstName
+                - lastName
+                - phone
+                - email
+                - password
+            }
 
-        interface CategoryInterface {
-            + getCategories(): List<Category>
-            + addCategories(categories: List<Category>): void
-            + removeCategory(category: Category): void
-        }
-
-        class CategoryAPI implements CategoryInterface
-
-
-        interface PublisherInterface {
-            + getPublishers(): List<Publisher>}
-            + addPublishers(publishers: List<Publisher>): void
-            + removePublishers(publishers: List<Publisher>): void
-        }
-
-        class PublisherAPI implements PublisherInterface
-
-        interface AuthorInterface {
-            + getAuthors(): List<Author>}
-            + addAuthors(authors: List<Author>): void
-            + removeAuthors(authors: List<Author>): void
-        }
-
-        class AuthorAPI implements AuthorInterface
-
-        enum BookAttribute {
-            TITLE
-            ISBN
-            CATEGORY
-            AUTHOR
-        }
-
-        enum BookProperty {
-            TITLE,
-            DESCRIPTION,
-            ISBN,
-            PUBLICATION_DATE,
-            PRICE,
-            STOCK_QUANTITY,
-            PUBLISHER
+            class Cart {
+                - totalPrice
+            }
         }
     }
+    package users.persistence {
+        class CartDAO {
 
-    package "Business" {
-        class AuthorBusiness {
-            ~ getAuthors(): List<Author>
-            ~ addAuthors(authors: List<Author>): void
-            ~ removeAuthors(authors: List<Author>): void
         }
-        AuthorBusiness -- AuthorAPI
 
-        class CategoryBusiness {
-            ~ getCategories(): List<Category>
-            ~ addCategories(categories: List<Category>): void
-            ~ removeCategory(category: Category): void
-        }
-        CategoryBusiness -- CategoryAPI
-        CategoryInterface -- Category
 
-        class PublisherBusiness {
-            ~ getPublishers(): List<Publisher>
-            ~ addPublishers(publishers: List<Publisher>): void
-            ~ removePublishers(publishers: List<Publisher>): void
+        class AccountDAO {
+
         }
-        PublisherBusiness -- PublisherAPI
-        PublisherBusiness -- Publisher
+
+        CartService -up- CartAPIImpl
+        AccountService -up- AccountAPIImpl
+        CartDAO -up- CartService
+        AccountDAO -up- AccountService
     }
-
-
 
 }
 
-package "Order" {
-    class Order {
+package shop {
+
+    package shop.presentation {
+        interface BookAPI {
+            + Book getBooksBy(Map<BookProperty, String> criteria)
+
+            + Book createBook(String title, String description, String isbn)
+
+            + void setPropertiesFor(Book book, Map<BookProperty, List<String>> properties)
+            + void removePropertiesFrom(Book book, Map<BookProperty, List<String>> properties)
+
+            + void addBook(Book book)
+            + void deleteBook(Book book)
+        }
+
+        class BookAPIImpl implements BookAPI
+
+        interface BookAttributeAPI {
+            + List<Author> getAuthors()
+            + List<Category> getCategories()
+            + List<Publisher> getPublishers()
+            + void addAttributes(List<BookAttribute> bookAttributes)
+            + void removeAttribute(Category category)
+        }
+
+        class BookAttributeAPIImpl implements BookAttributeAPI
+
+    }
+
+    package shop.business<<business>>{
+        together {
+            
+            package shop.business.entities {
+                abstract class BookAttribute {
+                    + getName
+                    + setName
+                    - name
+                }
+
+                class Book {
+                    - title
+                    - description
+                    - isbn
+                    - publicationDate
+                    - price
+                    - stockQuantity
+                    - publisher
+                }
+
+                together {
+                    class Category extends BookAttribute
+
+                    class Publisher extends BookAttribute
+
+                    class Author extends BookAttribute
+                }
+
+                enum BookProperty {
+                    TITLE
+                    DESCRIPTION
+                    ISBN
+                    PUBLICATION_DATE
+                    PRICE
+                    STOCK_QUANTITY
+                    PUBLISHER
+                    CATEGORY
+                    AUTHOR
+                }
+
+            }
+
+            package shop.business.services {
+
+                class BookAttributeService {
+
+                }
+
+                class BookService {
+
+                }
+            }
+        }
+    }
+
+    package shop.persistence {
+        
+        class BookDAO {
+
+        }
+
+
+        class BookAttributeDAO {
+
+        }
+
+
+    }
+
+    BookService -up- BookAPIImpl
+    BookDAO -up-- BookService
+
+    BookAttributeDAO -up- BookAttributeService
+    BookAttributeService -up- BookAttributeAPIImpl
+
+}
+
+package order {
+    class order {
         - orderNumber
         - orderDate
         - totalPrice
     }
 }
 
-package "Deliver" {
+package deliver {
     class Address {
         - firstName
         - lastName
@@ -145,12 +193,12 @@ package "Deliver" {
         - postalCode
     }
 
-    class Delivery {
+    class delivery {
         - deliveryDate
     }
 }
 
-package "Payment" {
+package payment {
     class Invoice {
         - invoiceNumber
         - invoiceDate
@@ -159,15 +207,4 @@ package "Payment" {
     }
 }
 
-Book "1..n" -- "0..n" Category
-Book "1..n" -- "1..n" Author
-Book "1..n" -- "1" Publisher
-Cart "0..n" -- "0..n" Book
-Order "0..n" -- "0..n" Book
-Invoice "1" -- "1" Order
-Delivery "1" -- "1" Order
-Delivery "1" -- "1" Address
-Account "1" -- "1" Cart
-Account "1" -- "0..n" Order
-Account "1" -- "0..n" Invoice
 @enduml

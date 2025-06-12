@@ -2,6 +2,7 @@
 'https://plantuml.com/entity-diagram
 
 package "authentifier" {
+
     entity Compte {
         - prenom
         - nom
@@ -9,15 +10,19 @@ package "authentifier" {
         - courriel
         - mot_de_passe
     }
+
 }
 
 package "magasiner" {
+
     entity Categorie {
         - nom
     }
+
     entity Editeur {
         - nom
     }
+
     entity Livre {
         - titre
         - description
@@ -26,24 +31,29 @@ package "magasiner" {
         - prix
         - quantite_en_stock
     }
+
     entity Auteur {
         - nom
     }
 
-        entity Panier {
-            - prix_total
-        }
+    entity Panier {
+        - prix_total
+    }
+    
 }
 
 package "Commander" {
+
     entity Commande {
         - no_commande
         - date_commande
         - prix_total
     }
+
 }
 
 package Livrer {
+
     entity Adresse {
         - prenom
         - nom
@@ -56,15 +66,18 @@ package Livrer {
     entity Livraison {
         - date_livraison
     }
+
 }
 
 package "Paiement" {
+
     entity Facture {
         - no_facture
         - date_facture
         - prix_total
         - mode_paiement
     }
+
 }
 
 
