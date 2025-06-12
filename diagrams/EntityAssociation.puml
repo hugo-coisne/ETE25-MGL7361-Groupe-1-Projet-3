@@ -1,0 +1,85 @@
+@startuml
+'https://plantuml.com/entity-diagram
+
+package "authentifier" {
+    entity Compte {
+        - prenom
+        - nom
+        - telephone
+        - courriel
+        - mot_de_passe
+    }
+}
+
+package "magasiner" {
+    entity Categorie {
+        - nom
+    }
+    entity Editeur {
+        - nom
+    }
+    entity Livre {
+        - titre
+        - description
+        - isbn
+        - date_parution
+        - prix
+        - quantite_en_stock
+    }
+    entity Auteur {
+        - nom
+    }
+
+        entity Panier {
+            - prix_total
+        }
+}
+
+package "Commander" {
+    entity Commande {
+        - no_commande
+        - date_commande
+        - prix_total
+    }
+}
+
+package Livrer {
+    entity Adresse {
+        - prenom
+        - nom
+        - telephone
+        - rue
+        - ville
+        - code_postal
+    }
+
+    entity Livraison {
+        - date_livraison
+    }
+}
+
+package "Paiement" {
+    entity Facture {
+        - no_facture
+        - date_facture
+        - prix_total
+        - mode_paiement
+    }
+}
+
+
+
+
+
+Livre "1..n" -- "0..n" Categorie
+Livre "1..n" -- "1..n" Auteur
+Livre "1..n" -- "1" Editeur
+Panier "0..n" -- "0..n" Livre
+Commande "0..n" -- "0..n" Livre
+Facture "1" -- "1" Commande
+Livraison "1" -- "1" Commande
+Livraison "1" -- "1" Adresse
+Compte "1" -- "1" Panier
+Compte "1" -- "0..n" Commande
+Compte "1" -- "0..n" Facture
+@enduml

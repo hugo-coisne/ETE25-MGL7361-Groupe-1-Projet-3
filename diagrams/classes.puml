@@ -1,0 +1,173 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package "Users" {
+    class Account {
+        - firstName
+        - lastName
+        - phone
+        - email
+        - password
+    }
+
+    class Cart {
+        - totalPrice
+    }
+}
+
+package "Shop" {
+    package "Persistence" {
+        class Category {
+            - name
+        }
+        class Publisher {
+            - name
+        }
+        class Book {
+            - title
+            - description
+            - isbn
+            - publicationDate
+            - price
+            - stockQuantity
+        }
+        class Author {
+            - name
+        }
+    }
+
+    package "Presentation" {
+        interface BookInterface {
+            + getBooksBy(criteria: Map<BookAttribute, String>): List<Book>
+
+            + createBook(title: String, description: String, isbn: String): book
+
+            + setPropertiesFor(book: Book, properties: Map<BookProperty, List<String>>): void
+            + removePropertiesFrom(book: Book, properties: Map<BookProperty, List<String>>): void
+
+    '       Save to database
+            + addBook(book: Book): void
+    '       Delete from database
+            + deleteBook(book: Book): void
+        }
+
+        class BookAPI implements BookInterface
+        BookInterface -- BookAttribute
+        BookInterface -- BookProperty
+
+        interface CategoryInterface {
+            + getCategories(): List<Category>
+            + addCategories(categories: List<Category>): void
+            + removeCategory(category: Category): void
+        }
+
+        class CategoryAPI implements CategoryInterface
+
+
+        interface PublisherInterface {
+            + getPublishers(): List<Publisher>}
+            + addPublishers(publishers: List<Publisher>): void
+            + removePublishers(publishers: List<Publisher>): void
+        }
+
+        class PublisherAPI implements PublisherInterface
+
+        interface AuthorInterface {
+            + getAuthors(): List<Author>}
+            + addAuthors(authors: List<Author>): void
+            + removeAuthors(authors: List<Author>): void
+        }
+
+        class AuthorAPI implements AuthorInterface
+
+        enum BookAttribute {
+            TITLE
+            ISBN
+            CATEGORY
+            AUTHOR
+        }
+
+        enum BookProperty {
+            TITLE,
+            DESCRIPTION,
+            ISBN,
+            PUBLICATION_DATE,
+            PRICE,
+            STOCK_QUANTITY,
+            PUBLISHER
+        }
+    }
+
+    package "Business" {
+        class AuthorBusiness {
+            ~ getAuthors(): List<Author>
+            ~ addAuthors(authors: List<Author>): void
+            ~ removeAuthors(authors: List<Author>): void
+        }
+        AuthorBusiness -- AuthorAPI
+
+        class CategoryBusiness {
+            ~ getCategories(): List<Category>
+            ~ addCategories(categories: List<Category>): void
+            ~ removeCategory(category: Category): void
+        }
+        CategoryBusiness -- CategoryAPI
+        CategoryInterface -- Category
+
+        class PublisherBusiness {
+            ~ getPublishers(): List<Publisher>
+            ~ addPublishers(publishers: List<Publisher>): void
+            ~ removePublishers(publishers: List<Publisher>): void
+        }
+        PublisherBusiness -- PublisherAPI
+        PublisherBusiness -- Publisher
+    }
+
+
+
+}
+
+package "Order" {
+    class Order {
+        - orderNumber
+        - orderDate
+        - totalPrice
+    }
+}
+
+package "Deliver" {
+    class Address {
+        - firstName
+        - lastName
+        - phone
+        - street
+        - city
+        - postalCode
+    }
+
+    class Delivery {
+        - deliveryDate
+    }
+}
+
+package "Payment" {
+    class Invoice {
+        - invoiceNumber
+        - invoiceDate
+        - totalPrice
+        - paymentMethod
+    }
+}
+
+Book "1..n" -- "0..n" Category
+Book "1..n" -- "1..n" Author
+Book "1..n" -- "1" Publisher
+Cart "0..n" -- "0..n" Book
+Order "0..n" -- "0..n" Book
+Invoice "1" -- "1" Order
+Delivery "1" -- "1" Order
+Delivery "1" -- "1" Address
+Account "1" -- "1" Cart
+Account "1" -- "0..n" Order
+Account "1" -- "0..n" Invoice
+@enduml
