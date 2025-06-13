@@ -38,7 +38,7 @@
     <module>src/delivery</module>
     <module>src/order</module>
     <module>src/payment</module>
-    <module>src/user</module>
+    <module>src/account</module>
     <module>src/shop</module>
     <module>src/main</module>
     <module>src/common</module>

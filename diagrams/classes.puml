@@ -5,28 +5,32 @@
 '    BackgroundColor #lightgrey/white
 '    ArrowColor SeaGreen
 '    BorderColor #black
-'    BackgroundColor<<business>> #orange\white 
+'    BackgroundColor  #orange\white 
 '}
 
-package users {
+package account {
 
-    package users.presentation { 
+    package account.presentation { 
 
         interface CartAPI {
-
+            + Cart getCart()
+            + void addToCart(Book book, int quantity)
+            + void removeFromCart(Book book)
+            + void clearCart()
+            + double getTotalPrice()
         }
 
         class CartAPIImpl implements CartAPI
 
         interface AccountAPI {
-
+            
         }
 
         class AccountAPIImpl implements AccountAPI
     }
 
-    package users.business<<business>>{
-        package users.business.services{
+    package account.business {
+        package account.business.services{
             class CartService {
 
             }
@@ -37,7 +41,7 @@ package users {
             }
         }
 
-        package users.business.entities {
+        package account.business.entities {
             class Account {
                 - firstName
                 - lastName
@@ -51,7 +55,7 @@ package users {
             }
         }
     }
-    package users.persistence {
+    package account.persistence {
         class CartDAO {
 
         }
@@ -98,7 +102,7 @@ package shop {
 
     }
 
-    package shop.business<<business>>{
+    package shop.business {
         together {
             
             package shop.business.entities {
