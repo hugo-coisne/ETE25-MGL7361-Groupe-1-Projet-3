@@ -23,7 +23,11 @@ package account {
         class CartAPIImpl implements CartAPI
 
         interface AccountAPI {
-            
+            + Account getAccount(String email, String password)
+            + void createAccount(String firstName, String lastName, String phone, String email, String password)
+            + void updateAccount(Account account)
+            + void changePassword(String oldPassword, String newPassword)
+            + void deleteAccount()
         }
 
         class AccountAPIImpl implements AccountAPI
@@ -95,7 +99,7 @@ package shop {
             + List<Category> getCategories()
             + List<Publisher> getPublishers()
             + void addAttributes(List<BookAttribute> bookAttributes)
-            + void removeAttribute(Category category)
+            + void removeAttribute(BookAttribute bookAttribute)
         }
 
         class BookAttributeAPIImpl implements BookAttributeAPI
@@ -180,34 +184,127 @@ package shop {
 }
 
 package order {
-    class order {
-        - orderNumber
-        - orderDate
-        - totalPrice
+    package order.presentation {
+        interface OrderAPI {
+            + Order createOrder(Account account, Cart cart)
+            + Order getOrderDetails(Order order)
+            + void cancelOrder(Order order)
+        }
+
+        class OrderAPIImpl implements OrderAPI
+    }
+
+    package order.business{
+        package order.business.entities {
+            class Order {
+                - orderNumber
+                - orderDate
+                - totalPrice
+            }
+
+            class OrderItem {
+                - book
+                - quantity
+                - bookStatus
+                - deliveryDate
+            }
+        }
+
+        package order.business.services {
+            class OrderService {
+                + createOrder(Account account, Cart cart)
+                + getOrderDetails(Order order)
+                + cancelOrder(Order order)
+            }
+        }
+    }
+
+    package order.persistence {
+        class OrderDAO {
+            
+        }
+
+        OrderService -up- OrderAPIImpl
+        OrderDAO -up- OrderService
     }
 }
 
 package deliver {
-    class Address {
-        - firstName
-        - lastName
-        - phone
-        - street
-        - city
-        - postalCode
+    package delivery.presentation {
+        interface DeliveryAPI {
+            + Delivery createDelivery(Order order, Address address)
+            + Delivery getDeliveryDetails(Order order)
+            + void updateDelivery(Delivery delivery)
+        }
+
+        class DeliveryAPIImpl implements DeliveryAPI
+    }
+    package delivery.business {
+        package delivery.business.entities {
+            class Delivery {
+                - deliveryDate
+            }
+
+            class Address {
+                - firstName
+                - lastName
+                - phone
+                - street
+                - city
+                - postalCode
+            }
+        }
+
+        package delivery.business.services {
+            class DeliveryService {
+
+            }
+        }
     }
 
-    class delivery {
-        - deliveryDate
+    package delivery.persistence {
+        class DeliveryDAO {
+
+        }
+
+        DeliveryService -up- DeliveryAPIImpl
+        DeliveryDAO -up- DeliveryService
     }
 }
 
 package payment {
-    class Invoice {
-        - invoiceNumber
-        - invoiceDate
-        - totalPrice
-        - paymentMethod
+    package payment.presentation {
+        interface PaymentAPI {
+            + Invoice createInvoice(Order order, String paymentMethod)
+            + Invoice getInvoiceDetails(Order order)
+            + void processPayment(Invoice invoice)
+        }
+
+        class PaymentAPIImpl implements PaymentAPI
+    }
+    package payment.business {
+        package payment.business.entities {
+            class Invoice {
+                - invoiceNumber
+                - invoiceDate
+                - totalPrice
+                - paymentMethod
+            }
+        }
+
+        package payment.business.services {
+            class PaymentService {
+
+            }
+        }
+    }
+    package payment.persistence {
+        class PaymentDAO {
+
+        }
+
+        PaymentService -up- PaymentAPIImpl
+        PaymentDAO -up- PaymentService
     }
 }
 
