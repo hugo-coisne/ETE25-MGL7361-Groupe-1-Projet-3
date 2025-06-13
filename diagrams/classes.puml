@@ -1,4 +1,4 @@
-@startuml
+@startuml classes
 'https://plantuml.com/class-diagram
 
 'skinparam package {
@@ -23,8 +23,8 @@ package account {
         class CartAPIImpl implements CartAPI
 
         interface AccountAPI {
-            + Account getAccount(String email, String password)
-            + void createAccount(String firstName, String lastName, String phone, String email, String password)
+            + Account signin(String email, String password)
+            + void signup(String firstName, String lastName, String phone, String email, String password)
             + void updateAccount(Account account)
             + void changePassword(String oldPassword, String newPassword)
             + void deleteAccount()

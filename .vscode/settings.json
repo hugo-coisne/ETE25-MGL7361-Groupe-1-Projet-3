@@ -1,12 +1,12 @@
 {
     "java.configuration.updateBuildConfiguration": "automatic",
     "java.project.sourcePaths": [
-    "src/common/src/main/java",
-    "src/order/src/main/java",
-    "src/delivery/src/main/java",
-    "src/payment/src/main/java",
-    "src/account/src/main/java",
-    "src/shop/src/main/java",
-    "src/main/src/main/java"
+    "src/common",
+    "src/order",
+    "src/delivery",
+    "src/payment",
+    "src/account",
+    "src/shop",
+    "src/main"
     ],
 }

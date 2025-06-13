@@ -1,10 +1,11 @@
 package main;
 
-import shop.presentation.BookAPIImpl;
+import account.presentation.AccountAPI;
+import account.presentation.AccountAPIImpl;
 
 public class Main {
     public static void main(String[] args) {
-        BookAPIImpl bookAPIImpl = new BookAPIImpl();
-        bookAPIImpl.createBook("Les Misérables", "un grand livre un peu chiant à lire", "12");
+        AccountAPI accountAPI = new AccountAPIImpl();
+        accountAPI.signup("John", "Doe", "1234567890", "john.doe@mail.com", "password123");
     }
 }
