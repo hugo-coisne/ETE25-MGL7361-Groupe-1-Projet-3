@@ -1,5 +1,6 @@
 package account.business.services;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import account.business.entities.Account;
@@ -21,18 +22,17 @@ public class AccountService {
         return instance;
     }
 
-    // This class will contain methods to handle business logic related to accounts
-    // For example, methods to create, update, delete accounts, etc.
+    public void create(Account account) throws DuplicateEmailException, IllegalArgumentException {
 
-    public void create(Account account) throws DuplicateEmailException {
-        // Logic to create an account
-        logger.info("Creating " + account.toString());
-        
+        logger.info("Checking values for " + account.toString());
+
+        ArgumentValidator.checkAccountSignupArguments(account);
+
+        logger.info("Values are valid, inserting " + account.toString() + " in database.");
         accountDao.insert(account);
 
     }
 
-    // Other methods like updateAccount, deleteAccount, etc. can be added here
     public void updateAccount(String accountId, String firstName, String lastName, String phone, String email) {
         // Logic to update an existing account
         System.out.println("Updating account with ID: " + accountId);

@@ -25,8 +25,13 @@ public class AccountAPIImpl implements AccountAPI {
             accountService.create(new Account(firstName, lastName, phone, email, password));
         } catch (DuplicateEmailException e) {
             logger.warning("Account not created because " + e.getMessage() + " is already in database.");
-            System.out.println("Email " + e.getMessage() + "déjà utilisé. S'il s'agit bien de votre email, veuillez vous connecter."); // see if password reset is needed
-        } catch (Exception e) {
+            System.out.println("Le courriel " + e.getMessage() + " est déjà utilisé. S'il s'agit bien de votre email, veuillez vous connecter."); // see if password reset is needed
+        } catch (IllegalArgumentException e) {
+            logger.warning("Account not created because " + e.getMessage());
+            System.out.println("Compte non créé. Veuillez vérifier les informations saisies. " + e.getMessage());
+        }
+        
+        catch (Exception e) {
             e.printStackTrace();
             logger.severe("Error creating account: " + e.getMessage());
         }
