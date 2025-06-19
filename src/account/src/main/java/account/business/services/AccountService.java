@@ -39,16 +39,20 @@ public class AccountService {
         return account;
     }
 
+    public void deleteAccount(String email, String password) throws InvalidCredentialsException {
+        // Logic to delete an account
+        logger.info("Deleting account with email: " + email);
+        logger.info("First signing in with email: " + email);
+        Account account = signin(email, password);
+        logger.info("Deleting account with email " + account.getEmail());
+        accountDao.deleteAccountWithId(account.getId());
+        logger.info("Account with email " + email + " deleted successfully.");
+    }
+
     public void updateAccount(String accountId, String firstName, String lastName, String phone, String email) {
         // Logic to update an existing account
         System.out.println("Updating account with ID: " + accountId);
         // Here you would typically update the account in the database or storage
-    }
-
-    public void deleteAccount(String accountId) {
-        // Logic to delete an account
-        System.out.println("Deleting account with ID: " + accountId);
-        // Here you would typically remove the account from the database or storage
     }
 
     public void changePassword(String accountId, String oldPassword, String newPassword) {

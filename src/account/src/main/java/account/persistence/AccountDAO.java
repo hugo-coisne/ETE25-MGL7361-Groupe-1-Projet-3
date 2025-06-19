@@ -101,4 +101,23 @@ public class AccountDAO {
             throw new RuntimeException("Erreur lors de la recherche du compte dans la base de données", e);
         }
     }
+
+    public void deleteAccountWithId(int id) {
+        logger.info("Deleting account with ID: " + id);
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement statement = conn.prepareStatement("DELETE FROM Account WHERE id = ?")) {
+
+            statement.setInt(1, id);
+            int rowsAffected = statement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                logger.info("Account with ID " + id + " deleted successfully.");
+            } else {
+                logger.warning("No account found with ID " + id);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la suppression du compte dans la base de données", e);
+        }
+    }
 }

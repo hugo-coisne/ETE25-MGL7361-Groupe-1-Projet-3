@@ -11,5 +11,5 @@ public interface AccountAPI {
 
     void changeAccountPassword(Account account, String oldPassword, String newPassword);
 
-    void deleteAccount();
+    void deleteAccount(String email, String password);
 }

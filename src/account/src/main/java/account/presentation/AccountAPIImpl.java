@@ -18,6 +18,8 @@ public class AccountAPIImpl implements AccountAPI {
         logger.info("Attempting to sign in with email: " + email);
         try {
             Account account = accountService.signin(email, password);
+            System.out.println("Connexion réussie.");
+            System.out.println("Bienvenue " + account.getFirstName() + " " + account.getLastName() + " !");
             return account;
         } catch (InvalidCredentialsException e) {
             logger.warning("Sign in failed due to invalid arguments: " + e.getMessage());
@@ -28,7 +30,7 @@ public class AccountAPIImpl implements AccountAPI {
             logger.severe("Error during sign in: " + e.getMessage());
             System.out.println("Une erreur est survenue lors de la connexion. Veuillez réessayer plus tard.");
         }
-        return null; // Placeholder return
+        return null;
     }
 
     @Override
@@ -65,7 +67,20 @@ public class AccountAPIImpl implements AccountAPI {
     }
 
     @Override
-    public void deleteAccount() {
-        // TODO: Implementation to delete the account
+    public void deleteAccount(String email, String password) {
+        logger.info("Attempting to delete account with email: " + email);
+        try {
+            accountService.deleteAccount(email, password);
+            System.out.println("Compte supprimé avec succès.");
+        } catch (InvalidCredentialsException e) {
+            logger.warning("Deletion failed due to invalid credentials: " + e.getMessage());
+            System.out.println("Identifiants incorrects. Veuillez vérifier les informations saisies.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.severe("Error during account deletion: " + e.getMessage());
+            System.out
+                    .println("Une erreur est survenue lors de la suppression du compte. Veuillez réessayer plus tard.");
+        }
+
     }
 }
