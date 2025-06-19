@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import account.business.entities.Account;
 import account.business.exception.DuplicateEmailException;
+import account.business.exception.InvalidCredentialsException;
 import common.DBConnection;
 
 public class AccountDAO {
@@ -26,8 +27,6 @@ public class AccountDAO {
     }
 
     public void insert(Account account) throws DuplicateEmailException {
-        // Implementation to create an account in the database
-        // This is a placeholder for actual database interaction code
         logger.info("Creating account in database for: " + account.toString());
 
         try (Connection conn = DBConnection.getConnection();
@@ -68,8 +67,38 @@ public class AccountDAO {
                 throw new RuntimeException("Erreur d'intégrité SQL inconnue : " + e.getMessage(), e);
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors de l'insertion en base", e);
+            throw new RuntimeException("Erreur lors de l'insertion dans la base de données", e);
         }
     }
 
+    public Account findByEmailAndPassword(String email, String password) throws InvalidCredentialsException {
+        logger.info("Finding account by email: " + email);
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement statement = conn.prepareStatement(
+                        "SELECT * FROM Account WHERE email = ? AND password = ?")) {
+
+            statement.setString(1, email);
+            statement.setString(2, password);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String firstName = resultSet.getString("first_name");
+                String lastName = resultSet.getString("last_name");
+                String phone = resultSet.getString("phone");
+
+                Account account = new Account(firstName, lastName, phone, email);
+                account.setId(id);
+
+                logger.info("Account found: " + account.toString());
+                return account;
+            }
+            throw new InvalidCredentialsException(email);
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la recherche du compte dans la base de données", e);
+        }
+    }
 }

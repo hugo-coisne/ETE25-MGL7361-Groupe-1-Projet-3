@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import account.business.entities.Account;
 import account.business.exception.DuplicateEmailException;
+import account.business.exception.InvalidCredentialsException;
 import account.business.services.AccountService;
 
 public class AccountAPIImpl implements AccountAPI {
@@ -14,7 +15,19 @@ public class AccountAPIImpl implements AccountAPI {
 
     @Override
     public Account signin(String email, String password) {
-        // TODO: Implementation to retrieve account based on email and password
+        logger.info("Attempting to sign in with email: " + email);
+        try {
+            Account account = accountService.signin(email, password);
+            return account;
+        } catch (InvalidCredentialsException e) {
+            logger.warning("Sign in failed due to invalid arguments: " + e.getMessage());
+            System.out.println(
+                    "Identifiants incorrects. Veuillez vérifier les informations saisies.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.severe("Error during sign in: " + e.getMessage());
+            System.out.println("Une erreur est survenue lors de la connexion. Veuillez réessayer plus tard.");
+        }
         return null; // Placeholder return
     }
 
@@ -25,12 +38,15 @@ public class AccountAPIImpl implements AccountAPI {
             accountService.create(new Account(firstName, lastName, phone, email, password));
         } catch (DuplicateEmailException e) {
             logger.warning("Account not created because " + e.getMessage() + " is already in database.");
-            System.out.println("Le courriel " + e.getMessage() + " est déjà utilisé. S'il s'agit bien de votre email, veuillez vous connecter."); // see if password reset is needed
+            System.out.println("Le courriel " + e.getMessage()
+                    + " est déjà utilisé. S'il s'agit bien de votre email, veuillez vous connecter."); // see if
+                                                                                                       // password reset
+                                                                                                       // is needed
         } catch (IllegalArgumentException e) {
             logger.warning("Account not created because " + e.getMessage());
             System.out.println("Compte non créé. Veuillez vérifier les informations saisies. " + e.getMessage());
         }
-        
+
         catch (Exception e) {
             e.printStackTrace();
             logger.severe("Error creating account: " + e.getMessage());

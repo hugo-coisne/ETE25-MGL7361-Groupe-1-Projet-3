@@ -17,14 +17,25 @@ public class Account {
         this.password = password;
     }
 
+    public Account(String firstName, String lastName, String phone, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.email = email;
+    }
+
     public String toString() {
-        return "Account(" +
-                "firstName='" + firstName + '\'' +
+        String result = "Account(";
+        if (id > 0) {
+            result += "id=" + id + ", ";
+        }
+        result += "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
                 ')';
+
+        return result;
     }
 
     public String getFirstName() {

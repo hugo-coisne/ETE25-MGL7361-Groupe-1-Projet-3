@@ -1,10 +1,10 @@
 package account.business.services;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import account.business.entities.Account;
 import account.business.exception.DuplicateEmailException;
+import account.business.exception.InvalidCredentialsException;
 import account.persistence.AccountDAO;
 
 public class AccountService {
@@ -33,6 +33,12 @@ public class AccountService {
 
     }
 
+    public Account signin(String email, String password) throws InvalidCredentialsException {
+        logger.info("Signing in with email: " + email);
+        Account account = accountDao.findByEmailAndPassword(email, password);
+        return account;
+    }
+
     public void updateAccount(String accountId, String firstName, String lastName, String phone, String email) {
         // Logic to update an existing account
         System.out.println("Updating account with ID: " + accountId);
@@ -49,11 +55,5 @@ public class AccountService {
         // Logic to change the password of an account
         System.out.println("Changing password for account with ID: " + accountId);
         // Here you would typically update the password in the database or storage
-    }
-
-    public void getAccount(String email, String password) {
-        // Logic to retrieve an account based on email and password
-        System.out.println("Retrieving account for email: " + email);
-        // Here you would typically fetch the account from the database or storage
     }
 }
