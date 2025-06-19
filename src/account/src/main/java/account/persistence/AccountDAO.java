@@ -89,7 +89,7 @@ public class AccountDAO {
                 String lastName = resultSet.getString("last_name");
                 String phone = resultSet.getString("phone");
 
-                Account account = new Account(firstName, lastName, phone, email);
+                Account account = new Account(firstName, lastName, phone, email, password);
                 account.setId(id);
 
                 logger.info("Account found: " + account.toString());
@@ -118,6 +118,32 @@ public class AccountDAO {
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors de la suppression du compte dans la base de données", e);
+        }
+    }
+
+    public void update(Account authenticatedAccount) {
+        logger.info("Updating account in database for: " + authenticatedAccount.toString());
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement statement = conn.prepareStatement(
+                        "UPDATE Account SET first_name = ?, last_name = ?, phone = ?, email = ?, password = ? WHERE id = ?")) {
+
+            statement.setString(1, authenticatedAccount.getFirstName());
+            statement.setString(2, authenticatedAccount.getLastName());
+            statement.setString(3, authenticatedAccount.getPhone());
+            statement.setString(4, authenticatedAccount.getEmail());
+            statement.setString(5, authenticatedAccount.getPassword());
+            statement.setInt(6, authenticatedAccount.getId());
+
+            int rowsUpdated = statement.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                logger.info("Account updated successfully.");
+            } else {
+                logger.warning("No account found with ID " + authenticatedAccount.getId());
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la mise à jour du compte dans la base de données", e);
         }
     }
 }

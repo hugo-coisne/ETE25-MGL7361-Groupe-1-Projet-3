@@ -7,9 +7,15 @@ public interface AccountAPI {
 
     void signup(String firstName, String lastName, String phone, String email, String password);
 
-    void updateAccount(Account account);
+    void changePhoneFor(Account account, String newPhone);
 
-    void changeAccountPassword(Account account, String oldPassword, String newPassword);
+    void changeEmailFor(Account account, String newEmail);
 
-    void deleteAccount(String email, String password);
+    void changeFirstNameFor(Account account, String newFirstName);
+
+    void changeLastNameFor(Account account, String newLastName);
+
+    void changePasswordFor(Account account, String newPassword);
+
+    void delete(Account account);
 }

@@ -30,13 +30,57 @@ public class Main {
         Account account = accountAPI.signin(email, password);
         System.out.println("");
 
+        // Change password
+        String newPassword = "NewP@ssword123";
+        accountAPI.changePasswordFor(account, newPassword);
+        System.out.println("");
+
+        // Try to sign in with the new password
+        Account account2 = accountAPI.signin(email, newPassword);
+        System.out.println("");
+
+        // Change phone number
+        String newPhone = "0987654321";
+        accountAPI.changePhoneFor(account2, newPhone);
+        System.out.println("");
+
+        // Try to sign in with the new password with new phone number
+        Account account3 = accountAPI.signin(email, newPassword);
+        System.out.println("");
+
+        // Change first name
+        String newFirstName = "Jane";
+        accountAPI.changeFirstNameFor(account3, newFirstName);
+        System.out.println("");
+
+        // Try to sign in with the new password with new first name
+        Account account4 = accountAPI.signin(email, newPassword);
+        System.out.println("");
+
+        // Change last name
+        String newLastName = "Smith";
+        accountAPI.changeLastNameFor(account4, newLastName);
+        System.out.println("");
+
+        // Try to sign in with the new password with new last name
+        Account account5 = accountAPI.signin(email, newPassword);
+        System.out.println("");
+
+        // Change email
+        String newEmail = "jane.smith@mail.com";
+        accountAPI.changeEmailFor(account5, newEmail);
+        System.out.println("");
+
+        // Try to sign in with the new password with new email
+        Account account6 = accountAPI.signin(newEmail, newPassword);
+        System.out.println("");
+
         // Delete the account
-        accountAPI.deleteAccount(email, password);
+        accountAPI.delete(account6);
         System.out.println("");
 
         // Try to sign in again to confirm deletion
-        accountAPI.signin(email, password);
+        accountAPI.signin(newEmail, newPassword);
         System.out.println("");
-
     }
 }

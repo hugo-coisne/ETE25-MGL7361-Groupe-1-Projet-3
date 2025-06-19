@@ -57,20 +57,10 @@ public class AccountAPIImpl implements AccountAPI {
     }
 
     @Override
-    public void updateAccount(Account account) {
-        // TODO: Implementation to update an existing account
-    }
-
-    @Override
-    public void changeAccountPassword(Account account, String oldPassword, String newPassword) {
-        // TODO: Implementation to change the account password
-    }
-
-    @Override
-    public void deleteAccount(String email, String password) {
-        logger.info("Attempting to delete account with email: " + email);
+    public void delete(Account account) {
+        logger.info("Attempting to delete account with email: " + account.getEmail());
         try {
-            accountService.deleteAccount(email, password);
+            accountService.delete(account);
             System.out.println("Compte supprimé avec succès.");
         } catch (InvalidCredentialsException e) {
             logger.warning("Deletion failed due to invalid credentials: " + e.getMessage());
@@ -81,6 +71,86 @@ public class AccountAPIImpl implements AccountAPI {
             System.out
                     .println("Une erreur est survenue lors de la suppression du compte. Veuillez réessayer plus tard.");
         }
+    }
 
+    @Override
+    public void changePasswordFor(Account account, String newPassword) {
+        logger.info("Changing password for account with email: " + account.getEmail());
+        try {
+            accountService.update(account, "password", newPassword);
+        } catch (InvalidCredentialsException e) {
+            logger.warning("Changing password failed due to invalid credentials: " + e.getMessage());
+            System.out.println("Identifiants incorrects. Veuillez vérifier les informations saisies.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.severe("Error changing password: " + e.getMessage());
+            System.out.println(
+                    "Une erreur est survenue lors du changement de mot de passe. Veuillez réessayer plus tard.");
+        }
+    }
+
+    @Override
+    public void changePhoneFor(Account account, String newPhone) {
+        logger.info("Changing phone number for account with email: " + account.getEmail());
+        try {
+            accountService.update(account, "phone", newPhone);
+        } catch (InvalidCredentialsException e) {
+            logger.warning("Changing phone failed due to invalid credentials: " + e.getMessage());
+            System.out.println("Identifiants incorrects. Veuillez vérifier les informations saisies.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.severe("Error changing phone: " + e.getMessage());
+            System.out.println(
+                    "Une erreur est survenue lors du changement de numéro de téléphone. Veuillez réessayer plus tard.");
+        }
+    }
+
+    @Override
+    public void changeEmailFor(Account account, String newEmail) {
+        try {
+            accountService.update(account, "email", newEmail);
+            logger.info("Changing email for account with email: " + account.getEmail());
+        } catch (InvalidCredentialsException e) {
+            logger.warning("Changing email failed due to invalid credentials: " + e.getMessage());
+            System.out.println("Identifiants incorrects. Veuillez vérifier les informations saisies.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.severe("Error changing email: " + e.getMessage());
+            System.out.println(
+                    "Une erreur est survenue lors du changement de courriel. Veuillez réessayer plus tard.");
+        }
+    }
+
+    @Override
+    public void changeFirstNameFor(Account account, String newFirstName) {
+        try {
+            accountService.update(account, "first_name", newFirstName);
+            logger.info("Changing first name for account with email: " + account.getEmail());
+
+        } catch (InvalidCredentialsException e) {
+            logger.warning("Changing first name failed due to invalid credentials: " + e.getMessage());
+            System.out.println("Identifiants incorrects. Veuillez vérifier les informations saisies.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.severe("Error changing first name: " + e.getMessage());
+            System.out.println(
+                    "Une erreur est survenue lors du changement de prénom. Veuillez réessayer plus tard.");
+        }
+    }
+
+    @Override
+    public void changeLastNameFor(Account account, String newLastName) {
+        logger.info("Changing last name for account with email: " + account.getEmail());
+        try {
+            accountService.update(account, "last_name", newLastName);
+        } catch (InvalidCredentialsException e) {
+            logger.warning("Changing last name failed due to invalid credentials: " + e.getMessage());
+            System.out.println("Identifiants incorrects. Veuillez vérifier les informations saisies.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.severe("Error changing last name: " + e.getMessage());
+            System.out.println(
+                    "Une erreur est survenue lors du changement de nom de famille. Veuillez réessayer plus tard.");
+        }
     }
 }

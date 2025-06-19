@@ -39,25 +39,43 @@ public class AccountService {
         return account;
     }
 
-    public void deleteAccount(String email, String password) throws InvalidCredentialsException {
+    public void delete(Account account) throws InvalidCredentialsException {
         // Logic to delete an account
-        logger.info("Deleting account with email: " + email);
-        logger.info("First signing in with email: " + email);
-        Account account = signin(email, password);
-        logger.info("Deleting account with email " + account.getEmail());
-        accountDao.deleteAccountWithId(account.getId());
-        logger.info("Account with email " + email + " deleted successfully.");
+        logger.info("Deleting account with email: " + account.getEmail());
+        logger.info("First signing in with email: " + account.getEmail());
+        Account authenticatedAccount = signin(account.getEmail(), account.getPassword());
+        logger.info("Deleting account with email " + authenticatedAccount.getEmail());
+        accountDao.deleteAccountWithId(authenticatedAccount.getId());
+        logger.info("Account with email " + authenticatedAccount.getEmail() + " deleted successfully.");
     }
 
-    public void updateAccount(String accountId, String firstName, String lastName, String phone, String email) {
+    public void update(Account account, String parameterToBeUpdated, String newValue)
+            throws InvalidCredentialsException {
         // Logic to update an existing account
-        System.out.println("Updating account with ID: " + accountId);
-        // Here you would typically update the account in the database or storage
-    }
-
-    public void changePassword(String accountId, String oldPassword, String newPassword) {
-        // Logic to change the password of an account
-        System.out.println("Changing password for account with ID: " + accountId);
-        // Here you would typically update the password in the database or storage
+        logger.info("Updating account with email: " + account.getEmail() + ", parameter: " + parameterToBeUpdated
+                + ", new value: " + newValue + ", old value: " + account.getPassword());
+        Account authenticatedAccount = signin(account.getEmail(), account.getPassword());
+        logger.info("Authenticated account: " + authenticatedAccount.toString());
+        switch (parameterToBeUpdated.toLowerCase()) {
+            case "phone":
+                authenticatedAccount.setPhone(newValue);
+                break;
+            case "email":
+                authenticatedAccount.setEmail(newValue);
+                break;
+            case "first_name":
+                authenticatedAccount.setFirstName(newValue);
+                break;
+            case "last_name":
+                authenticatedAccount.setLastName(newValue);
+                break;
+            case "password":
+                authenticatedAccount.setPassword(newValue);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid parameter to update: " + parameterToBeUpdated);
+        }
+        accountDao.update(authenticatedAccount);
+        logger.info("Account updated successfully.");
     }
 }
