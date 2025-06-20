@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import account.business.entities.Account;
 import account.business.exception.DuplicateEmailException;
+import account.business.exception.InvalidCredentialsException;
 import common.DBConnection;
 
 public class AccountDAO {
@@ -26,8 +27,6 @@ public class AccountDAO {
     }
 
     public void insert(Account account) throws DuplicateEmailException {
-        // Implementation to create an account in the database
-        // This is a placeholder for actual database interaction code
         logger.info("Creating account in database for: " + account.toString());
 
         try (Connection conn = DBConnection.getConnection();
@@ -68,8 +67,83 @@ public class AccountDAO {
                 throw new RuntimeException("Erreur d'intégrité SQL inconnue : " + e.getMessage(), e);
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors de l'insertion en base", e);
+            throw new RuntimeException("Erreur lors de l'insertion dans la base de données", e);
         }
     }
 
+    public Account findByEmailAndPassword(String email, String password) throws InvalidCredentialsException {
+        logger.info("Finding account by email: " + email);
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement statement = conn.prepareStatement(
+                        "SELECT * FROM Account WHERE email = ? AND password = ?")) {
+
+            statement.setString(1, email);
+            statement.setString(2, password);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String firstName = resultSet.getString("first_name");
+                String lastName = resultSet.getString("last_name");
+                String phone = resultSet.getString("phone");
+
+                Account account = new Account(firstName, lastName, phone, email, password);
+                account.setId(id);
+
+                logger.info("Account found: " + account.toString());
+                return account;
+            }
+            throw new InvalidCredentialsException(email);
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la recherche du compte dans la base de données", e);
+        }
+    }
+
+    public void deleteAccountWithId(int id) {
+        logger.info("Deleting account with ID: " + id);
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement statement = conn.prepareStatement("DELETE FROM Account WHERE id = ?")) {
+
+            statement.setInt(1, id);
+            int rowsAffected = statement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                logger.info("Account with ID " + id + " deleted successfully.");
+            } else {
+                logger.warning("No account found with ID " + id);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la suppression du compte dans la base de données", e);
+        }
+    }
+
+    public void update(Account authenticatedAccount) {
+        logger.info("Updating account in database for: " + authenticatedAccount.toString());
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement statement = conn.prepareStatement(
+                        "UPDATE Account SET first_name = ?, last_name = ?, phone = ?, email = ?, password = ? WHERE id = ?")) {
+
+            statement.setString(1, authenticatedAccount.getFirstName());
+            statement.setString(2, authenticatedAccount.getLastName());
+            statement.setString(3, authenticatedAccount.getPhone());
+            statement.setString(4, authenticatedAccount.getEmail());
+            statement.setString(5, authenticatedAccount.getPassword());
+            statement.setInt(6, authenticatedAccount.getId());
+
+            int rowsUpdated = statement.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                logger.info("Account updated successfully.");
+            } else {
+                logger.warning("No account found with ID " + authenticatedAccount.getId());
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la mise à jour du compte dans la base de données", e);
+        }
+    }
 }

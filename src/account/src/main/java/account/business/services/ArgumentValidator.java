@@ -186,4 +186,23 @@ public class ArgumentValidator {
             throw new IllegalArgumentException(errorMessage.toString());
         }
     }
+
+    public static void checkAccountSigninpArguments(String email, String password) throws IllegalArgumentException {
+        // This method can be used to validate the provided email and password before attempting to sign in
+        // It can throw exceptions if any of the required fields are missing or invalid
+
+        List<String> emailIssues = checkEmail(email);
+        List<String> passwordIssues = checkPassword(password);
+
+        if (!emailIssues.isEmpty() || !passwordIssues.isEmpty()) {
+            StringBuilder errorMessage = new StringBuilder("\nInvalid account details:");
+            if (!emailIssues.isEmpty()) {
+                errorMessage.append("\n - Email issues:").append("\n   - ").append(String.join("\n   - ", emailIssues));
+            }
+            if (!passwordIssues.isEmpty()) {
+                errorMessage.append("\n - Password issues:").append("\n   - ").append(String.join("\n   - ", passwordIssues)).append("\n");
+            }
+            throw new IllegalArgumentException(errorMessage.toString());
+        }
+    }
 }
