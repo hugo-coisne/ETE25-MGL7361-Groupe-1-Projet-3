@@ -1,4 +1,4 @@
-package shop.business.entities;
+package shop.model;
 
 public class Author extends BookAttribute {
 

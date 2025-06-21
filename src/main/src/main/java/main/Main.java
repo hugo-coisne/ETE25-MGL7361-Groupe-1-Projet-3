@@ -3,9 +3,13 @@ package main;
 import account.business.entities.Account;
 import account.presentation.AccountAPI;
 import account.presentation.AccountAPIImpl;
+import shop.business.BookService;
+import shop.dto.BookDTO;
+import shop.persistence.BookDAO;
+import shop.presentation.BookAPIImpl;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void account() {
         AccountAPI accountAPI = new AccountAPIImpl();
         String firstName = "John";
         String lastName = "Doe";
@@ -82,5 +86,21 @@ public class Main {
         // Try to sign in again to confirm deletion
         accountAPI.signin(newEmail, newPassword);
         System.out.println("");
+    }
+
+    public static void shop() throws Exception{
+        BookDAO bookDAO = new BookDAO();
+        BookService bookService = new BookService(bookDAO);
+        BookAPIImpl bookAPI = new BookAPIImpl(bookService);
+
+        BookDTO bookDTO = new BookDTO("My Book", "John Smith", "1234567890", 19.99);
+        bookAPI.createBook(bookDTO);
+    }
+
+    public static void main(String[] args) {
+        GlobalSafeExecutor.run(() -> {
+            Main.account();
+            Main.shop();
+        });
     }
 }

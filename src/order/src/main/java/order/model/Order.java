@@ -1,11 +1,11 @@
-package order.models;
+package order.model;
 
 
 
 import java.time.Instant;
 import java.util.Map;
 
-import shop.business.entities.Book;
+import shop.model.Book;
 
 public class Order {
     /*

@@ -1,4 +1,4 @@
-package shop.business.services;
+package shop.business;
 
 public class BookAttributeService {
 

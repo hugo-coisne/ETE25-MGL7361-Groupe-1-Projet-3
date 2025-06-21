@@ -1,7 +1,7 @@
 package order.presentation;
 
 import account.business.entities.Cart;
-import order.models.Order;
+import order.model.Order;
 import account.business.entities.Account;
 
 public interface OrderAPI {

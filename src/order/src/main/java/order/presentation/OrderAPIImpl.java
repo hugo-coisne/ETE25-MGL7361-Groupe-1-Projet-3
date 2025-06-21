@@ -3,7 +3,7 @@ package order.presentation;
 import account.business.entities.Account;
 import account.business.entities.Cart;
 import order.business.OrderService;
-import order.models.Order;
+import order.model.Order;
 
 public class OrderAPIImpl implements OrderAPI {
     private final OrderService orderService = OrderService.getInstance();

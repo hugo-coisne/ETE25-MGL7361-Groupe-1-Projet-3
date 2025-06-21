@@ -3,21 +3,22 @@ package shop.presentation;
 import java.util.List;
 import java.util.Map;
 
-import shop.business.entities.Book;
-import shop.business.entities.BookProperty;
+import shop.business.BookService;
+import shop.dto.BookDTO;
+import shop.model.Book;
+import shop.model.BookProperty;
 
 public class BookAPIImpl implements BookAPI {
+    private final BookService bookService;
+
+    public BookAPIImpl(BookService bookService) {
+        this.bookService = bookService;
+    }
 
     @Override
     public List<Book> getBooksBy(Map<BookProperty, String> criteria) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getBooksBy'");
-    }
-
-    @Override
-    public Book createBook(String title, String description, String isbn) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createBook'");
     }
 
     @Override
@@ -33,9 +34,14 @@ public class BookAPIImpl implements BookAPI {
     }
 
     @Override
-    public void addBook(Book book) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addBook'");
+    public BookDTO createBook(BookDTO bookDTO) throws Exception {
+        Book book = this.bookService.createBook(bookDTO);
+        return new BookDTO(
+                book.getTitle(),
+                book.getAuthor(),
+                book.getIsbn(),
+                book.getPrice()
+        );
     }
 
     @Override
@@ -43,5 +49,4 @@ public class BookAPIImpl implements BookAPI {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'deleteBook'");
     }
-    
 }
