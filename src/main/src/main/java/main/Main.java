@@ -93,7 +93,7 @@ public class Main {
         BookService bookService = new BookService(bookDAO);
         BookAPIImpl bookAPI = new BookAPIImpl(bookService);
 
-        BookDTO bookDTO = new BookDTO("My Book", "John Smith", "1234567890", 19.99);
+        BookDTO bookDTO = new BookDTO("My Book", "1234567890", 19.99);
         bookAPI.createBook(bookDTO);
     }
 

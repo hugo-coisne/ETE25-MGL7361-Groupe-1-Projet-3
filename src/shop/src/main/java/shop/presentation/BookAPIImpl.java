@@ -36,12 +36,18 @@ public class BookAPIImpl implements BookAPI {
     @Override
     public BookDTO createBook(BookDTO bookDTO) throws Exception {
         Book book = this.bookService.createBook(bookDTO);
-        return new BookDTO(
+        if (book == null) {
+            throw new Exception("Book creation failed");
+        }
+        BookDTO ans = new BookDTO(
                 book.getTitle(),
-                book.getAuthor(),
                 book.getIsbn(),
                 book.getPrice()
         );
+        ans.setDescription(book.getDescription());
+        ans.setPublicationDate(book.getPublicationDate());
+        ans.setStockQuantity(book.getStockQuantity());
+        return ans;
     }
 
     @Override

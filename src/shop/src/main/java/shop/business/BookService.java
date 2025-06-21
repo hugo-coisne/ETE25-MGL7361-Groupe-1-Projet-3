@@ -15,10 +15,13 @@ public class BookService {
     public Book createBook(BookDTO bookDTO) throws Exception {
         Book book = new Book(
                 bookDTO.getTitle(),
-                bookDTO.getAuthor(),
                 bookDTO.getIsbn(),
                 bookDTO.getPrice()
         );
+
+        book.setDescription(bookDTO.getDescription());
+        book.setPublicationDate(bookDTO.getPublicationDate());
+        book.setStockQuantity(bookDTO.getStockQuantity());
 
         this.bookDAO.save(book);
 

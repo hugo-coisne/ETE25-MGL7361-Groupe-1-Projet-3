@@ -18,12 +18,18 @@ public class BookDAO {
         try (
                 Connection conn = DBConnection.getConnection();
                 PreparedStatement statement = conn.prepareStatement(
-                        "INSERT INTO Book (title, isbn, price) VALUES (?, ?, ?)",
+                        "INSERT INTO Book " +
+                                "(title, description, isbn, publication_date, price, stock_quantity)" +
+                                " VALUES (?, ?, ?, ?, ?, ?)",
                         Statement.RETURN_GENERATED_KEYS
                 )) {
             statement.setString(1, book.getTitle());
-            statement.setString(2, book.getIsbn());
-            statement.setDouble(3, book.getPrice());
+            statement.setString(2, book.getDescription());
+            statement.setString(3, book.getIsbn());
+            statement.setTimestamp(4, book.getPublicationDate());
+            statement.setDouble(5, book.getPrice());
+            statement.setInt(6, book.getStockQuantity());
+
             int rowsInserted = statement.executeUpdate();
 
             if (rowsInserted > 0) {
