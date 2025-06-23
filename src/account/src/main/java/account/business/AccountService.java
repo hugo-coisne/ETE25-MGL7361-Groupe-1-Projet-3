@@ -1,10 +1,10 @@
-package account.business.services;
+package account.business;
 
 import java.util.logging.Logger;
 
-import account.business.entities.Account;
-import account.business.exception.DuplicateEmailException;
-import account.business.exception.InvalidCredentialsException;
+import account.model.Account;
+import account.exception.DuplicateEmailException;
+import account.exception.InvalidCredentialsException;
 import account.persistence.AccountDAO;
 
 public class AccountService {

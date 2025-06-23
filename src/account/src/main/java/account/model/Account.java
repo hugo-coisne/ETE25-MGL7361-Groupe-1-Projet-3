@@ -1,4 +1,4 @@
-package account.business.entities;
+package account.model;
 
 public class Account {
     private String firstName;

@@ -1,7 +1,7 @@
 package order.presentation;
 
-import account.business.entities.Account;
-import account.business.entities.Cart;
+import account.model.Account;
+import account.model.Cart;
 import order.business.OrderService;
 import order.model.Order;
 

@@ -8,9 +8,9 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.util.logging.Logger;
 
-import account.business.entities.Account;
-import account.business.exception.DuplicateEmailException;
-import account.business.exception.InvalidCredentialsException;
+import account.model.Account;
+import account.exception.DuplicateEmailException;
+import account.exception.InvalidCredentialsException;
 import common.DBConnection;
 
 public class AccountDAO {

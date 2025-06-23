@@ -1,4 +1,4 @@
-package account.business.exception;
+package account.exception;
 
 public class DuplicateEmailException extends Exception {
 

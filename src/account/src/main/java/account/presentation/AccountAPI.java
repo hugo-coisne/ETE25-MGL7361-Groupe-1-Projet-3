@@ -1,6 +1,6 @@
 package account.presentation;
 
-import account.business.entities.Account;
+import account.model.Account;
 
 public interface AccountAPI {
     Account signin(String email, String password);

@@ -1,10 +1,9 @@
 package order.business;
 
-import account.business.entities.Account;
-import account.business.entities.Cart;
+import account.model.Account;
+import account.model.Cart;
 import order.model.Order;
-import shop.presentation.BookAPI;
-import shop.presentation.BookAPIImpl;
+
 
 public class OrderService {
     private static OrderService instance = null;

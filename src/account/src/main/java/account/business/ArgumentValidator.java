@@ -1,9 +1,9 @@
-package account.business.services;
+package account.business;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import account.business.entities.Account;
+import account.model.Account;
 
 public class ArgumentValidator {
 

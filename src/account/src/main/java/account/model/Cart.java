@@ -1,4 +1,4 @@
-package account.business.entities;
+package account.model;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -2,10 +2,10 @@ package account.presentation;
 
 import java.util.logging.Logger;
 
-import account.business.entities.Account;
-import account.business.exception.DuplicateEmailException;
-import account.business.exception.InvalidCredentialsException;
-import account.business.services.AccountService;
+import account.model.Account;
+import account.exception.DuplicateEmailException;
+import account.exception.InvalidCredentialsException;
+import account.business.AccountService;
 
 public class AccountAPIImpl implements AccountAPI {
 

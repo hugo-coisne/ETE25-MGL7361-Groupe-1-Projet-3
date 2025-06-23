@@ -1,6 +1,6 @@
 package main;
 
-import account.business.entities.Account;
+import account.model.Account;
 import account.presentation.AccountAPI;
 import account.presentation.AccountAPIImpl;
 import shop.business.BookService;

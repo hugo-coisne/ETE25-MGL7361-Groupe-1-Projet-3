@@ -1,8 +1,8 @@
 package order.presentation;
 
-import account.business.entities.Cart;
+import account.model.Cart;
 import order.model.Order;
-import account.business.entities.Account;
+import account.model.Account;
 
 public interface OrderAPI {
     Order createOrder(Account account, Cart cart);
