@@ -7,13 +7,14 @@ import common.RunnableWithException;
 import java.util.logging.Logger;
 
 public class AccountSafeExecutor {
-
     private static final Logger logger = Logger.getLogger(AccountSafeExecutor.class.getName());
 
-    public static void run(RunnableWithException runnable) throws Exception {
-        try {
-            runnable.run();
-        } catch (DuplicateEmailException | InvalidCredentialsException e) {
+    public static void setup() {
+        // Can be used to initialize resources or configurations if needed
+    }
+
+    public static void teardown(Exception e) {
+        if (e instanceof DuplicateEmailException || e instanceof InvalidCredentialsException) {
             logger.severe(e.getMessage());
         }
     }

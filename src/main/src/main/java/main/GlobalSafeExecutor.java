@@ -6,11 +6,22 @@ import shop.middleware.ShopSafeExecutor;
 
 public class GlobalSafeExecutor {
     public static void run(RunnableWithException runnable) {
+        Exception exception = null;
+
         try {
-            ShopSafeExecutor.run(runnable::run);
-            AccountSafeExecutor.run(runnable::run);
+            ShopSafeExecutor.setup();
+            AccountSafeExecutor.setup();
+
+            runnable.run();
+
         } catch (Exception e) {
-            System.err.println("An error occurred: " + e.getMessage());
+            exception = e;
+        } finally {
+            AccountSafeExecutor.teardown(exception);
+            ShopSafeExecutor.teardown(exception);
+            if (exception != null) {
+                System.err.println("An error occurred: " + exception.getMessage());
+            }
         }
     }
 }
