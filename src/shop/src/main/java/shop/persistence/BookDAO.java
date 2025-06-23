@@ -28,7 +28,7 @@ public class BookDAO {
             statement.setString(1, book.getTitle());
             statement.setString(2, book.getDescription());
             statement.setString(3, book.getIsbn());
-            statement.setTimestamp(4, book.getPublicationDate());
+            statement.setDate(4, book.getPublicationDate());
             statement.setDouble(5, book.getPrice());
             statement.setInt(6, book.getStockQuantity());
 
@@ -105,7 +105,7 @@ public class BookDAO {
                         rs.getDouble("price")
                 );
                 book.setDescription(rs.getString("description"));
-                book.setPublicationDate(rs.getTimestamp("publication_date"));
+                book.setPublicationDate(rs.getDate("publication_date"));
                 book.setStockQuantity(rs.getInt("stock_quantity"));
 
                 books.add(book);

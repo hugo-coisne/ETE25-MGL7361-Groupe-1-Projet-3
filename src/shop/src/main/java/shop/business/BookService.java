@@ -28,6 +28,7 @@ public class BookService {
 
     public List<BookDTO> getBooksBy(Map<BookProperty, String> criteria) throws Exception {
         // TODO : Add checking for criteria validity
+        // TODO : Add the ability to retrieve publisher, categories and authors information, and add them to the Book then the BookDTO
         List<Book> books = this.bookDAO.getBooksBy(criteria);
 
         // Convert the list of Book objects to BookDTO objects

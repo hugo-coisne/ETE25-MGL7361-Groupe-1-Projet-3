@@ -4,6 +4,7 @@ package order.persistence;
 import account.dto.AccountDTO;
 import common.DBConnection;
 import order.model.Order;
+import shop.dto.AuthorDTO;
 import shop.dto.BookDTO;
 
 import java.sql.Connection;
@@ -31,34 +32,79 @@ public class OrderDAO {
         logger.log(Level.INFO, String.format("Creating order for account %s", accountDTO));
 
         String orderNumber = generateOrderNumber();
-        LocalDate localDate = LocalDate.now(); // Utilise LocalDate pour la logique
+        LocalDate localDate = LocalDate.now();
         Order order;
 
         try (
                 Connection conn = DBConnection.getConnection();
-                PreparedStatement statement = conn.prepareStatement(
+                PreparedStatement insertOrder = conn.prepareStatement(
                         "INSERT INTO orders (order_number, account_id, total_price, order_date) VALUES (?, ?, ?, ?)",
                         PreparedStatement.RETURN_GENERATED_KEYS
+                );
+                PreparedStatement insertContent = conn.prepareStatement(
+                        "INSERT INTO order_contents (" +
+                                "order_number, book_isbn, book_title, book_description, " +
+                                "book_price, book_publisher, book_publication_date, " +
+                                "book_authors, quantity) " +
+                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
                 )
         ) {
-            statement.setString(1, orderNumber);
-            statement.setInt(2, accountDTO.getId());
-            statement.setDouble(3, total_price);
-            statement.setDate(4, Date.valueOf(localDate));
+            conn.setAutoCommit(false);
 
-            int rowsInserted = statement.executeUpdate();
-            if (rowsInserted > 0) {
-                logger.info("Order inserted successfully.");
-            } else {
-                throw new Exception("Error inserting order.");
+            // Insert order
+            insertOrder.setString(1, orderNumber);
+            insertOrder.setInt(2, accountDTO.getId());
+            insertOrder.setDouble(3, total_price);
+            insertOrder.setDate(4, Date.valueOf(localDate));
+            insertOrder.executeUpdate();
+
+            // Insert contents
+            for (Map.Entry<BookDTO, Integer> entry : books.entrySet()) {
+                BookDTO book = entry.getKey();
+                int quantity = entry.getValue();
+
+                insertContent.setString(1, orderNumber);
+
+                insertContent.setString(2, nullable(book.getIsbn()));
+                insertContent.setString(3, nullable(book.getTitle()));
+                insertContent.setString(4, nullable(book.getDescription()));
+
+                if (book.getPrice() != 0.0) {
+                    insertContent.setDouble(5, book.getPrice());
+                } else {
+                    insertContent.setNull(5, java.sql.Types.DECIMAL);
+                }
+
+                if (book.getPublisher() != null) {
+                    insertContent.setString(6, book.getPublisher().getName());
+                } else {
+                    insertContent.setNull(6, java.sql.Types.VARCHAR);
+                }
+
+                if (book.getPublicationDate() != null) {
+                    insertContent.setDate(7, book.getPublicationDate());
+                } else {
+                    insertContent.setNull(7, java.sql.Types.DATE);
+                }
+
+                if (book.getAuthors() != null && !book.getAuthors().isEmpty()) {
+                    insertContent.setString(8, String.join(", ", book.getAuthors().stream()
+                            .map(a -> a != null ? a.getName() : "")
+                            .toList()));
+                } else {
+                    insertContent.setNull(8, java.sql.Types.VARCHAR);
+                }
+
+                insertContent.setInt(9, quantity);
+
+                insertContent.addBatch(); // Add to batch for order contents
             }
 
-            order = new Order(
-                    orderNumber,
-                    localDate,
-                    books
-            );
+            insertContent.executeBatch(); // Execute batch insert for order contents
+            conn.commit(); // Commit the transaction
 
+            order = new Order(orderNumber, localDate, books);
+            logger.info("Order and order contents inserted successfully.");
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error creating order", e);
             throw new Exception("Error creating order: " + e.getMessage(), e);
@@ -66,4 +112,9 @@ public class OrderDAO {
 
         return order;
     }
+
+    private String nullable(String value) {
+        return value != null ? value : null;
+    }
+
 }

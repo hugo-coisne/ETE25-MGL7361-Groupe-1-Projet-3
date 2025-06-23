@@ -1,14 +1,19 @@
 package shop.model;
 
-import java.sql.Timestamp;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Book {
     private String title;
     private String description;
     private String isbn;
-    private Timestamp publicationDate;
+    private Date publicationDate;
     private double price;
     private int stockQuantity;
+    private Publisher publisher;
+    private List<Category> categories;
+    private List<Author> authors;
 
     public Book(String title, String isbn, double price) {
         this.setTitle(title);
@@ -17,6 +22,9 @@ public class Book {
         this.description = "";
         this.publicationDate = null;
         this.stockQuantity = 0;
+        this.publisher = null;
+        this.categories = new ArrayList<>();
+        this.authors = new ArrayList<>();
     }
 
     // SETTERS ----------------------------------------------------------------
@@ -32,7 +40,7 @@ public class Book {
         this.isbn = isbn;
     }
 
-    public void setPublicationDate(Timestamp publicationDate) {
+    public void setPublicationDate(Date publicationDate) {
         this.publicationDate = publicationDate;
     }
 
@@ -50,6 +58,24 @@ public class Book {
         this.stockQuantity = stockQuantity;
     }
 
+    public void setPublisher(Publisher publisher) {
+        this.publisher = publisher;
+    }
+
+    public void setCategories(List<Category> categories) {
+        if (categories == null) {
+            throw new IllegalArgumentException("Categories cannot be null");
+        }
+        this.categories = categories;
+    }
+
+    public void setAuthors(List<Author> authors) {
+        if (authors == null) {
+            throw new IllegalArgumentException("Authors cannot be null");
+        }
+        this.authors = authors;
+    }
+
     // GETTERS ----------------------------------------------------------------
     public String getTitle() {
         return title;
@@ -63,7 +89,7 @@ public class Book {
         return isbn;
     }
 
-    public Timestamp getPublicationDate() {
+    public Date getPublicationDate() {
         return publicationDate;
     }
 
@@ -74,4 +100,17 @@ public class Book {
     public int getStockQuantity() {
         return stockQuantity;
     }
+
+    public Publisher getPublisher() {
+        return publisher;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public List<Author> getAuthors() {
+        return authors;
+    }
+
 }

@@ -1,16 +1,20 @@
 package shop.dto;
 
-import java.sql.Timestamp;
+
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class BookDTO {
     private String title;
     private String description;
     private String isbn;
-    private Timestamp publicationDate;
+    private Date publicationDate;
     private double price;
     private int stockQuantity;
-
+    private PublisherDTO publisher;
+    private List<AuthorDTO> authors;
 
     public BookDTO(String title, String isbn, double price) {
         this.setTitle(title);
@@ -19,6 +23,7 @@ public class BookDTO {
         this.description = "";
         this.publicationDate = null;
         this.stockQuantity = 0;
+        this.authors = new ArrayList<>();
     }
 
     // SETTERS ----------------------------------------------------------------
@@ -34,7 +39,7 @@ public class BookDTO {
         this.isbn = isbn;
     }
 
-    public void setPublicationDate(Timestamp publicationDate) {
+    public void setPublicationDate(Date publicationDate) {
         this.publicationDate = publicationDate;
     }
 
@@ -44,6 +49,14 @@ public class BookDTO {
 
     public void setStockQuantity(int stockQuantity) {
         this.stockQuantity = stockQuantity;
+    }
+
+    public void setPublisher(PublisherDTO publisher) {
+        this.publisher = publisher;
+    }
+
+    public void setAuthors(List<AuthorDTO> authors) {
+        this.authors = authors;
     }
 
     // GETTERS ----------------------------------------------------------------
@@ -59,7 +72,7 @@ public class BookDTO {
         return isbn;
     }
 
-    public Timestamp getPublicationDate() {
+    public Date getPublicationDate() {
         return publicationDate;
     }
 
@@ -69,6 +82,14 @@ public class BookDTO {
 
     public int getStockQuantity() {
         return stockQuantity;
+    }
+
+    public PublisherDTO getPublisher() {
+        return publisher;
+    }
+
+    public List<AuthorDTO> getAuthors() {
+        return authors;
     }
 
 }
