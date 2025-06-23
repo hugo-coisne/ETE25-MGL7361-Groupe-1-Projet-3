@@ -16,9 +16,10 @@ public class BookAPIImpl implements BookAPI {
     }
 
     @Override
-    public List<Book> getBooksBy(Map<BookProperty, String> criteria) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getBooksBy'");
+    public List<BookDTO> getBooksBy(Map<BookProperty, String> criteria) throws Exception {
+        List<BookDTO> books = this.bookService.getBooksBy(criteria);
+
+        return books;
     }
 
     @Override
@@ -35,19 +36,12 @@ public class BookAPIImpl implements BookAPI {
 
     @Override
     public BookDTO createBook(BookDTO bookDTO) throws Exception {
-        Book book = this.bookService.createBook(bookDTO);
+        BookDTO book = this.bookService.createBook(bookDTO);
         if (book == null) {
             throw new Exception("Book creation failed");
         }
-        BookDTO ans = new BookDTO(
-                book.getTitle(),
-                book.getIsbn(),
-                book.getPrice()
-        );
-        ans.setDescription(book.getDescription());
-        ans.setPublicationDate(book.getPublicationDate());
-        ans.setStockQuantity(book.getStockQuantity());
-        return ans;
+
+        return book;
     }
 
     @Override

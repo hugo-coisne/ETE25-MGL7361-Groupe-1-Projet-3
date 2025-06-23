@@ -31,7 +31,7 @@ public class AccountDAO {
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement statement = conn.prepareStatement(
-                        "INSERT INTO Account (first_name, last_name, phone, email, password) VALUES (?, ?, ?, ?, ?)",
+                        "INSERT INTO accounts (first_name, last_name, phone, email, password) VALUES (?, ?, ?, ?, ?)",
                         Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setString(1, account.getFirstName());
@@ -76,7 +76,7 @@ public class AccountDAO {
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement statement = conn.prepareStatement(
-                        "SELECT * FROM Account WHERE email = ? AND password = ?")) {
+                        "SELECT * FROM accounts WHERE email = ? AND password = ?")) {
 
             statement.setString(1, email);
             statement.setString(2, password);
@@ -106,7 +106,7 @@ public class AccountDAO {
         logger.info("Deleting account with ID: " + id);
 
         try (Connection conn = DBConnection.getConnection();
-                PreparedStatement statement = conn.prepareStatement("DELETE FROM Account WHERE id = ?")) {
+                PreparedStatement statement = conn.prepareStatement("DELETE FROM accounts WHERE id = ?")) {
 
             statement.setInt(1, id);
             int rowsAffected = statement.executeUpdate();
@@ -126,7 +126,7 @@ public class AccountDAO {
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement statement = conn.prepareStatement(
-                        "UPDATE Account SET first_name = ?, last_name = ?, phone = ?, email = ?, password = ? WHERE id = ?")) {
+                        "UPDATE accounts SET first_name = ?, last_name = ?, phone = ?, email = ?, password = ? WHERE id = ?")) {
 
             statement.setString(1, authenticatedAccount.getFirstName());
             statement.setString(2, authenticatedAccount.getLastName());

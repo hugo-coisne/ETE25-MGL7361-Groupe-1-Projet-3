@@ -8,7 +8,7 @@ import shop.model.BookProperty;
 import shop.dto.BookDTO;
 
 public interface BookAPI {
-    public List<Book> getBooksBy(Map<BookProperty, String> criteria);
+    public List<BookDTO> getBooksBy(Map<BookProperty, String> criteria) throws Exception;
 
     public void setPropertiesFor(Book book, Map<BookProperty, List<String>> properties);
 

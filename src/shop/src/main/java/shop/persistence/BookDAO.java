@@ -4,8 +4,10 @@ import common.DBConnection;
 import shop.exception.DTOException;
 import shop.exception.DuplicationBookException;
 import shop.model.Book;
+import shop.model.BookProperty;
 
 import java.sql.*;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,5 +49,71 @@ public class BookDAO {
             }
         }
 
+    }
+
+    private PreparedStatement buildGetBooksQuery(Connection conn, Map<BookProperty, String> criteria) throws SQLException {
+        StringBuilder baseQuery = new StringBuilder("SELECT DISTINCT books.* FROM books ");
+        Set<BookProperty> keys = criteria.keySet();
+
+        // Gestion des JOINs dynamiques
+        if (keys.contains(BookProperty.PUBLISHER)) {
+            baseQuery.append("JOIN publishers ON books.publisher_id = publishers.id ");
+        }
+        if (keys.contains(BookProperty.AUTHOR)) {
+            baseQuery.append("JOIN book_author ON books.id = book_author.book_id ");
+            baseQuery.append("JOIN authors ON book_author.author_id = authors.id ");
+        }
+        if (keys.contains(BookProperty.CATEGORY)) {
+            baseQuery.append("JOIN book_category ON books.id = book_category.book_id ");
+            baseQuery.append("JOIN categories ON book_category.category_id = categories.id ");
+        }
+
+        // Construction de la clause WHERE
+        if (!criteria.isEmpty()) {
+            baseQuery.append("WHERE ");
+            StringJoiner whereClause = new StringJoiner(" AND ");
+            for (BookProperty key : keys) {
+                whereClause.add(key.getColumn() + " LIKE ?");
+            }
+            baseQuery.append(whereClause);
+        }
+
+        logger.log(Level.INFO, baseQuery.toString());
+
+        PreparedStatement statement = conn.prepareStatement(baseQuery.toString());
+
+        int index = 1;
+        for (BookProperty key : keys) {
+            statement.setString(index++, "%" + criteria.get(key) + "%");
+        }
+
+        return statement;
+    }
+
+
+    public List<Book> getBooksBy(Map<BookProperty, String> criteria) throws Exception {
+        List<Book> books = new ArrayList<>();
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement statement = buildGetBooksQuery(conn, criteria);
+                ResultSet rs = statement.executeQuery()
+        ) {
+            while (rs.next()) {
+                Book book = new Book(
+                        rs.getString("title"),
+                        rs.getString("isbn"),
+                        rs.getDouble("price")
+                );
+                book.setDescription(rs.getString("description"));
+                book.setPublicationDate(rs.getTimestamp("publication_date"));
+                book.setStockQuantity(rs.getInt("stock_quantity"));
+
+                books.add(book);
+            }
+        } catch (SQLException e) {
+            throw new Exception("Error retrieving books", e);
+        }
+        logger.log(Level.INFO, String.format("Retrieving books: %s", books));
+        return books;
     }
 }

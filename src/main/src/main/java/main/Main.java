@@ -5,8 +5,12 @@ import account.presentation.AccountAPI;
 import account.presentation.AccountAPIImpl;
 import shop.business.BookService;
 import shop.dto.BookDTO;
+import shop.model.BookProperty;
 import shop.persistence.BookDAO;
 import shop.presentation.BookAPIImpl;
+
+import java.util.Map;
+import java.util.List;
 
 public class Main {
     public static void account() {
@@ -88,18 +92,32 @@ public class Main {
         System.out.println("");
     }
 
-    public static void shop() throws Exception{
+    public static void shop() throws Exception {
         BookDAO bookDAO = new BookDAO();
         BookService bookService = new BookService(bookDAO);
         BookAPIImpl bookAPI = new BookAPIImpl(bookService);
 
         BookDTO bookDTO = new BookDTO("My Book", "1234567890", 19.99);
-        bookAPI.createBook(bookDTO);
+//        bookAPI.createBook(bookDTO);
+        List<BookDTO> books = bookAPI.getBooksBy(
+                Map.of(
+                        BookProperty.TITLE, "%Les Misérables%",
+                        BookProperty.DESCRIPTION, "%Hugo%",
+                        BookProperty.ISBN, "%88",
+                        BookProperty.PUBLICATION_DATE, "%1862%",
+                        BookProperty.PRICE, "19.99",
+                        BookProperty.STOCK_QUANTITY, "10",
+                        BookProperty.PUBLISHER, "Gallimard",
+                        BookProperty.CATEGORY, "NOVEL",
+                        BookProperty.AUTHOR, "%Victor%"
+                )
+        );
+        System.out.println("Books found: " + books.size());
     }
 
     public static void main(String[] args) {
         GlobalSafeExecutor.run(() -> {
-            Main.account();
+//            Main.account();
             Main.shop();
         });
     }
