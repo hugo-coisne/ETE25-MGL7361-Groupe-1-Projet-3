@@ -1,10 +1,11 @@
 package order.presentation;
 
-import account.model.Cart;
-import order.model.Order;
-import account.model.Account;
+import account.dto.AccountDTO;
+import account.dto.CartDTO;
+import order.dto.OrderDTO;
+
 
 public interface OrderAPI {
-    Order createOrder(Account account, Cart cart);
+    OrderDTO createOrder(AccountDTO account, CartDTO cart) throws Exception;
 
 }

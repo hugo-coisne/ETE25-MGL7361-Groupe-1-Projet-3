@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import shop.model.Book;
-import shop.model.BookProperty;
+import shop.dto.BookProperty;
 import shop.dto.BookDTO;
 
 public interface BookAPI {

@@ -3,7 +3,7 @@ package shop.business;
 import shop.dto.BookDTO;
 import shop.mapper.BookMapper;
 import shop.model.Book;
-import shop.model.BookProperty;
+import shop.dto.BookProperty;
 import shop.persistence.BookDAO;
 
 import java.util.List;
@@ -14,8 +14,8 @@ public class BookService {
     private final BookDAO bookDAO;
 
 
-    public BookService(BookDAO bookDAO) {
-        this.bookDAO = bookDAO;
+    public BookService() {
+        this.bookDAO = new BookDAO();
     }
 
     public BookDTO createBook(BookDTO bookDTO) throws Exception {

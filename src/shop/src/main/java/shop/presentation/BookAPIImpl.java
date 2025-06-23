@@ -6,13 +6,13 @@ import java.util.Map;
 import shop.business.BookService;
 import shop.dto.BookDTO;
 import shop.model.Book;
-import shop.model.BookProperty;
+import shop.dto.BookProperty;
 
 public class BookAPIImpl implements BookAPI {
     private final BookService bookService;
 
-    public BookAPIImpl(BookService bookService) {
-        this.bookService = bookService;
+    public BookAPIImpl() {
+        this.bookService = new BookService();
     }
 
     @Override

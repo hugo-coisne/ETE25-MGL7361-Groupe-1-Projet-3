@@ -95,6 +95,7 @@ CREATE TABLE cart_book (
 -- Table: Order
 CREATE TABLE orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    order_number VARCHAR(100) UNIQUE,
     account_id INT,
     order_date DATE,
     total_price DECIMAL(10,2),

@@ -1,11 +1,14 @@
 package main;
 
+import account.dto.AccountDTO;
+import account.dto.CartDTO;
 import account.model.Account;
 import account.presentation.AccountAPI;
 import account.presentation.AccountAPIImpl;
+import order.presentation.OrderAPIImpl;
 import shop.business.BookService;
 import shop.dto.BookDTO;
-import shop.model.BookProperty;
+import shop.dto.BookProperty;
 import shop.persistence.BookDAO;
 import shop.presentation.BookAPIImpl;
 
@@ -93,9 +96,7 @@ public class Main {
     }
 
     public static void shop() throws Exception {
-        BookDAO bookDAO = new BookDAO();
-        BookService bookService = new BookService(bookDAO);
-        BookAPIImpl bookAPI = new BookAPIImpl(bookService);
+        BookAPIImpl bookAPI = new BookAPIImpl();
 
         BookDTO bookDTO = new BookDTO("My Book", "1234567890", 19.99);
 //        bookAPI.createBook(bookDTO);
@@ -115,10 +116,30 @@ public class Main {
         System.out.println("Books found: " + books.size());
     }
 
+    public static void order() throws Exception {
+        OrderAPIImpl orderAPI = new OrderAPIImpl();
+        AccountDTO accountDTO = new AccountDTO(
+                "John",
+                "Doe",
+                "1234567890",
+                "my@email.com"
+        );
+        accountDTO.setId(1); // Assuming the account with ID 1 exists
+        CartDTO cartDTO = new CartDTO(1);
+        cartDTO.addBookIsbn(
+                Map.of(
+                        "9782070409188t", 2, // Les Misérables
+                        "9782070360021", 1 // The Stranger
+                )
+        );
+        orderAPI.createOrder(accountDTO, cartDTO);
+    }
+
     public static void main(String[] args) {
         GlobalSafeExecutor.run(() -> {
 //            Main.account();
-            Main.shop();
+//            Main.shop();
+            Main.order();
         });
     }
 }

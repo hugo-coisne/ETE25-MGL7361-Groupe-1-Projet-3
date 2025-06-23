@@ -4,7 +4,7 @@ import common.DBConnection;
 import shop.exception.DTOException;
 import shop.exception.DuplicationBookException;
 import shop.model.Book;
-import shop.model.BookProperty;
+import shop.dto.BookProperty;
 
 import java.sql.*;
 import java.util.*;
@@ -55,7 +55,7 @@ public class BookDAO {
         StringBuilder baseQuery = new StringBuilder("SELECT DISTINCT books.* FROM books ");
         Set<BookProperty> keys = criteria.keySet();
 
-        // Gestion des JOINs dynamiques
+        // Dynamic JOINs based on criteria
         if (keys.contains(BookProperty.PUBLISHER)) {
             baseQuery.append("JOIN publishers ON books.publisher_id = publishers.id ");
         }

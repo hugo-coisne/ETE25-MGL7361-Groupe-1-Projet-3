@@ -1,4 +1,4 @@
-package shop.model;
+package shop.dto;
 
 public enum BookProperty {
     TITLE("books.title", false),

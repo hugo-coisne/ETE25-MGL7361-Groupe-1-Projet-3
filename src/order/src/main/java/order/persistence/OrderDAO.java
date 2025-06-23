@@ -1,33 +1,69 @@
 package order.persistence;
 
+
+import account.dto.AccountDTO;
+import common.DBConnection;
+import order.model.Order;
+import shop.dto.BookDTO;
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import common.DBConnection;
 
 public class OrderDAO {
-   public void getOrders() {
-      try (Connection conn = DBConnection.getConnection();
-             PreparedStatement statement = conn.prepareStatement(
-                     "SELECT * FROM Orders")) {
+    private final Logger logger = Logger.getLogger(OrderDAO.class.getName());
 
-            ResultSet rs = statement.executeQuery();
+    private String generateOrderNumber() {
+        LocalDate today = LocalDate.now();
+        String datePart = today.format(DateTimeFormatter.BASIC_ISO_DATE);
+        String uuidPart = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        return datePart + "-" + uuidPart;
+    }
 
-            System.out.println("id account_id order_date total_price");
-            while (rs.next()) {
-               int id = rs.getInt("id");
-               int account_id = rs.getInt("account_id");
-               Date order_date = rs.getDate("order_date");
-               Double total_price = rs.getDouble("total_price");
-               System.out.println(id + " " + account_id + " " + order_date + " " + total_price);
+    public Order createOrder(AccountDTO accountDTO, Map<BookDTO, Integer> books, double total_price) throws Exception {
+        logger.log(Level.INFO, String.format("Creating order for account %s", accountDTO));
+
+        String orderNumber = generateOrderNumber();
+        LocalDate localDate = LocalDate.now(); // Utilise LocalDate pour la logique
+        Order order;
+
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement statement = conn.prepareStatement(
+                        "INSERT INTO orders (order_number, account_id, total_price, order_date) VALUES (?, ?, ?, ?)",
+                        PreparedStatement.RETURN_GENERATED_KEYS
+                )
+        ) {
+            statement.setString(1, orderNumber);
+            statement.setInt(2, accountDTO.getId());
+            statement.setDouble(3, total_price);
+            statement.setDate(4, Date.valueOf(localDate));
+
+            int rowsInserted = statement.executeUpdate();
+            if (rowsInserted > 0) {
+                logger.info("Order inserted successfully.");
+            } else {
+                throw new Exception("Error inserting order.");
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // Gérer les erreurs de manière appropriée, par exemple, en lançant une exception personnalisée
+            order = new Order(
+                    orderNumber,
+                    localDate,
+                    books
+            );
+
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error creating order", e);
+            throw new Exception("Error creating order: " + e.getMessage(), e);
         }
-   }
+
+        return order;
+    }
 }
