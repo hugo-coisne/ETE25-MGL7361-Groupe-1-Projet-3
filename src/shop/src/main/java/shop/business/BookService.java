@@ -1,7 +1,7 @@
 package shop.business;
 
 import shop.dto.BookDTO;
-import shop.mapper.BookMapper;
+import shop.business.mapper.BookMapper;
 import shop.model.Book;
 import shop.dto.BookProperty;
 import shop.persistence.BookDAO;

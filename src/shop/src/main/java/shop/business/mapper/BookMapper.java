@@ -1,4 +1,4 @@
-package shop.mapper;
+package shop.business.mapper;
 
 import shop.dto.BookDTO;
 import shop.model.Book;

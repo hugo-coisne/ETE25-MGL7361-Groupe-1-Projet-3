@@ -1,4 +1,4 @@
-package order.mapper;
+package order.business.mapper;
 
 import order.dto.OrderDTO;
 import order.model.Order;

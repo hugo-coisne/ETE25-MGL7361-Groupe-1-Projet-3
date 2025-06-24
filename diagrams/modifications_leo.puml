@@ -1,0 +1,127 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package account {
+    package account.dto {
+        class AccountDTO {
+            - String firstName
+            - String lastName
+            - String phone
+            - String email
+            - String password
+            ---
+            @Getters
+            @Setters
+        }
+
+        class CartDTO {
+            - Map<String, Integer> booksIsbn
+            - int userId
+            ---
+            @Setters
+            @Getters
+        }
+    }
+}
+
+
+package shop {
+
+    package shop.dto {
+        class BookDTO {
+            - String title
+            - String description
+            - String isbn
+            - Date publicationDate
+            - double price
+            - int stockQuantity
+            - PublisherDTO publisher
+            - List<AuthorDTO> authors
+            ---
+            @Setters
+            @Getters
+        }
+
+        enum BookProperty {
+            TITLE
+            DESCRIPTION
+            ISBN
+            PUBLICATION_DATE
+            PRICE
+            STOCK_QUANTITY
+            PUBLISHER
+            CATEGORY
+            AUTHOR
+        }
+    }
+        package shop.presentation {
+            class BookAPIImpl {
+                + List<BookDTO> getBooksBy(Map<BookProperty, String> criteria
+            }
+        }
+
+}
+
+package order {
+    package order.presentation {
+        interface OrderAPI {
+            + OrderDTO createOrder(AccountDTO account, CartDTO cart) throws Exception
+        }
+
+        class OrderAPIImpl implements OrderAPI {}
+        OrderAPIImpl -down-> order.business.OrderService
+    }
+
+    package order.business {
+        class OrderService {
+            + OrderDTO createOrder(AccountDTO account, CartDTO cart) throws Exception
+            - Map<BookDTO, Integer> getBookQuantities(CartDTO cart) throws Exception
+        }
+        OrderService -right> shop.presentation.BookAPIImpl
+        OrderService -down----> order.persistence.OrderDAO
+        OrderService ---> order.business.mapper.OrderMapper
+
+        package order.business.mapper {
+            class OrderMapper {
+                + static OrderDTO toDTO(Order order)
+            }
+            OrderMapper --left--> order.model.Order
+            OrderMapper --left-> order.dto.OrderDTO
+        }
+    }
+
+    package order.persistence {
+        class OrderDAO {
+            + Order createOrder(AccountDTO accountDTO, Map<BookDTO, Integer> booksIsbn)
+        }
+    }
+
+
+
+    package order.model {
+        class Order {
+            - String orderNumber
+            - LocalDate orderDate
+            - float orderPrice
+            - Map<BookDTO, Integer> items
+            ---
+            @Getters
+            @Setters
+        }
+
+    }
+    package order.dto {
+        class OrderDTO {
+            - String orderNumber
+            - LocalDate orderDate
+            - float orderPrice
+            - Map<BookDTO, Integer> items
+            ---
+            @Getters
+            @Setters
+        }
+    }
+
+}
+
+@enduml
