@@ -1,5 +1,10 @@
 package payment.presentation;
 
-public interface InvoiceAPI {
+import order.dto.OrderDTO;
+import payment.dto.PaymentMethod;
+import payment.dto.InvoiceDTO;
 
+
+public interface InvoiceAPI {
+    public InvoiceDTO createInvoice(OrderDTO order, PaymentMethod paymentMethod) throws Exception;
 }

@@ -5,13 +5,18 @@ import account.dto.CartDTO;
 import account.model.Account;
 import account.presentation.AccountAPI;
 import account.presentation.AccountAPIImpl;
+import order.dto.OrderDTO;
+import order.presentation.OrderAPI;
 import order.presentation.OrderAPIImpl;
+import payment.dto.PaymentMethod;
+import payment.presentation.InvoiceAPIImpl;
 import shop.business.BookService;
 import shop.dto.BookDTO;
 import shop.dto.BookProperty;
 import shop.persistence.BookDAO;
 import shop.presentation.BookAPIImpl;
 
+import java.sql.Date;
 import java.util.Map;
 import java.util.List;
 
@@ -135,11 +140,34 @@ public class Main {
         orderAPI.createOrder(accountDTO, cartDTO);
     }
 
+    public static void invoice() throws Exception {
+        InvoiceAPIImpl invoiceAPI = new InvoiceAPIImpl();
+        OrderAPIImpl orderAPI = new OrderAPIImpl();
+        AccountDTO accountDTO = new AccountDTO(
+                "John",
+                "Doe",
+                "1234567890",
+                "my@email.com"
+        );
+        accountDTO.setId(1);
+        CartDTO cartDTO = new CartDTO(1);
+        cartDTO.addBookIsbn(
+                Map.of(
+                        "9782070409188t", 2, // Les Misérables
+                        "9782070360021", 1 // The Stranger
+                )
+        );
+        OrderDTO orderDTO = orderAPI.createOrder(accountDTO, cartDTO);
+        System.out.println(orderDTO.getOrderPrice());
+        invoiceAPI.createInvoice(orderDTO, PaymentMethod.PAYPAL);
+    }
+
     public static void main(String[] args) {
         GlobalSafeExecutor.run(() -> {
 //            Main.account();
 //            Main.shop();
-            Main.order();
+//            Main.order();
+            Main.invoice();
         });
     }
 }

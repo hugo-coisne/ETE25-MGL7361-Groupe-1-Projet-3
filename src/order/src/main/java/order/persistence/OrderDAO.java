@@ -4,7 +4,6 @@ package order.persistence;
 import account.dto.AccountDTO;
 import common.DBConnection;
 import order.model.Order;
-import shop.dto.AuthorDTO;
 import shop.dto.BookDTO;
 
 import java.sql.Connection;
@@ -32,7 +31,7 @@ public class OrderDAO {
         logger.log(Level.INFO, String.format("Creating order for account %s", accountDTO));
 
         String orderNumber = generateOrderNumber();
-        LocalDate localDate = LocalDate.now();
+        Date date = new Date(System.currentTimeMillis());
         Order order;
 
         try (
@@ -55,7 +54,7 @@ public class OrderDAO {
             insertOrder.setString(1, orderNumber);
             insertOrder.setInt(2, accountDTO.getId());
             insertOrder.setDouble(3, total_price);
-            insertOrder.setDate(4, Date.valueOf(localDate));
+            insertOrder.setDate(4, date);
             insertOrder.executeUpdate();
 
             // Insert contents
@@ -103,7 +102,8 @@ public class OrderDAO {
             insertContent.executeBatch(); // Execute batch insert for order contents
             conn.commit(); // Commit the transaction
 
-            order = new Order(orderNumber, localDate, books);
+            order = new Order(orderNumber, date, books);
+            order.setOrderPrice((float) total_price);
             logger.info("Order and order contents inserted successfully.");
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Error creating order", e);

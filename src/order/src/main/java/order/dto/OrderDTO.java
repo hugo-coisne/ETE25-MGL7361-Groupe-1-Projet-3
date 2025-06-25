@@ -3,18 +3,18 @@ package order.dto;
 import shop.dto.BookDTO;
 
 
-import java.time.LocalDate;
+import java.sql.Date;
 import java.util.Map;
 
 public class OrderDTO {
     private final String orderNumber;
-    private final LocalDate orderDate;
+    private final Date orderDate;
     private final float orderPrice;
     private final Map<BookDTO, Integer> items; // Map of books to their quantities
 
     public OrderDTO(
             String orderNumber,
-            LocalDate orderDate,
+            Date orderDate,
             float orderPrice,
             Map<BookDTO, Integer> items
     ) {
@@ -29,7 +29,7 @@ public class OrderDTO {
         return orderNumber;
     }
 
-    public LocalDate getOrderDate() {
+    public Date getOrderDate() {
         return orderDate;
     }
 

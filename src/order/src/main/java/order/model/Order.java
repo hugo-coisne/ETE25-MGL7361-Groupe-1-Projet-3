@@ -3,6 +3,7 @@ package order.model;
 
 import shop.dto.BookDTO;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -12,11 +13,11 @@ public class Order {
      * Order class represents an order in the system.
      */
     private String orderNumber;
-    private LocalDate orderDate;
+    private Date orderDate;
     private float orderPrice;
     private final Map<BookDTO, Integer> items; // Map of books to their quantities
 
-    public Order(String orderNumber, LocalDate orderDate, Map<BookDTO, Integer> items) {
+    public Order(String orderNumber, Date orderDate, Map<BookDTO, Integer> items) {
         this.setOrderNumber(orderNumber);
         this.setOrderDate(orderDate);
         this.setOrderPrice(orderPrice);
@@ -28,7 +29,7 @@ public class Order {
         this.orderNumber = orderNumber;
     }
 
-    public void setOrderDate(LocalDate orderDate) {
+    public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
     }
 
@@ -41,7 +42,7 @@ public class Order {
         return orderNumber;
     }
 
-    public LocalDate getOrderDate() {
+    public Date getOrderDate() {
         return orderDate;
     }
 

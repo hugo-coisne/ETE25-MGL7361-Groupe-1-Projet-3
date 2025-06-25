@@ -122,7 +122,7 @@ CREATE TABLE order_contents
     book_title            VARCHAR(200),
     book_description      TEXT,
     book_price            DECIMAL(10, 2),
-    book_publisher     VARCHAR(100),
+    book_publisher        VARCHAR(100),
     book_publication_date DATE,
     book_authors          TEXT,
     quantity              INT,
@@ -133,10 +133,12 @@ CREATE TABLE order_contents
 CREATE TABLE invoices
 (
     id           INT AUTO_INCREMENT PRIMARY KEY,
-    order_id     INT UNIQUE,
+    order_number VARCHAR(100) UNIQUE,
+    invoice_number VARCHAR(100) UNIQUE,
     invoice_date DATE,
     total_price  DECIMAL(10, 2),
-    FOREIGN KEY (order_id) REFERENCES orders (id)
+    payment_method ENUM('CARD', 'PAYPAL'),
+    FOREIGN KEY (order_number) REFERENCES orders (order_number)
 );
 
 -- Table: Delivery
@@ -257,10 +259,9 @@ VALUES ('20250623-AAAABBBB',
 
 
 -- Invoices
-INSERT INTO invoices (order_id, invoice_date, total_price)
-VALUES (1, '2025-06-10', 34.98),
-       (2, '2025-06-09', 14.99);
-
+INSERT INTO invoices (invoice_number, order_number, invoice_date, total_price, payment_method)
+VALUES ('INV-20250623-AAAABBBB-001', '20250623-AAAABBBB', '20250623', 19.99, 'CARD'),
+       ('INV-20250623-AABBAABB-001', '20250623-AABBAABB', '20250623', 14.99, 'PAYPAL');
 -- Deliveries
 INSERT INTO deliveries (order_id, address_id, delivery_date)
 VALUES (1, 1, '2025-06-12'),
