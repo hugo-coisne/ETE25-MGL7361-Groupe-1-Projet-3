@@ -113,4 +113,8 @@ public class Book {
         return authors;
     }
 
+    @Override
+    public String toString() {
+        return title + " (" + isbn + ")";
+    }
 }

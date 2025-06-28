@@ -17,21 +17,18 @@ public class BookAPIImpl implements BookAPI {
 
     @Override
     public List<BookDTO> getBooksBy(Map<BookProperty, String> criteria) throws Exception {
-        List<BookDTO> books = this.bookService.getBooksBy(criteria);
 
-        return books;
+        return this.bookService.getBooksBy(criteria);
     }
 
     @Override
     public void setPropertiesFor(Book book, Map<BookProperty, List<String>> properties) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setPropertiesFor'");
+        bookService.setPropertiesFor(book, properties);
     }
 
     @Override
     public void removePropertiesFrom(Book book, Map<BookProperty, List<String>> properties) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removePropertiesFrom'");
+        bookService.removePropertiesFrom(book, properties);
     }
 
     @Override
@@ -46,7 +43,11 @@ public class BookAPIImpl implements BookAPI {
 
     @Override
     public void deleteBook(Book book) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteBook'");
+        bookService.deleteBook(book);
+    }
+
+    @Override
+    public void addBook(Book book) {
+        bookService.addBook(book);
     }
 }
