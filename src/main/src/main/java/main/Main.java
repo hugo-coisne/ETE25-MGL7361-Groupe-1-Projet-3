@@ -2,14 +2,11 @@ package main;
 
 import account.dto.AccountDTO;
 import account.dto.CartDTO;
-import account.model.Account;
 import account.presentation.AccountAPI;
 import account.presentation.AccountAPIImpl;
 import order.presentation.OrderAPIImpl;
-import shop.business.BookService;
 import shop.dto.BookDTO;
 import shop.dto.BookProperty;
-import shop.persistence.BookDAO;
 import shop.presentation.BookAPIImpl;
 
 import java.util.Map;
@@ -38,7 +35,7 @@ public class Main {
         System.out.println("");
 
         // Sign in with the correct password
-        Account account = accountAPI.signin(email, password);
+        AccountDTO account = accountAPI.signin(email, password);
         System.out.println("");
 
         // Change password
@@ -47,7 +44,7 @@ public class Main {
         System.out.println("");
 
         // Try to sign in with the new password
-        Account account2 = accountAPI.signin(email, newPassword);
+        AccountDTO account2 = accountAPI.signin(email, newPassword);
         System.out.println("");
 
         // Change phone number
@@ -56,7 +53,7 @@ public class Main {
         System.out.println("");
 
         // Try to sign in with the new password with new phone number
-        Account account3 = accountAPI.signin(email, newPassword);
+        AccountDTO account3 = accountAPI.signin(email, newPassword);
         System.out.println("");
 
         // Change first name
@@ -65,7 +62,7 @@ public class Main {
         System.out.println("");
 
         // Try to sign in with the new password with new first name
-        Account account4 = accountAPI.signin(email, newPassword);
+        AccountDTO account4 = accountAPI.signin(email, newPassword);
         System.out.println("");
 
         // Change last name
@@ -74,7 +71,7 @@ public class Main {
         System.out.println("");
 
         // Try to sign in with the new password with new last name
-        Account account5 = accountAPI.signin(email, newPassword);
+        AccountDTO account5 = accountAPI.signin(email, newPassword);
         System.out.println("");
 
         // Change email
@@ -83,7 +80,7 @@ public class Main {
         System.out.println("");
 
         // Try to sign in with the new password with new email
-        Account account6 = accountAPI.signin(newEmail, newPassword);
+        AccountDTO account6 = accountAPI.signin(newEmail, newPassword);
         System.out.println("");
 
         // Delete the account
@@ -137,9 +134,9 @@ public class Main {
 
     public static void main(String[] args) {
         GlobalSafeExecutor.run(() -> {
-//            Main.account();
+            Main.account();
 //            Main.shop();
-            Main.order();
+//            Main.order();
         });
     }
 }

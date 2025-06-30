@@ -1,5 +1,7 @@
 package account.model;
 
+import account.dto.AccountDTO;
+
 public class Account {
     private String firstName;
     private String lastName;
@@ -22,6 +24,18 @@ public class Account {
         this.lastName = lastName;
         this.phone = phone;
         this.email = email;
+    }
+
+    public AccountDTO toDto() {
+        String firstName = this.getFirstName();
+        String lastName = this.getLastName();
+        String phone = this.getPhone();
+        String email = this.getEmail();
+        String password = this.getPassword();
+        int id = this.getId();
+        AccountDTO accountDto = new AccountDTO(firstName, lastName, phone, email, password);
+        accountDto.setId(id);
+        return accountDto;
     }
 
     public String toString() {

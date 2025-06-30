@@ -1,21 +1,21 @@
 package account.presentation;
 
-import account.model.Account;
+import account.dto.AccountDTO;
 
 public interface AccountAPI {
-    Account signin(String email, String password);
+    AccountDTO signin(String email, String password);
 
     void signup(String firstName, String lastName, String phone, String email, String password);
 
-    void changePhoneFor(Account account, String newPhone);
+    void changePhoneFor(AccountDTO account, String newPhone);
 
-    void changeEmailFor(Account account, String newEmail);
+    void changeEmailFor(AccountDTO account, String newEmail);
 
-    void changeFirstNameFor(Account account, String newFirstName);
+    void changeFirstNameFor(AccountDTO account, String newFirstName);
 
-    void changeLastNameFor(Account account, String newLastName);
+    void changeLastNameFor(AccountDTO account, String newLastName);
 
-    void changePasswordFor(Account account, String newPassword);
+    void changePasswordFor(AccountDTO account, String newPassword);
 
-    void delete(Account account);
+    void delete(AccountDTO account);
 }
