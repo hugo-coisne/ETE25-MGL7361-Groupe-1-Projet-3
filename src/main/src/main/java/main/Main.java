@@ -6,11 +6,16 @@ import account.presentation.AccountAPI;
 import account.presentation.AccountAPIImpl;
 import account.presentation.CartAPI;
 import account.presentation.CartAPIImpl;
+import delivery.business.DeliveryService;
+import delivery.dto.AddressDTO;
+import delivery.dto.DeliveryDTO;
+import order.dto.OrderDTO;
 import order.presentation.OrderAPIImpl;
 import shop.dto.BookDTO;
 import shop.dto.BookProperty;
 import shop.presentation.BookAPIImpl;
 
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.List;
 
@@ -156,12 +161,43 @@ public class Main {
                 orderAPI.createOrder(accountDTO, cartDTO);
         }
 
+        public static void delivery() throws Exception {
+                DeliveryService deliveryService = new DeliveryService();
+
+                // Simule une commande existante
+                OrderDTO order = new OrderDTO("ORDER-001", LocalDate.now().minusDays(1), 59.99f, null);
+
+                // Simule une adresse existante
+                AddressDTO address = new AddressDTO();
+                address.setId(1); // doit correspondre à une adresse valide dans ta base
+
+                // Crée une nouvelle livraison
+                DeliveryDTO delivery = deliveryService.createDelivery(
+                        address,
+                        LocalDate.now().plusDays(3),
+                        "In Progress",
+                        order
+                );
+
+                // Affiche les détails de la livraison
+                System.out.println("Created Delivery: ");
+                System.out.println("Status: " + delivery.getDeliveryStatus());
+                System.out.println("Delivery Date: " + delivery.getDeliveryDate());
+                System.out.println("Order: " + delivery.getOrder().getOrderNumber());
+
+                // Change son statut
+                deliveryService.updateStatusToDelivered(delivery);
+                System.out.println("Updated Status: " + delivery.getDeliveryStatus());
+        }
+
+
         public static void main(String[] args) {
                 GlobalSafeExecutor.run(() -> {
                         // Main.account();
-                        Main.cart();
+                        // Main.cart();
                         // Main.shop();
                         // Main.order();
+                        Main.delivery();
                 });
         }
 }
