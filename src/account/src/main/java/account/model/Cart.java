@@ -1,5 +1,6 @@
 package account.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import account.dto.CartDTO;
@@ -12,15 +13,13 @@ public class Cart {
     private double totalPrice;
 
     public Cart() {
-        // Initialize the cart with an empty map
-        this.booksDto = new java.util.HashMap<>();
+        booksDto = new HashMap<BookDTO, Integer>();
     }
 
     public Cart(int id, double totalPrice) {
-        // Initialize the cart with an empty map
-        this.booksDto = new java.util.HashMap<>();
         this.id = id;
         this.totalPrice = totalPrice;
+        booksDto = new HashMap<BookDTO, Integer>();
     }
 
     public void setTotalPrice(double totalPrice) {
@@ -45,8 +44,9 @@ public class Cart {
 
     public CartDTO toDTO() {
         CartDTO cartDTO = new CartDTO();
-        Map<BookDTO, Integer> bookDtos = new java.util.HashMap<>();
-        cartDTO.setBooks(bookDtos);
+        cartDTO.setBooks(this.booksDto);
+        cartDTO.setId(this.id);
+        cartDTO.setTotalPrice(this.totalPrice);
         return cartDTO;
     }
 
@@ -70,8 +70,8 @@ public class Cart {
             for (Map.Entry<BookDTO, Integer> entry : booksDto.entrySet()) {
                 BookDTO bookDto = entry.getKey();
                 int quantity = entry.getValue();
-                s = s + "\nBookDTO(title=" + bookDto.getTitle() + ", isbn=" + bookDto.getIsbn() + ", quantity="
-                        + quantity + ")";
+                s = s + "\n{BookDTO(title=" + bookDto.getTitle() + ", isbn=" + bookDto.getIsbn() + "), quantity="
+                        + quantity + "}";
             }
         }
         s = s + "])";

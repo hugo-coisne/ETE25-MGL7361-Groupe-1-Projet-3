@@ -16,9 +16,11 @@ public class CartDTO {
     public CartDTO(int User) {
         this.userId = User;
         this.booksIsbn = new HashMap<>();
+        this.bookDtos = new HashMap<BookDTO, Integer>();
     }
 
     public CartDTO() {
+        this.bookDtos = new HashMap<BookDTO, Integer>();
     }
 
     public void add(BookDTO bookDto, int quantity) {
@@ -29,6 +31,7 @@ public class CartDTO {
     }
 
     public void setBooks(Map<BookDTO, Integer> books) {
+        System.out.println("Setting books in CartDTO: " + books);
         this.bookDtos = books;
     }
 
@@ -96,13 +99,15 @@ public class CartDTO {
         Cart cart = new Cart();
         cart.setId(this.id);
         cart.setTotalPrice(this.totalPrice);
-        Map<BookDTO, Integer> booksDto = new HashMap<>();
-        for (Map.Entry<BookDTO, Integer> entry : bookDtos.entrySet()) {
-            BookDTO bookDto = entry.getKey();
-            int quantity = entry.getValue();
-            booksDto.put(bookDto, quantity);
-        }
-        cart.setBooksDto(booksDto);
+        cart.setBooksDto(bookDtos);
         return cart;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }

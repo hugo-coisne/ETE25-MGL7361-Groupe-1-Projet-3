@@ -50,4 +50,16 @@ public class BookAPIImpl implements BookAPI {
     public void addBook(Book book) {
         bookService.addBook(book);
     }
+
+    @Override
+    public boolean isInStock(BookDTO bookDto) {
+        // TODO : returns if the given book is in stock @KLN
+        return true; // Placeholder implementation
+    }
+
+    @Override
+    public boolean isSufficientlyInStock(BookDTO bookDto, int quantity) {
+        // TODO : returns if the given book is available in sufficient quantity @KLN
+        return true; // Placeholder implementation
+    }
 }

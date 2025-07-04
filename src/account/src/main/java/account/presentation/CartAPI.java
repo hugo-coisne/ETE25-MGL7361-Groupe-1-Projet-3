@@ -11,21 +11,21 @@ public interface CartAPI {
 
     public CartDTO getCart(AccountDTO accountDto);
 
-    public void add(BookDTO bookDto);
+    public void add(BookDTO bookDto, AccountDTO accountDto);
 
-    public void add(BookDTO bookDto, int quantity);
+    public void add(BookDTO bookDto, int quantity, AccountDTO accountDto);
 
-    public void add(List<BookDTO> bookDtos);
+    public void add(List<BookDTO> bookDtos, AccountDTO accountDto);
 
-    public void add(Map<BookDTO, Integer> bookDtoQuantities);
+    public void add(Map<BookDTO, Integer> bookDtoQuantities, AccountDTO accountDto);
 
-    public void remove(BookDTO bookDto);
+    public void remove(BookDTO bookDto, AccountDTO accountDto);
 
-    public void remove(BookDTO bookDto, int quantity);
+    public void remove(BookDTO bookDto, int quantity, AccountDTO accountDto);
 
-    public void remove(List<BookDTO> bookDtos);
+    public void remove(List<BookDTO> bookDtos, AccountDTO accountDto);
 
-    public void remove(Map<BookDTO, Integer> bookDtoQuantities);
+    public void remove(Map<BookDTO, Integer> bookDtoQuantities, AccountDTO accountDto);
 
     public void clearCart(AccountDTO accountDto);
 
