@@ -17,16 +17,10 @@ public class CartAPIImpl implements CartAPI {
 
     static Logger logger = Logger.getLogger(CartAPIImpl.class.getName());
 
-    private CartAPIImpl(AccountDTO accountDto) {
-        this.accountDto = accountDto;
+    public CartAPIImpl() {
     }
 
-    public static CartAPI getCartAPI(AccountDTO accountDto) {
-        logger.info("Creating and returning CartAPI for account: " + accountDto.getEmail());
-        return new CartAPIImpl(accountDto);
-    }
-
-    public CartDTO getCart() {
+    public CartDTO getCart(AccountDTO accountDto) {
         logger.info("Retrieving cart for account: " + accountDto.getEmail());
         CartDTO cartDto = cartService.getCart(accountDto);
         logger.info("Cart retrieved for account: " + accountDto.getEmail() + ", Cart ID: " + cartDto.getId()
@@ -81,13 +75,8 @@ public class CartAPIImpl implements CartAPI {
     }
 
     @Override
-    public void clear() {
+    public void clearCart(AccountDTO accountDto) {
         cartService.clearCart(accountDto);
+        System.out.println("Panier vidé avec succès !");
     }
-
-    @Override
-    public double getTotalPrice() {
-        return cartService.getCartTotalPrice(accountDto);
-    }
-
 }

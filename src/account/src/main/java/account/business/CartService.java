@@ -55,9 +55,4 @@ public class CartService {
         cartDAO.clearCart(accountDto.toAccount());
     }
 
-    public double getCartTotalPrice(AccountDTO accountDto) {
-        accountDto = accountAPI.signin(accountDto.getEmail(), accountDto.getPassword());
-        return cartDAO.getCartTotalPrice(accountDto);
-    }
-
 }

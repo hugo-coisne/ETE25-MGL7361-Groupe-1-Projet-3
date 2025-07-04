@@ -105,18 +105,23 @@ public class Main {
                 // Create a new account
                 accountAPI.signup(firstName, lastName, phone, email, password);
                 System.out.println("");
-
                 // Sign in with the correct password
                 AccountDTO account = accountAPI.signin(email, password);
                 System.out.println("");
 
                 // Get a CartAPI instance for the signed-in account, creating the cart if it
                 // doesn't exist
-                CartAPI myCartAPI = CartAPIImpl.getCartAPI(account);
+                CartAPI cartAPI = new CartAPIImpl();
 
                 System.out.println("getting cart for account: " + account.getEmail() + "\n");
-                CartDTO cart = myCartAPI.getCart();
+                CartDTO cart = cartAPI.getCart(account);
                 System.out.println("Cart : " + cart);
+
+                cartAPI.clearCart(account);
+                cart = cartAPI.getCart(account);
+                System.out.println("Cart after clearing: " + cart);
+
+                accountAPI.delete(account);
 
         }
 

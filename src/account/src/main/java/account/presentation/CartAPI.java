@@ -3,12 +3,13 @@ package account.presentation;
 import java.util.List;
 import java.util.Map;
 
+import account.dto.AccountDTO;
 import account.dto.CartDTO;
 import shop.dto.BookDTO;
 
 public interface CartAPI {
 
-    public CartDTO getCart();
+    public CartDTO getCart(AccountDTO accountDto);
 
     public void add(BookDTO bookDto);
 
@@ -26,10 +27,6 @@ public interface CartAPI {
 
     public void remove(Map<BookDTO, Integer> bookDtoQuantities);
 
-    public void clear();
-
-    public double getTotalPrice();
-
-    
+    public void clearCart(AccountDTO accountDto);
 
 }
