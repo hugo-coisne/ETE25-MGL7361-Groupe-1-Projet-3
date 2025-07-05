@@ -38,6 +38,7 @@ public class AccountAPIImpl implements AccountAPI {
         logger.info("Creating account for: " + firstName + " " + lastName + " with email: " + email);
         try {
             accountService.create(new AccountDTO(firstName, lastName, phone, email, password));
+            System.out.println("Compte créé avec succès. Vous pouvez maintenant vous connecter.");
         } catch (DuplicateEmailException e) {
             logger.warning("AccountDTO not created because " + e.getMessage() + " is already in database.");
             System.out.println("Le courriel " + e.getMessage()

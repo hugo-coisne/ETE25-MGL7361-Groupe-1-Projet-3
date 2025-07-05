@@ -226,12 +226,12 @@ public class Main {
                 String password = "P@ssword123";
                 AccountAPI accountAPI = new AccountAPIImpl();
                 accountAPI.signup(firstName, lastName, phone, email, password);
-                /* TODO : Should show that signup was a success */
+                /* Should show that signup was a success */
 
                 // signin
                 // sign in with the created account
                 AccountDTO account = accountAPI.signin(email, password);
-                /* DONE : Should show that signin was a success */
+                /* Should show that signin was a success */
 
                 // get the cart for the account
                 // if the cart does not exist, it should be created
