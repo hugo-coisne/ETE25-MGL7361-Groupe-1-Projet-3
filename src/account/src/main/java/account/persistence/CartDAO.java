@@ -119,9 +119,7 @@ public class CartDAO {
     }
 
     public void addBookToCart(AccountDTO accountDto, BookDTO bookDto) {
-        try (Connection conn = DBConnection.getConnection();
-                PreparedStatement statement = conn.prepareStatement(
-                        "INSERT INTO cart_book (cart_id, book_id, quantity) VALUES (?, ?, 1)")) {
+        try (Connection conn = DBConnection.getConnection();) {
 
             // Retrieve the cart ID for the account
             logger.info("Getting cart ID for account ID: " + accountDto.getId());
@@ -141,8 +139,9 @@ public class CartDAO {
             // Retrieve the book ID
             logger.info("Getting book ID for book title: " + bookDto.getTitle());
             PreparedStatement bookStatement = conn.prepareStatement(
-                    "SELECT id FROM books WHERE title LIKE ?"); // using the id would be better, but ids aren't provided in
-                                                             // dtos
+                    "SELECT id FROM books WHERE title LIKE ?"); // using the id would be better, but ids aren't provided
+                                                                // in
+                                                                // dtos
             bookStatement.setString(1, bookDto.getTitle());
 
             logger.info("Executing query " + bookStatement.toString());
@@ -154,18 +153,44 @@ public class CartDAO {
             }
             int bookId = brs.getInt("id");
             logger.info("Book ID retrieved: " + bookId);
+            // Check if the book is already in the cart
+            PreparedStatement checkStatement = conn.prepareStatement(
+                    "SELECT quantity FROM cart_book WHERE cart_id = ? AND book_id = ?");
+            checkStatement.setInt(1, cartId);
+            checkStatement.setInt(2, bookId);
+            logger.info("Executing query " + checkStatement.toString());
+            ResultSet checkRs = checkStatement.executeQuery();
 
-            logger.info("Adding book to cart: " + bookDto.getTitle() + " for account ID: " + accountDto.getId());
-
-            // Insert the book into the cart
-            statement.setInt(1, cartId);
-            statement.setInt(2, bookId);
-            int rowsInserted = statement.executeUpdate();
-
-            if (rowsInserted > 0) {
-                logger.info("Book added to cart successfully for account ID: " + accountDto.getId());
+            if (checkRs.next()) {
+                int quantity = checkRs.getInt("quantity");
+                System.out.println("Quantity in cart: " + quantity + "\n\n\n");
+                if (quantity > 0) {
+                    logger.info("Book already in cart, incrementing quantity for account ID: " + accountDto.getId());
+                    // Increment the quantity of the book in the cart
+                    PreparedStatement updateStatement = conn.prepareStatement(
+                            "UPDATE cart_book SET quantity = quantity + 1 WHERE cart_id = ? AND book_id = ?");
+                    updateStatement.setInt(1, cartId);
+                    updateStatement.setInt(2, bookId);
+                    updateStatement.executeUpdate();
+                    logger.info("Book quantity updated successfully for account ID: " + accountDto.getId());
+                }
             } else {
-                logger.warning("Failed to add book to cart for account ID: " + accountDto.getId());
+                logger.info(
+                        "Adding book to cart: " + bookDto.getTitle() + " for account ID: " + accountDto.getId());
+
+                PreparedStatement statement = conn.prepareStatement(
+                        "INSERT INTO cart_book (cart_id, book_id, quantity) VALUES (?, ?, 1)");
+
+                // Insert the book into the cart
+                statement.setInt(1, cartId);
+                statement.setInt(2, bookId);
+                int rowsInserted = statement.executeUpdate();
+
+                if (rowsInserted > 0) {
+                    logger.info("Book added to cart successfully for account ID: " + accountDto.getId());
+                } else {
+                    logger.warning("Failed to add book to cart for account ID: " + accountDto.getId());
+                }
             }
 
             // update the total price of the cart
@@ -186,8 +211,70 @@ public class CartDAO {
     }
 
     public void removeBookFromCart(Account account, BookDTO bookDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeBookFromCart'");
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement statement = conn.prepareStatement(
+                        "SELECT id FROM carts WHERE account_id = ?")) {
+
+            statement.setInt(1, account.getId());
+            ResultSet rs = statement.executeQuery();
+            if (!rs.next()) {
+                logger.warning("No cart found for account ID: " + account.getId());
+                throw new SQLException("No cart found for account ID: " + account.getId());
+            }
+            int cartId = rs.getInt("id");
+
+            // Retrieve the book ID
+            PreparedStatement bookStatement = conn.prepareStatement(
+                    "SELECT id FROM books WHERE title LIKE ?");
+            bookStatement.setString(1, bookDto.getTitle());
+            ResultSet brs = bookStatement.executeQuery();
+
+            if (!brs.next()) {
+                logger.warning("No book found for title : " + bookDto.getTitle());
+                throw new SQLException("No book found for title : " + bookDto.getTitle());
+            }
+            int bookId = brs.getInt("id");
+
+            // Remove the book from the cart
+            PreparedStatement substractStatement = conn.prepareStatement(
+                    "UPDATE cart_book SET quantity = quantity - 1 WHERE cart_id = ? AND book_id = ?");
+            substractStatement.setInt(1, cartId);
+            substractStatement.setInt(2, bookId);
+            int rowsDeleted = substractStatement.executeUpdate();
+
+            if (rowsDeleted > 0) {
+                logger.info("Book quantity decremented successfully for account ID: " + account.getId());
+            } else {
+                logger.warning("No book found in cart to decrement for account ID: " + account.getId());
+                throw new SQLException("No book found in cart to decrement for account ID: " + account.getId());
+            }
+            // Check if the book quantity is now zero, if so, remove it from the cart
+            PreparedStatement checkStatement = conn.prepareStatement(
+                    "DELETE FROM cart_book WHERE cart_id = ? AND book_id = ? AND quantity < 1");
+            checkStatement.setInt(1, cartId);
+            checkStatement.setInt(2, bookId);
+            int rowsRemoved = checkStatement.executeUpdate();
+            if (rowsRemoved > 0) {
+                logger.info("Book removed from cart successfully for account ID: " + account.getId());
+            } else {
+                logger.warning("No book found in cart to remove for account ID: " + account.getId());
+            }
+
+            // Update the total price of the cart
+            PreparedStatement updateStatement = conn.prepareStatement(
+                    "UPDATE carts SET total_price = total_price - ? WHERE id = ?");
+            updateStatement.setDouble(1, bookDto.getPrice());
+            updateStatement.setInt(2, cartId);
+            int rowsUpdated = updateStatement.executeUpdate();
+            if (rowsUpdated > 0) {
+                logger.info("Cart total price updated successfully for account ID: " + account.getId());
+            } else {
+                logger.warning("Failed to update cart total price for account ID: " + account.getId());
+            }
+        } catch (SQLException e) {
+            logger.severe("Error removing book from cart: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
     public void clearCart(Account account) {

@@ -9,12 +9,14 @@ import account.presentation.CartAPIImpl;
 import order.presentation.OrderAPIImpl;
 import shop.dto.BookDTO;
 import shop.dto.BookProperty;
+import shop.model.Book;
 import shop.presentation.BookAPI;
 import shop.presentation.BookAPIImpl;
+import shop.presentation.BookAttributeAPI;
+import shop.presentation.BookAttributeAPIImpl;
 
 import java.util.Map;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class Main {
@@ -119,30 +121,58 @@ public class Main {
                 // Retrieve the cart for the account, creating the cart if it
                 // doesn't exist
                 cartAPI.getCart(account);
-                List<BookDTO> books = new ArrayList<BookDTO>(); // TODO : PLEASE HANDLE EXCEPTIONS CORRECTLY : IN API IMPLEMENTATIONS !
+                List<BookDTO> books = new ArrayList<BookDTO>(); // TODO : PLEASE HANDLE EXCEPTIONS CORRECTLY : IN API
+                                                                // IMPLEMENTATIONS !
                 try {
                         books = bookAPI.getBooksBy(
                                         Map.of(
-                                                        BookProperty.TITLE, "Les Mis%rables"));
+                                                        BookProperty.TITLE, "%"));
                 } catch (Exception e) {
                         e.printStackTrace();
                 }
 
                 System.out.println(books.get(0));
 
-                BookDTO book = books.get(0);
+                BookDTO bookToRemoveLater = books.get(0); // Get the first book to remove later
 
-                // Add a book to the cart
-                cartAPI.add(book, account);
+                books.forEach(book -> {
+                        cartAPI.add(book, account);
+                });
 
                 // Retrieve the cart again to see the added book
+                System.out.println("");
+                System.out.println("");
                 cartAPI.getCart(account);
+                System.out.println("");
+                System.out.println("");
+
+                // Add a book to the cart
+                cartAPI.add(bookToRemoveLater, account);
+                System.out.println("");
+                System.out.println("");
+                cartAPI.getCart(account);
+                System.out.println("");
+                System.out.println("");
+
+                // Remove a book from the cart
+                cartAPI.remove(bookToRemoveLater, account);
+
+                // Retrieve the cart again to see the added book
+                System.out.println("");
+                System.out.println("");
+                cartAPI.getCart(account);
+                System.out.println("");
+                System.out.println("");
 
                 // clear the cart
                 cartAPI.clearCart(account);
 
                 // Retrieve the cart again to see that it is empty
+                System.out.println("");
+                System.out.println("");
                 cartAPI.getCart(account);
+                System.out.println("");
+                System.out.println("");
 
                 // Add multiple books to the cart
 
@@ -188,15 +218,65 @@ public class Main {
 
         public static void scenario() { // scenario described in the provided specifications
                 // signup
+                // create an account with first name, last name, phone, email and password
+                String firstName = "Alice";
+                String lastName = "Smith";
+                String phone = "1234567890";
+                String email = "alice.smith@mail.com";
+                String password = "P@ssword123";
+                AccountAPI accountAPI = new AccountAPIImpl();
+                accountAPI.signup(firstName, lastName, phone, email, password);
+                /* TODO : Should show that signup was a success */
 
                 // signin
+                // sign in with the created account
+                AccountDTO account = accountAPI.signin(email, password);
+                /* DONE : Should show that signin was a success */
 
-                // repeat the following steps a few times
+                // get the cart for the account
+                // if the cart does not exist, it should be created
+                CartAPI cartAPI = new CartAPIImpl();
+                cartAPI.getCart(account);
+                /* Should show that the cart was retrieved successfully */
 
                 // browse books using : author, title, isbn, category (one example for each
                 // minimum)
+                BookAttributeAPI bookAttributeAPI = new BookAttributeAPIImpl();
+                BookAPI bookAPI = new BookAPIImpl();
+                bookAttributeAPI.getAuthors();
+                /* Should show the authors */
 
-                // add book(s) to cart
+                bookAttributeAPI.getCategories();
+                /* Should show the categories */
+
+                List<BookDTO> booksByTitle = new ArrayList<BookDTO>();
+                try {
+                        booksByTitle = bookAPI.getBooksBy(Map.of(
+                                        BookProperty.TITLE, "%")); // get all books
+                        /* Should display all books */
+                } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                } // TODO : please handle exceptions correctly (in API implementations) to not
+                  // have to catch them here
+
+                try {
+                        booksByTitle = bookAPI.getBooksBy(Map.of(
+                                        BookProperty.TITLE, "Les Misérables"));
+                        /* Should display all books */
+                } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                }
+
+                BookDTO book = booksByTitle.get(0);
+
+                // add an individual book to the cart and show the cart
+                cartAPI.add(book, account);
+                cartAPI.getCart(account);
+                /* Should show that the book was added to the cart */
+
+                // add multiple books to the cart TODO
 
                 // remove book(s) from cart
 
