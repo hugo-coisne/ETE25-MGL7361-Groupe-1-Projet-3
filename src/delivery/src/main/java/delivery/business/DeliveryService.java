@@ -44,8 +44,8 @@ public class DeliveryService {
         this.deliveryDAO = deliveryDAO;
     }
 
-    public List<DeliveryDTO> getAllOrdersInProgress() throws SQLException {
-        return deliveryDAO.findByStatus("In Progress");
+    public List<DeliveryDTO> getAllOrdersInTransit() throws SQLException {
+        return deliveryDAO.findByStatus("In Transit");
     }
 
     public List<DeliveryDTO> getAllOrdersInTransit(AccountDTO account) throws SQLException {
@@ -68,8 +68,9 @@ public class DeliveryService {
         delivery.setDeliveryStatus("In Transit");
     }
 
-    public void updateStatusToDelivered(DeliveryDTO delivery) {
+    public void updateStatusToDelivered(DeliveryDTO delivery) throws Exception {
         delivery.setDeliveryStatus("Delivered");
+        deliveryDAO.update(delivery);
     }
 
     public void updateStatusToCanceled(DeliveryDTO delivery) {

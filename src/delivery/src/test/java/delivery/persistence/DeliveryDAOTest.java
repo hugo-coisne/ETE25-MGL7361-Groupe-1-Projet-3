@@ -1,5 +1,6 @@
 package delivery.persistence;
 
+import delivery.dto.DeliveryDTO;
 import delivery.model.Delivery;
 import delivery.persistence.DeliveryDAO;
 import order.dto.OrderDTO;
@@ -8,6 +9,8 @@ import common.DBConnection;
 import order.persistence.OrderDAO;
 import org.junit.jupiter.api.*;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -34,6 +37,17 @@ public class DeliveryDAOTest {
 
         Connection connection = DBConnection.getConnection(); // Connexion centralisée
         try (Statement stmt = connection.createStatement()) {
+            // 1. Charger le script init.sql
+            String sqlInit = Files.readString(Paths.get("../../init.sql"));
+
+            // 2. Diviser si plusieurs instructions
+            for (String sql : sqlInit.split(";")) {
+                sql = sql.trim();
+                if (!sql.isEmpty()) {
+                    stmt.execute(sql);
+                }
+            }
+
             // Table accounts (pour les FK via orders ? accounts)
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS accounts (
@@ -83,8 +97,12 @@ public class DeliveryDAOTest {
 
             // Insert data required for test
             stmt.execute("INSERT INTO orders (order_number, account_id, order_date, total_price) " +
-                    "VALUES ('ORDER-001', 1, CURDATE(), 99.99) " +
+                    "VALUES ('ORDER-TESTDAO-001', 1, CURDATE(), 99.99) " +
                     "ON DUPLICATE KEY UPDATE total_price = 99.99");
+
+            stmt.execute("INSERT INTO orders (order_number, account_id, order_date, total_price) " +
+                    "VALUES ('ORDER-TESTDAO-002', 2, CURDATE(), 49.99) " +
+                    "ON DUPLICATE KEY UPDATE total_price = 49.99");
 
             stmt.execute("INSERT INTO addresses (account_id, first_name, last_name, phone, street, city, postal_code) " +
                     "VALUES (1, 'Alice', 'Durand', '0601020304', '10 rue des Lilas', 'Paris', '75001') " +
@@ -103,7 +121,7 @@ public class DeliveryDAOTest {
     public void testCreateDelivery() throws Exception {
         // Arrange
         OrderDTO orderDTO = new OrderDTO(
-                "ORDER-001",
+                "ORDER-TESTDAO-001",
                 LocalDate.now(),
                 99.99f,
                 null
@@ -112,7 +130,7 @@ public class DeliveryDAOTest {
         AddressDTO addressDTO = new AddressDTO();
         addressDTO.setId(1);
 
-        Delivery delivery = new Delivery();
+        DeliveryDTO delivery = new DeliveryDTO();
         delivery.setOrder(orderDTO);
         delivery.setAddress(addressDTO);
         delivery.setDeliveryDate(LocalDate.now());
@@ -124,5 +142,26 @@ public class DeliveryDAOTest {
         // Assert
         assertNotNull(delivery);
         // Tu pourrais ajouter un findByOrderNumber ici pour valider l’insertion en base
+    }
+
+    @Test
+    public void testUpdateDeliveryStatus() throws Exception {
+        // Créer la livraison
+        DeliveryDTO delivery = new DeliveryDTO();
+        delivery.setOrder(new OrderDTO("ORDER-TESTDAO-002", LocalDate.now(), 49.99f, null));
+        delivery.setAddress(new AddressDTO() {{ setId(1); }});
+        delivery.setDeliveryDate(LocalDate.now());
+        delivery.setDeliveryStatus("In Transit");
+
+        // Insère si pas déjà là
+        delivery = deliveryDAO.createDelivery(delivery);
+
+        // Met à jour le statut
+        delivery.setDeliveryStatus("Delivered");
+        deliveryDAO.update(delivery);
+
+        // Recharger pour vérifier
+        Delivery updated = deliveryDAO.findByOrderNumber(delivery.getOrder().getOrderNumber());
+        assertEquals("Delivered", updated.getDeliveryStatus());
     }
 }

@@ -6,15 +6,17 @@ import account.presentation.AccountAPI;
 import account.presentation.AccountAPIImpl;
 import account.presentation.CartAPI;
 import account.presentation.CartAPIImpl;
-import delivery.business.DeliveryService;
+import common.DBConnection;
 import delivery.dto.AddressDTO;
 import delivery.dto.DeliveryDTO;
+import delivery.presentation.DeliveryAPIImpl;
 import order.dto.OrderDTO;
 import order.presentation.OrderAPIImpl;
 import shop.dto.BookDTO;
 import shop.dto.BookProperty;
 import shop.presentation.BookAPIImpl;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.List;
@@ -162,20 +164,19 @@ public class Main {
         }
 
         public static void delivery() throws Exception {
-                DeliveryService deliveryService = new DeliveryService();
+                DeliveryAPIImpl deliveryAPI = new DeliveryAPIImpl();
+                OrderAPIImpl orderAPI = new OrderAPIImpl();
 
-                // Simule une commande existante
-                OrderDTO order = new OrderDTO("ORDER-001", LocalDate.now().minusDays(1), 59.99f, null);
-
-                // Simule une adresse existante
+                OrderDTO order = orderAPI.findOrderByOrderNumber("20250623-AAAABBBB");
                 AddressDTO address = new AddressDTO();
-                address.setId(1); // doit correspondre à une adresse valide dans ta base
+                address.setId(1);
 
-                // Crée une nouvelle livraison
-                DeliveryDTO delivery = deliveryService.createDelivery(
+                // Étape 8 : Le système se charge de la livraison de la commande aux dates de livraison prévues
+                // pour chaque livre;
+                DeliveryDTO delivery = deliveryAPI.createDelivery(
                         address,
                         LocalDate.now().plusDays(3),
-                        "In Progress",
+                        "In Transit",
                         order
                 );
 
@@ -185,9 +186,40 @@ public class Main {
                 System.out.println("Delivery Date: " + delivery.getDeliveryDate());
                 System.out.println("Order: " + delivery.getOrder().getOrderNumber());
 
-                // Change son statut
-                deliveryService.updateStatusToDelivered(delivery);
+                // Étape 9 : Voir la liste des commandes en attente de livraison ainsi que l'historique des
+                // commandes livrées
+                List<DeliveryDTO> pendingDeliveries = deliveryAPI.getAllOrdersInTransit();
+                System.out.println("Pending Deliveries (" + pendingDeliveries.size() + ") :");
+                for (DeliveryDTO pendingDelivery : pendingDeliveries) {
+                        System.out.println("Order: " + pendingDelivery.getOrder().getOrderNumber() +
+                                ", Status: " + pendingDelivery.getDeliveryStatus());
+                }
+
+                List<DeliveryDTO> deliveredDeliveries = deliveryAPI.getAllOrdersDelivered();
+                System.out.println("Delivered Deliveries (" + deliveredDeliveries.size() + ") :");
+                for (DeliveryDTO deliveredDelivery : deliveredDeliveries) {
+                        System.out.println("Order: " + deliveredDelivery.getOrder().getOrderNumber() +
+                                ", Status: " + deliveredDelivery.getDeliveryStatus());
+                }
+
+                // Étape 10 : Une fois un livre est livré, sa date de livraison dans la commande est mise à jour et
+                // son status passe de "En attente de livraison" à "Livré"
+                deliveryAPI.updateStatusToDelivered(delivery);
                 System.out.println("Updated Status: " + delivery.getDeliveryStatus());
+
+                pendingDeliveries = deliveryAPI.getAllOrdersInTransit();
+                System.out.println("Pending Deliveries (" + pendingDeliveries.size() + ") :");
+                for (DeliveryDTO pendingDelivery : pendingDeliveries) {
+                        System.out.println("Order: " + pendingDelivery.getOrder().getOrderNumber() +
+                                ", Status: " + pendingDelivery.getDeliveryStatus());
+                }
+
+                deliveredDeliveries = deliveryAPI.getAllOrdersDelivered();
+                System.out.println("Delivered Deliveries (" + deliveredDeliveries.size() + ") :");
+                for (DeliveryDTO deliveredDelivery : deliveredDeliveries) {
+                        System.out.println("Order: " + deliveredDelivery.getOrder().getOrderNumber() +
+                                ", Status: " + deliveredDelivery.getDeliveryStatus());
+                }
         }
 
 

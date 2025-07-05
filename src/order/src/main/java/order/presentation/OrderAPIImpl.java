@@ -16,4 +16,8 @@ public class OrderAPIImpl implements OrderAPI {
 
         return this.orderService.createOrder(account, cart);
     }
+
+    public OrderDTO findOrderByOrderNumber(String orderId) throws Exception {
+        return this.orderService.findOrderByOrderNumber(orderId);
+    }
 }

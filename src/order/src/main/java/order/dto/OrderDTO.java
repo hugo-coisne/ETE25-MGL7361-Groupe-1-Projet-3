@@ -24,6 +24,14 @@ public class OrderDTO {
         this.items = items;
     }
 
+    public OrderDTO() {
+        // Default constructor for serialization/deserialization
+        this.orderNumber = null;
+        this.orderDate = null;
+        this.orderPrice = 0.0f;
+        this.items = null;
+    }
+
     // GETTERS ----------------------------------------------------------------
     public String getOrderNumber() {
         return orderNumber;

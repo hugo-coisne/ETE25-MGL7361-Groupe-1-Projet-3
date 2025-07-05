@@ -3,6 +3,7 @@ package order.persistence;
 
 import account.dto.AccountDTO;
 import common.DBConnection;
+import order.dto.OrderDTO;
 import order.model.Order;
 import shop.dto.AuthorDTO;
 import shop.dto.BookDTO;
@@ -10,6 +11,7 @@ import shop.dto.BookDTO;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -115,6 +117,51 @@ public class OrderDAO {
 
     private String nullable(String value) {
         return value != null ? value : null;
+    }
+
+    public int findIdByOrderNumber(String orderNumber) throws Exception {
+        String sql = "SELECT id FROM orders WHERE order_number = ?";
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+            stmt.setString(1, orderNumber);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("id");
+                } else {
+                    throw new Exception("Order not found for order_number: " + orderNumber);
+                }
+            }
+        } catch (Exception e) {
+            throw new Exception("Error finding order id by order number: " + e.getMessage(), e);
+        }
+    }
+
+
+    public OrderDTO findById(int orderId) throws Exception {
+        String sql = "SELECT id, order_number, account_id, order_date, total_price FROM orders WHERE id = ?";
+
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+            stmt.setInt(1, orderId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    String orderNumber = rs.getString("order_number");
+                    LocalDate orderDate = rs.getDate("order_date").toLocalDate();
+                    float orderPrice = (float) rs.getDouble("total_price");
+                    Map<BookDTO, Integer> items = Map.of(); // Assuming items are fetched separately TODO
+                    return new OrderDTO(orderNumber, orderDate, orderPrice, items);
+                } else {
+                    throw new Exception("No order found with id: " + orderId);
+                }
+            }
+        } catch (Exception e) {
+            throw new Exception("Error fetching order by ID: " + e.getMessage(), e);
+        }
     }
 
 }

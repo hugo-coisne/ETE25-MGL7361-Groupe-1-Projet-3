@@ -2,6 +2,9 @@ package delivery.persistence;
 
 import delivery.model.Address;
 import org.junit.jupiter.api.*;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.List;
@@ -32,6 +35,17 @@ public class AddressDAOTest {
 
         // Créer la table accounts (si elle n’existe pas déjà)
         try (Statement stmt = connection.createStatement()) {
+            // 1. Charger le script init.sql
+            String sqlInit = Files.readString(Paths.get("../../init.sql"));
+
+            // 2. Diviser si plusieurs instructions
+            for (String sql : sqlInit.split(";")) {
+                sql = sql.trim();
+                if (!sql.isEmpty()) {
+                    stmt.execute(sql);
+                }
+            }
+
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS accounts (
                     id INT PRIMARY KEY AUTO_INCREMENT

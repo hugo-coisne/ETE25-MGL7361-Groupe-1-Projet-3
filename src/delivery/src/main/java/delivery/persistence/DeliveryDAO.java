@@ -27,7 +27,7 @@ public class DeliveryDAO {
         this.addressDAO = new AddressDAO();
     }
 
-    public Delivery createDelivery(Delivery delivery) throws SQLException, Exception {
+    public DeliveryDTO createDelivery(DeliveryDTO delivery) throws SQLException, Exception {
         int orderId = orderDAO.findIdByOrderNumber(delivery.getOrder().getOrderNumber());
         int addressId = delivery.getAddress().getId(); // ici, on suppose que AddressDTO a un id
 
@@ -43,14 +43,6 @@ public class DeliveryDAO {
             int affectedRows = stmt.executeUpdate();
             if (affectedRows == 0) {
                 throw new SQLException("Creating delivery failed, no rows affected.");
-            }
-
-            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    delivery.setId(generatedKeys.getInt(1));
-                } else {
-                    throw new SQLException("Creating delivery failed, no ID obtained.");
-                }
             }
         }
         return delivery;
@@ -106,17 +98,16 @@ public class DeliveryDAO {
         }
     }
 
-    public void update(Delivery delivery) throws SQLException, Exception {
+    public void update(DeliveryDTO delivery) throws SQLException, Exception {
         int orderId = orderDAO.findIdByOrderNumber(delivery.getOrder().getOrderNumber());
 
-        String sql = "UPDATE deliveries SET order_id = ?, address_id = ?, delivery_date = ?, status = ? WHERE id = ?";
+        String sql = "UPDATE deliveries SET address_id = ?, delivery_date = ?, status = ? WHERE order_id = ?";
         Connection connection = DBConnection.getConnection();
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, orderId);
-            stmt.setInt(2, delivery.getAddress().getId());
-            stmt.setDate(3, Date.valueOf(delivery.getDeliveryDate()));
-            stmt.setString(4, delivery.getDeliveryStatus());
-            stmt.setInt(5, delivery.getId());
+            stmt.setInt(1, delivery.getAddress().getId());
+            stmt.setDate(2, Date.valueOf(delivery.getDeliveryDate()));
+            stmt.setString(3, delivery.getDeliveryStatus());
+            stmt.setInt(4, orderId);
 
             int affectedRows = stmt.executeUpdate();
             if (affectedRows == 0) {
@@ -201,6 +192,38 @@ public class DeliveryDAO {
                 deliveries.add(mapResultSetToDeliveryDTO(rs));
             }
             return deliveries;
+        }
+    }
+
+    public Delivery findByOrderNumber(String orderNumber) throws SQLException, Exception {
+        String sql = """
+        SELECT d.id, d.delivery_date, d.status,
+               d.address_id, d.order_id
+        FROM deliveries d
+        JOIN orders o ON d.order_id = o.id
+        WHERE o.order_number = ?
+    """;
+
+        Connection conn = DBConnection.getConnection();
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, orderNumber);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int deliveryId = rs.getInt("id");
+                    LocalDate deliveryDate = rs.getDate("delivery_date").toLocalDate();
+                    String status = rs.getString("status");
+
+                    int addressId = rs.getInt("address_id");
+                    int orderId = rs.getInt("order_id");
+
+                    AddressDTO addressDTO = toDTO(addressDAO.findById(addressId));
+                    OrderDTO orderDTO = orderDAO.findById(orderId);
+
+                    return new Delivery(deliveryId, addressDTO, deliveryDate, status, orderDTO);
+                } else {
+                    return null;
+                }
+            }
         }
     }
 

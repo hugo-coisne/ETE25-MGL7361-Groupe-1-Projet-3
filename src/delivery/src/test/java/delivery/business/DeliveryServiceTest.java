@@ -48,14 +48,14 @@ public class DeliveryServiceTest {
 
     @Test
     public void testUpdateDeliveryStatus() {
-        DeliveryDTO delivery = service.createDelivery(new AddressDTO(), LocalDate.now(), "Pending", new OrderDTO());
+        DeliveryDTO delivery = service.createDelivery(new AddressDTO(), LocalDate.now(), "In Transit", new OrderDTO());
         service.updateDeliveryStatus(delivery, "Delivered");
         assertEquals("Delivered", delivery.getDeliveryStatus());
     }
 
     @Test
-    public void testGetAllOrdersInProgress() throws SQLException {
-        List<DeliveryDTO> deliveries = service.getAllOrdersInProgress();
+    public void testGetAllOrdersInTransit() throws SQLException {
+        List<DeliveryDTO> deliveries = service.getAllOrdersInTransit();
         assertNotNull(deliveries);
         // Optionnel : tu peux vérifier la taille ou le contenu si tu as des données de test
     }
@@ -73,7 +73,7 @@ public class DeliveryServiceTest {
     }
 
     @Test
-    public void testGetAllOrdersInTransit() throws SQLException {
+    public void testGetAllOrdersInTransitWithAccount() throws SQLException {
         AccountDTO account = new AccountDTO();
         account.setId(1);  // Assure-toi que cet id existe en base test
         List<DeliveryDTO> deliveries = service.getAllOrdersInTransit(account);
