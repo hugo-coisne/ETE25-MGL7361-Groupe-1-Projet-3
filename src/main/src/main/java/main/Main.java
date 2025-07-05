@@ -105,6 +105,7 @@ public class Main {
         }
 
         public static void cart() {
+                BookAPI bookAPI = new BookAPIImpl();
                 AccountAPI accountAPI = new AccountAPIImpl();
                 String firstName = "John";
                 String lastName = "Doe";
@@ -115,7 +116,6 @@ public class Main {
                 // Create a new account
                 accountAPI.signup(firstName, lastName, phone, email, password);
                 System.out.println("");
-
                 // Sign in with the correct password
                 AccountDTO account = accountAPI.signin(email, password);
                 System.out.println("");
@@ -129,8 +129,8 @@ public class Main {
                 List<BookDTO> books = new ArrayList<BookDTO>(); // TODO : PLEASE HANDLE EXCEPTIONS CORRECTLY : IN API IMPLEMENTATIONS !
                 try {
                         books = bookAPI.getBooksBy(
-                                        Map.of(
-                                                        BookProperty.TITLE, "Les Mis%rables"));
+                                Map.of(
+                                        BookProperty.TITLE, "Les Mis%rables"));
                 } catch (Exception e) {
                         e.printStackTrace();
                 }
