@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import account.dto.AccountDTO;
+import account.exception.InvalidCartException;
 import account.model.Account;
 import account.model.Cart;
 import common.DBConnection;
@@ -118,7 +119,7 @@ public class CartDAO {
         }
     }
 
-    public void addBookToCart(AccountDTO accountDto, BookDTO bookDto) {
+    public void addBookToCart(AccountDTO accountDto, BookDTO bookDto) throws InvalidCartException {
         try (Connection conn = DBConnection.getConnection();) {
 
             // Retrieve the cart ID for the account
@@ -131,7 +132,7 @@ public class CartDAO {
 
             if (!rs.next()) {
                 logger.warning("No cart found for account ID: " + accountDto.getId());
-                throw new SQLException("No cart found for account ID: " + accountDto.getId());
+                throw new InvalidCartException("No cart found for account ID: " + accountDto.getId());
             }
             int cartId = rs.getInt("id");
             logger.info("Cart ID retrieved: " + cartId);
@@ -210,7 +211,7 @@ public class CartDAO {
         }
     }
 
-    public void removeBookFromCart(Account account, BookDTO bookDto) {
+    public void removeBookFromCart(Account account, BookDTO bookDto) throws InvalidCartException {
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement statement = conn.prepareStatement(
                         "SELECT id FROM carts WHERE account_id = ?")) {
@@ -219,7 +220,7 @@ public class CartDAO {
             ResultSet rs = statement.executeQuery();
             if (!rs.next()) {
                 logger.warning("No cart found for account ID: " + account.getId());
-                throw new SQLException("No cart found for account ID: " + account.getId());
+                throw new InvalidCartException("No cart found for account ID: " + account.getId());
             }
             int cartId = rs.getInt("id");
 
@@ -277,7 +278,7 @@ public class CartDAO {
         }
     }
 
-    public void clearCart(Account account) {
+    public void clearCart(Account account) throws InvalidCartException {
         try {
             Connection conn = DBConnection.getConnection();
             PreparedStatement statement = conn.prepareStatement(
@@ -287,7 +288,7 @@ public class CartDAO {
             ResultSet rs = statement.executeQuery();
             if (!rs.next()) {
                 logger.warning("No cart found for account ID: " + account.getId());
-                throw new SQLException("No cart found for account ID: " + account.getId());
+                throw new InvalidCartException("No cart found for account ID: " + account.getId());
             }
             int cartId = rs.getInt("id");
             PreparedStatement deleteStatement = conn.prepareStatement(

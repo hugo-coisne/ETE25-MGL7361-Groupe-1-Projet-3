@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import account.dto.AccountDTO;
 import account.dto.CartDTO;
+import account.exception.InvalidCartException;
 import account.exception.UnsufficientStockException;
 import account.model.Cart;
 import account.persistence.CartDAO;
@@ -46,7 +47,7 @@ public class CartService {
         return cartDto;
     }
 
-    public void addBookToCart(AccountDTO accountDto, BookDTO bookDto) throws UnsufficientStockException {
+    public void addBookToCart(AccountDTO accountDto, BookDTO bookDto) throws UnsufficientStockException, InvalidCartException {
         accountDto = accountAPI.signin(accountDto.getEmail(), accountDto.getPassword());
         if (!bookAPI.isInStock(bookDto)) {
             logger.warning("Book is not in stock: " + bookDto.getTitle());
@@ -56,12 +57,12 @@ public class CartService {
         cartDAO.addBookToCart(accountDto, bookDto);
     }
 
-    public void removeBookFromCart(AccountDTO accountDto, BookDTO bookDto) {
+    public void removeBookFromCart(AccountDTO accountDto, BookDTO bookDto) throws InvalidCartException {
         accountDto = accountAPI.signin(accountDto.getEmail(), accountDto.getPassword());
         cartDAO.removeBookFromCart(accountDto.toAccount(), bookDto);
     }
 
-    public void clearCart(AccountDTO accountDto) {
+    public void clearCart(AccountDTO accountDto) throws InvalidCartException {
         accountDto = accountAPI.signin(accountDto.getEmail(), accountDto.getPassword());
         cartDAO.clearCart(accountDto.toAccount());
     }

@@ -120,6 +120,8 @@ public class Main {
 
                 // Retrieve the cart for the account, creating the cart if it
                 // doesn't exist
+
+                System.out.println("successful getCart test case");
                 cartAPI.getCart(account);
                 List<BookDTO> books = new ArrayList<BookDTO>(); // TODO : PLEASE HANDLE EXCEPTIONS CORRECTLY : IN API
                                                                 // IMPLEMENTATIONS !
@@ -131,48 +133,41 @@ public class Main {
                         e.printStackTrace();
                 }
 
-                System.out.println(books.get(0));
-
                 BookDTO bookToRemoveLater = books.get(0); // Get the first book to remove later
 
+                System.out.println("successful add book to cart test cases");
                 books.forEach(book -> {
                         cartAPI.add(book, account);
                 });
 
                 // Retrieve the cart again to see the added book
-                System.out.println("");
-                System.out.println("");
                 cartAPI.getCart(account);
-                System.out.println("");
-                System.out.println("");
 
                 // Add a book to the cart
                 cartAPI.add(bookToRemoveLater, account);
-                System.out.println("");
-                System.out.println("");
                 cartAPI.getCart(account);
-                System.out.println("");
-                System.out.println("");
 
                 // Remove a book from the cart
+
+                System.out.println("successful remove book from cart test case");
                 cartAPI.remove(bookToRemoveLater, account);
 
                 // Retrieve the cart again to see the added book
-                System.out.println("");
-                System.out.println("");
                 cartAPI.getCart(account);
-                System.out.println("");
-                System.out.println("");
 
-                // clear the cart
+                // clear the cart twice to test the clearCart method error handling
+                System.out.println("successful clear cart test case");
+                cartAPI.clearCart(account);
+                System.out.println("error second clear non-existent cart test case");
                 cartAPI.clearCart(account);
 
+                // try to delete a book that is not in the cart
+                System.out.println("error remove book not in cart test case");
+                cartAPI.remove(bookToRemoveLater, account);
+
                 // Retrieve the cart again to see that it is empty
-                System.out.println("");
-                System.out.println("");
+                System.out.println("successful getCart after clear test case");
                 cartAPI.getCart(account);
-                System.out.println("");
-                System.out.println("");
 
                 // Add multiple books to the cart
 
