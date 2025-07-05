@@ -23,7 +23,8 @@ public class CartDAO {
     public Cart createCartFor(AccountDTO accountDTO) {
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement statement = conn.prepareStatement(
-                        "INSERT INTO carts (account_id, total_price) VALUES (?, 0.0)", Statement.RETURN_GENERATED_KEYS)) {
+                        "INSERT INTO carts (account_id, total_price) VALUES (?, 0.0)",
+                        Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setInt(1, accountDTO.getId());
             int rowsInserted = statement.executeUpdate();
@@ -118,8 +119,70 @@ public class CartDAO {
     }
 
     public void addBookToCart(AccountDTO accountDto, BookDTO bookDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addBookToCart'"); 
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement statement = conn.prepareStatement(
+                        "INSERT INTO cart_book (cart_id, book_id, quantity) VALUES (?, ?, 1)")) {
+
+            // Retrieve the cart ID for the account
+            logger.info("Getting cart ID for account ID: " + accountDto.getId());
+            PreparedStatement cartStatement = conn.prepareStatement(
+                    "SELECT id FROM carts WHERE account_id = ?");
+            cartStatement.setInt(1, accountDto.getId());
+            logger.info("Executing query " + cartStatement.toString());
+            ResultSet rs = cartStatement.executeQuery();
+
+            if (!rs.next()) {
+                logger.warning("No cart found for account ID: " + accountDto.getId());
+                throw new SQLException("No cart found for account ID: " + accountDto.getId());
+            }
+            int cartId = rs.getInt("id");
+            logger.info("Cart ID retrieved: " + cartId);
+
+            // Retrieve the book ID
+            logger.info("Getting book ID for book title: " + bookDto.getTitle());
+            PreparedStatement bookStatement = conn.prepareStatement(
+                    "SELECT id FROM books WHERE title LIKE ?"); // using the id would be better, but ids aren't provided in
+                                                             // dtos
+            bookStatement.setString(1, bookDto.getTitle());
+
+            logger.info("Executing query " + bookStatement.toString());
+            ResultSet brs = bookStatement.executeQuery();
+
+            if (!brs.next()) {
+                logger.warning("No book found for title : " + bookDto.getTitle());
+                throw new SQLException("No book found for title : " + bookDto.getTitle());
+            }
+            int bookId = brs.getInt("id");
+            logger.info("Book ID retrieved: " + bookId);
+
+            logger.info("Adding book to cart: " + bookDto.getTitle() + " for account ID: " + accountDto.getId());
+
+            // Insert the book into the cart
+            statement.setInt(1, cartId);
+            statement.setInt(2, bookId);
+            int rowsInserted = statement.executeUpdate();
+
+            if (rowsInserted > 0) {
+                logger.info("Book added to cart successfully for account ID: " + accountDto.getId());
+            } else {
+                logger.warning("Failed to add book to cart for account ID: " + accountDto.getId());
+            }
+
+            // update the total price of the cart
+            PreparedStatement updateStatement = conn.prepareStatement(
+                    "UPDATE carts SET total_price = total_price + ? WHERE id = ?", Statement.RETURN_GENERATED_KEYS);
+            updateStatement.setDouble(1, bookDto.getPrice());
+            updateStatement.setInt(2, cartId);
+            int rowsUpdated = updateStatement.executeUpdate();
+            if (rowsUpdated > 0) {
+                logger.info("Cart total price updated successfully for account ID: " + accountDto.getId());
+            } else {
+                logger.warning("Failed to update cart total price for account ID: " + accountDto.getId());
+            }
+        } catch (SQLException e) {
+            logger.severe("Error adding book to cart: " + e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public void removeBookFromCart(Account account, BookDTO bookDto) {
@@ -128,13 +191,32 @@ public class CartDAO {
     }
 
     public void clearCart(Account account) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'clearCart'");
-    }
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement statement = conn.prepareStatement(
+                    "SELECT id FROM carts WHERE account_id = ?");
 
-    public double getCartTotalPrice(AccountDTO accountDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCartTotalPrice'");
+            statement.setInt(1, account.getId());
+            ResultSet rs = statement.executeQuery();
+            if (!rs.next()) {
+                logger.warning("No cart found for account ID: " + account.getId());
+                throw new SQLException("No cart found for account ID: " + account.getId());
+            }
+            int cartId = rs.getInt("id");
+            PreparedStatement deleteStatement = conn.prepareStatement(
+                    "DELETE FROM cart_book WHERE cart_id = ?");
+            deleteStatement.setInt(1, cartId);
+            deleteStatement.executeUpdate();
+            logger.info("Cart cleared for account ID: " + account.getId());
+            PreparedStatement deleteCartStatement = conn.prepareStatement(
+                    "DELETE FROM carts WHERE id = ?");
+            deleteCartStatement.setInt(1, cartId);
+            deleteCartStatement.executeUpdate();
+            logger.info("Cart deleted for account ID: " + account.getId());
+        } catch (SQLException e) {
+            logger.severe("Error clearing cart: " + e.getMessage());
+            throw new RuntimeException("Error clearing cart", e);
+        }
     }
 
 }

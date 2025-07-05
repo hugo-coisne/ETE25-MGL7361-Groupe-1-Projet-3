@@ -14,4 +14,6 @@ public interface BookAPI {
     BookDTO createBook(BookDTO bookDTO) throws Exception;
     void deleteBook(Book book);
     void addBook(Book book) throws Exception;
+    boolean isInStock(BookDTO bookDto);
+    boolean isSufficientlyInStock(BookDTO bookDto, int quantity);
 }

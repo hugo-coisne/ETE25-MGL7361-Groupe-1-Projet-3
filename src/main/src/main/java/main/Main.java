@@ -14,11 +14,14 @@ import order.dto.OrderDTO;
 import order.presentation.OrderAPIImpl;
 import shop.dto.BookDTO;
 import shop.dto.BookProperty;
+import shop.presentation.BookAPI;
 import shop.presentation.BookAPIImpl;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Main {
@@ -117,13 +120,40 @@ public class Main {
                 AccountDTO account = accountAPI.signin(email, password);
                 System.out.println("");
 
-                // Get a CartAPI instance for the signed-in account, creating the cart if it
-                // doesn't exist
-                CartAPI myCartAPI = CartAPIImpl.getCartAPI(account);
+                // Get a CartAPI instance for the signed-in account
+                CartAPI cartAPI = new CartAPIImpl();
 
-                System.out.println("getting cart for account: " + account.getEmail() + "\n");
-                CartDTO cart = myCartAPI.getCart();
-                System.out.println("Cart : " + cart);
+                // Retrieve the cart for the account, creating the cart if it
+                // doesn't exist
+                cartAPI.getCart(account);
+                List<BookDTO> books = new ArrayList<BookDTO>(); // TODO : PLEASE HANDLE EXCEPTIONS CORRECTLY : IN API IMPLEMENTATIONS !
+                try {
+                        books = bookAPI.getBooksBy(
+                                        Map.of(
+                                                        BookProperty.TITLE, "Les Mis%rables"));
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
+
+                System.out.println(books.get(0));
+
+                BookDTO book = books.get(0);
+
+                // Add a book to the cart
+                cartAPI.add(book, account);
+
+                // Retrieve the cart again to see the added book
+                cartAPI.getCart(account);
+
+                // clear the cart
+                cartAPI.clearCart(account);
+
+                // Retrieve the cart again to see that it is empty
+                cartAPI.getCart(account);
+
+                // Add multiple books to the cart
+
+                accountAPI.delete(account);
 
         }
 
@@ -223,13 +253,45 @@ public class Main {
         }
 
 
+        public static void scenario() { // scenario described in the provided specifications
+                // signup
+
+                // signin
+
+                // repeat the following steps a few times
+
+                // browse books using : author, title, isbn, category (one example for each
+                // minimum)
+
+                // add book(s) to cart
+
+                // remove book(s) from cart
+
+                // place the order with payment
+                // books in cart should make a new order with a "awaiting delivery" status and
+                // be removed from the cart (use clearCart) and stock
+                // planned delivery dates should be shown on the invoice
+
+                // check history of orders
+
+                // check order details (invoice) for a specific order, showing especially if a
+                // given book was delivered or not
+
+                // deliver, simulating a passage of time, the order should be updated to
+                // "delivered" status
+
+                // check order details again, showing especially if a given book was delivered
+                // or not after the wait
+
+        }
+
         public static void main(String[] args) {
                 GlobalSafeExecutor.run(() -> {
                         // Main.account();
                         // Main.cart();
                         // Main.shop();
                         // Main.order();
-                        Main.delivery();
+                        // Main.delivery();
                 });
         }
 }

@@ -7,6 +7,8 @@ import account.dto.AccountDTO;
 import account.exception.DuplicateEmailException;
 import account.exception.InvalidCredentialsException;
 import account.persistence.AccountDAO;
+import account.presentation.CartAPI;
+import account.presentation.CartAPIImpl;
 
 public class AccountService {
 
@@ -15,6 +17,7 @@ public class AccountService {
     Logger logger = Logger.getLogger(AccountService.class.getName());
 
     AccountDAO accountDao = AccountDAO.getInstance();
+    CartAPI cartAPI = new CartAPIImpl();
 
     public static AccountService getInstance() {
         if (instance == null) {
@@ -47,6 +50,8 @@ public class AccountService {
         logger.info("Deleting account with email: " + account.getEmail());
         logger.info("First signing in with email: " + account.getEmail());
         Account authenticatedAccount = signin(account.getEmail(), account.getPassword()).toAccount();
+        logger.info("Deleting cart for account with email: " + authenticatedAccount.getEmail());
+        cartAPI.clearCart(authenticatedAccount.toDto());
         logger.info("Deleting account with email " + authenticatedAccount.getEmail());
         accountDao.deleteAccountWithId(authenticatedAccount.getId());
         logger.info("Account with email " + authenticatedAccount.getEmail() + " deleted successfully.");
