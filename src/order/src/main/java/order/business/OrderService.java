@@ -65,4 +65,16 @@ public class OrderService {
         Order order = this.orderDAO.createOrder(account, bookDTO, totalPrice);
         return OrderMapper.toDTO(order);
     }
+
+    public OrderDTO findOrderByOrderNumber(String orderNumber) throws Exception {
+        if (orderNumber == null || orderNumber.isEmpty()) {
+            throw new IllegalArgumentException("Order ID cannot be null or empty");
+        }
+
+        OrderDTO order = this.orderDAO.findById(orderDAO.findIdByOrderNumber(orderNumber));
+        if (order == null) {
+            return null; // or throw an exception if preferred
+        }
+        return order;
+    }
 }

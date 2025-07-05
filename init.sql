@@ -146,6 +146,7 @@ CREATE TABLE deliveries
     order_id      INT UNIQUE,
     address_id    INT,
     delivery_date DATE,
+    status        VARCHAR(50),
     FOREIGN KEY (order_id) REFERENCES orders (id),
     FOREIGN KEY (address_id) REFERENCES addresses (id)
 );
@@ -262,6 +263,6 @@ VALUES (1, '2025-06-10', 34.98),
        (2, '2025-06-09', 14.99);
 
 -- Deliveries
-INSERT INTO deliveries (order_id, address_id, delivery_date)
-VALUES (1, 1, '2025-06-12'),
-       (2, 2, '2025-06-11');
+INSERT INTO deliveries (order_id, address_id, delivery_date, status)
+VALUES (1, 1, '2025-06-12', 'In Transit'),
+       (2, 2, '2025-06-11', 'Delivered');

@@ -26,6 +26,15 @@ public class AccountDTO {
         this.email = email;
     }
 
+    public AccountDTO() {
+        // Default constructor for serialization/deserialization
+        this.firstName = null;
+        this.lastName = null;
+        this.phone = null;
+        this.email = null;
+        this.password = null;
+    }
+
     public Account toAccount() {
         String firstName = this.getFirstName();
         String lastName = this.getLastName();
