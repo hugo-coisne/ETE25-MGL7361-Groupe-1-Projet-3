@@ -1,9 +1,9 @@
 package shop.presentation;
 
-import shop.model.Author;
-import shop.model.Category;
-import shop.model.Publisher;
-import shop.model.BookAttribute;
+import shop.dto.BookAttributeDTO;
+import shop.dto.AuthorDTO;
+import shop.dto.CategoryDTO;
+import shop.dto.PublisherDTO;
 import shop.business.BookAttributeService;
 import shop.exception.DTOException;
 
@@ -18,27 +18,27 @@ public class BookAttributeAPIImpl implements BookAttributeAPI {
     }
 
     @Override
-    public List<Author> getAuthors() throws DTOException {
+    public List<AuthorDTO> getAuthors() throws DTOException {
         return bookAttributeService.getAuthors();
     }
 
     @Override
-    public List<Category> getCategories() throws DTOException {
+    public List<CategoryDTO> getCategories() throws DTOException {
         return bookAttributeService.getCategories();
     }
 
     @Override
-    public List<Publisher> getPublishers() throws DTOException {
+    public List<PublisherDTO> getPublishers() throws DTOException {
         return bookAttributeService.getPublishers();
     }
 
     @Override
-    public void addAttributes(List<BookAttribute> bookAttributes) throws DTOException {
-        bookAttributeService.addAttributes(bookAttributes);
+    public void addAttributes(List<BookAttributeDTO> bookAttributeDTO) throws DTOException {
+        bookAttributeService.addAttributes(bookAttributeDTO);
     }
 
     @Override
-    public void removeAttribute(BookAttribute bookAttribute) throws DTOException {
-        bookAttributeService.removeAttribute(bookAttribute);
+    public void removeAttribute(BookAttributeDTO bookAttributeDTO) throws DTOException {
+        bookAttributeService.removeAttribute(bookAttributeDTO);
     }
 }

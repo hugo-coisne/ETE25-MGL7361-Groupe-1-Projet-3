@@ -1,14 +1,16 @@
 package shop.model;
 
+import shop.dto.BookProperty;
+
 public class Publisher extends BookAttribute {
     private int id;
 
-    public Publisher() {
-        super();
+    public Publisher(String name) {
+        super(name, BookProperty.PUBLISHER);
     }
 
     public Publisher(int id, String name) {
-        super(name);
+        super(id, name, BookProperty.PUBLISHER);
         this.id = id;
     }
 

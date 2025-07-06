@@ -12,6 +12,16 @@ public abstract class BookAttribute {
         this.name = name;
     }
 
+    public BookAttribute(String name, BookProperty type) {
+        this.name = name;
+        this.type = type;
+    }
+
+    public BookAttribute(int id, String name, BookProperty type) {
+        this.name = name;
+        this.type = type;
+    }
+
     //Getters
     public String getName() {
         return name;

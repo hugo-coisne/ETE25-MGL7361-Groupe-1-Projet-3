@@ -1,10 +1,10 @@
 package shop.dto;
 
-public class AuthorDTO {
+public class CategoryDTO {
     private final int id;
     private final String name;
 
-    public AuthorDTO(int id, String name) {
+    public CategoryDTO(int id, String name) {
         this.id = id;
         this.name = name;
     }

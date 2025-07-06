@@ -34,50 +34,74 @@ public class BookService {
         }
     }
 
-    public List<BookDTO> getBooksBy(Map<BookProperty, String> criteria) throws Exception {
+    public List<BookDTO> getBooksBy(Map<BookProperty, String> criteria) throws DTOException {
         // TODO : Add checking for criteria validity
         // TODO : Add the ability to retrieve publisher, categories and authors information, and add them to the Book then the BookDTO
-        List<Book> books = this.bookDAO.getBooksBy(criteria);
+        try {
+            List<Book> books = this.bookDAO.getBooksBy(criteria);
 
-        // Convert the list of Book objects to BookDTO objects
-        return books.stream()
-                .map(BookMapper::toDTO)
-                .collect(Collectors.toList());
+            return books.stream()
+                    .map(BookMapper::toDTO)
+                    .collect(Collectors.toList());
+
+        } catch (Exception e) {
+            throw new DTOException("Failed to retrieve books by criteria");
+        }
     }
 
-    public void setPropertiesFor(Book book, Map<BookProperty, List<String>> properties) throws DTOException {
+    public void setPropertiesFor(BookDTO bookDto, Map<BookProperty, List<String>> properties) throws DTOException {
         try {
+            Book book = BookMapper.toModel(bookDto);
             bookDAO.setPropertiesFor(book, properties);
         } catch (Exception e) {
-            throw new DTOException("Failed to set properties for book: " + book.getIsbn());
+            throw new DTOException("Failed to set properties for book: " + bookDto.getIsbn());
         }
     }
 
-    public void addBook(Book book) throws DTOException {
+    public void addBook(BookDTO bookDto) throws DTOException {
         try {
-            // Ajout du livre via le DAO
+            Book book = BookMapper.toModel(bookDto);
             bookDAO.save(book);
-
         } catch (SQLException e) {
-            throw new DTOException("Erreur SQL lors de l'ajout du livre : " + book.getIsbn());
+            throw new DTOException("Erreur SQL lors de l'ajout du livre : " + bookDto.getIsbn());
         } catch (Exception e) {
-            throw new DTOException("Erreur inattendue lors de l'ajout du livre : " + book.getIsbn());
+            throw new DTOException("Erreur inattendue lors de l'ajout du livre : " + bookDto.getIsbn());
         }
     }
 
-    public void deleteBook(Book book) throws DTOException {
+    public void deleteBook(BookDTO bookDto) throws DTOException {
         try {
+            Book book = BookMapper.toModel(bookDto);
             bookDAO.deleteBook(book);
         } catch (Exception e) {
-            throw new DTOException("Failed to delete book: " + book.getIsbn());
+            throw new DTOException("Failed to delete book: " + bookDto.getIsbn());
         }
     }
 
-    public void removePropertiesFrom(Book book, Map<BookProperty, List<String>> properties) throws DTOException {
+    public void removePropertiesFrom(BookDTO bookDto, Map<BookProperty, List<String>> properties) throws DTOException {
         try {
+            Book book = BookMapper.toModel(bookDto);
             bookDAO.removePropertiesFrom(book, properties);
         } catch (Exception e) {
-            throw new DTOException("Failed to remove properties from book: " + book.getIsbn());
+            throw new DTOException("Failed to remove properties from book: " + bookDto.getIsbn());
+        }
+    }
+
+    public boolean isInStock(BookDTO bookDto) throws DTOException {
+        try {
+            Book book = BookMapper.toModel(bookDto);
+            return bookDAO.isInStock(book);
+        } catch (SQLException e) {
+            throw new DTOException("Failed to check stock for book: " + bookDto.getIsbn());
+        }
+    }
+
+    public boolean isSufficientlyInStock(BookDTO bookDto, int quantity) throws DTOException {
+        try {
+            Book book = BookMapper.toModel(bookDto);
+            return bookDAO.isSufficientlyInStock(book, quantity);
+        } catch (SQLException e) {
+            throw new DTOException("Failed to check stock quantity for book: " + bookDto.getIsbn());
         }
     }
 

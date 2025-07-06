@@ -4,11 +4,7 @@ import common.DBConnection;
 import shop.exception.DTOException;
 import shop.exception.DuplicationBookException;
 import shop.model.Book;
-import shop.model.Author;
-import shop.model.Category;
-import shop.model.Publisher;
 import shop.dto.BookProperty;
-
 import java.sql.*;
 import java.util.*;
 import java.util.logging.Level;
@@ -350,6 +346,36 @@ public class BookDAO {
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error while removing properties from book " + book.getIsbn(), e);
             throw new DTOException("Unable to remove properties from book: " + book.getIsbn());
+        }
+    }
+
+    public boolean isInStock(Book book) throws SQLException {
+        String query = "SELECT stock_quantity FROM books WHERE isbn = ?";
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)
+        ) {
+            stmt.setString(1, book.getIsbn());
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("stock_quantity") > 0;
+            }
+            return false;
+        }
+    }
+
+    public boolean isSufficientlyInStock(Book book, int quantity) throws SQLException {
+        String query = "SELECT stock_quantity FROM books WHERE isbn = ?";
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)
+        ) {
+            stmt.setString(1, book.getIsbn());
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("stock_quantity") >= quantity;
+            }
+            return false;
         }
     }
 

@@ -1,18 +1,18 @@
 package shop.presentation;
 
-import shop.model.Author;
-import shop.model.Category;
-import shop.model.Publisher;
-import shop.model.BookAttribute;
+import shop.dto.BookAttributeDTO;
 import shop.exception.DTOException;
+import shop.dto.AuthorDTO;
+import shop.dto.CategoryDTO;
+import shop.dto.PublisherDTO;
 
 import java.util.List;
 
 public interface BookAttributeAPI {
-    List<Author> getAuthors() throws DTOException;
-    List<Category> getCategories() throws DTOException;
-    List<Publisher> getPublishers() throws DTOException;
+    List<AuthorDTO> getAuthors() throws DTOException;
+    List<CategoryDTO> getCategories() throws DTOException;
+    List<PublisherDTO> getPublishers() throws DTOException;
 
-    void addAttributes(List<BookAttribute> bookAttributes) throws DTOException;
-    void removeAttribute(BookAttribute bookAttribute) throws DTOException;
+    void addAttributes(List<BookAttributeDTO> bookAttributesDTO) throws DTOException;
+    void removeAttribute(BookAttributeDTO bookAttributeDTO) throws DTOException;
 }

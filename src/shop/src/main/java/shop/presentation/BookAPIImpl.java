@@ -5,7 +5,6 @@ import java.util.Map;
 
 import shop.business.BookService;
 import shop.dto.BookDTO;
-import shop.model.Book;
 import shop.dto.BookProperty;
 
 public class BookAPIImpl implements BookAPI {
@@ -16,50 +15,44 @@ public class BookAPIImpl implements BookAPI {
     }
 
     @Override
-    public List<BookDTO> getBooksBy(Map<BookProperty, String> criteria) throws Exception {
+    public List<BookDTO> getBooksBy(Map<BookProperty, String> criteria) {
 
         return this.bookService.getBooksBy(criteria);
     }
 
     @Override
-    public void setPropertiesFor(Book book, Map<BookProperty, List<String>> properties) {
-        bookService.setPropertiesFor(book, properties);
+    public void setPropertiesFor(BookDTO bookDTO, Map<BookProperty, List<String>> properties) {
+        bookService.setPropertiesFor(bookDTO, properties);
     }
 
     @Override
-    public void removePropertiesFrom(Book book, Map<BookProperty, List<String>> properties) {
-        bookService.removePropertiesFrom(book, properties);
+    public void removePropertiesFrom(BookDTO bookDTO, Map<BookProperty, List<String>> properties) {
+        bookService.removePropertiesFrom(bookDTO, properties);
     }
 
     @Override
-    public BookDTO createBook(BookDTO bookDTO) throws Exception {
-        BookDTO book = this.bookService.createBook(bookDTO);
-        if (book == null) {
-            throw new Exception("Book creation failed");
-        }
+    public BookDTO createBook(BookDTO bookDTO) {
+        return bookService.createBook(bookDTO);
+    }
 
-        return book;
+
+    @Override
+    public void deleteBook(BookDTO bookDTO) {
+        bookService.deleteBook(bookDTO);
     }
 
     @Override
-    public void deleteBook(Book book) {
-        bookService.deleteBook(book);
-    }
-
-    @Override
-    public void addBook(Book book) {
-        bookService.addBook(book);
+    public void addBook(BookDTO bookDTO) {
+        bookService.addBook(bookDTO);
     }
 
     @Override
     public boolean isInStock(BookDTO bookDto) {
-        // TODO : returns if the given book is in stock @KLN
-        return true; // Placeholder implementation
+        return bookService.isInStock(bookDto);
     }
 
     @Override
     public boolean isSufficientlyInStock(BookDTO bookDto, int quantity) {
-        // TODO : returns if the given book is available in sufficient quantity @KLN
-        return true; // Placeholder implementation
+        return bookService.isSufficientlyInStock(bookDto, quantity);
     }
 }
