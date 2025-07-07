@@ -2,7 +2,7 @@ package account.presentation;
 
 import java.util.logging.Logger;
 
-import account.model.Account;
+import account.dto.AccountDTO;
 import account.exception.DuplicateEmailException;
 import account.exception.InvalidCredentialsException;
 import account.business.AccountService;
@@ -14,13 +14,13 @@ public class AccountAPIImpl implements AccountAPI {
     AccountService accountService = AccountService.getInstance();
 
     @Override
-    public Account signin(String email, String password) {
+    public AccountDTO signin(String email, String password) {
         logger.info("Attempting to sign in with email: " + email);
         try {
-            Account account = accountService.signin(email, password);
+            AccountDTO accountDto = accountService.signin(email, password);
             System.out.println("Connexion réussie.");
-            System.out.println("Bienvenue " + account.getFirstName() + " " + account.getLastName() + " !");
-            return account;
+            System.out.println("Bienvenue " + accountDto.getFirstName() + " " + accountDto.getLastName() + " !");
+            return accountDto;
         } catch (InvalidCredentialsException e) {
             logger.warning("Sign in failed due to invalid arguments: " + e.getMessage());
             System.out.println(
@@ -37,15 +37,16 @@ public class AccountAPIImpl implements AccountAPI {
     public void signup(String firstName, String lastName, String phone, String email, String password) {
         logger.info("Creating account for: " + firstName + " " + lastName + " with email: " + email);
         try {
-            accountService.create(new Account(firstName, lastName, phone, email, password));
+            accountService.create(new AccountDTO(firstName, lastName, phone, email, password));
+            System.out.println("Compte créé avec succès. Vous pouvez maintenant vous connecter.");
         } catch (DuplicateEmailException e) {
-            logger.warning("Account not created because " + e.getMessage() + " is already in database.");
+            logger.warning("AccountDTO not created because " + e.getMessage() + " is already in database.");
             System.out.println("Le courriel " + e.getMessage()
                     + " est déjà utilisé. S'il s'agit bien de votre email, veuillez vous connecter."); // see if
                                                                                                        // password reset
                                                                                                        // is needed
         } catch (IllegalArgumentException e) {
-            logger.warning("Account not created because " + e.getMessage());
+            logger.warning("AccountDTO not created because " + e.getMessage());
             System.out.println("Compte non créé. Veuillez vérifier les informations saisies. " + e.getMessage());
         }
 
@@ -57,7 +58,7 @@ public class AccountAPIImpl implements AccountAPI {
     }
 
     @Override
-    public void delete(Account account) {
+    public void delete(AccountDTO account) {
         logger.info("Attempting to delete account with email: " + account.getEmail());
         try {
             accountService.delete(account);
@@ -74,7 +75,7 @@ public class AccountAPIImpl implements AccountAPI {
     }
 
     @Override
-    public void changePasswordFor(Account account, String newPassword) {
+    public void changePasswordFor(AccountDTO account, String newPassword) {
         logger.info("Changing password for account with email: " + account.getEmail());
         try {
             accountService.update(account, "password", newPassword);
@@ -90,7 +91,7 @@ public class AccountAPIImpl implements AccountAPI {
     }
 
     @Override
-    public void changePhoneFor(Account account, String newPhone) {
+    public void changePhoneFor(AccountDTO account, String newPhone) {
         logger.info("Changing phone number for account with email: " + account.getEmail());
         try {
             accountService.update(account, "phone", newPhone);
@@ -106,7 +107,7 @@ public class AccountAPIImpl implements AccountAPI {
     }
 
     @Override
-    public void changeEmailFor(Account account, String newEmail) {
+    public void changeEmailFor(AccountDTO account, String newEmail) {
         try {
             accountService.update(account, "email", newEmail);
             logger.info("Changing email for account with email: " + account.getEmail());
@@ -122,7 +123,7 @@ public class AccountAPIImpl implements AccountAPI {
     }
 
     @Override
-    public void changeFirstNameFor(Account account, String newFirstName) {
+    public void changeFirstNameFor(AccountDTO account, String newFirstName) {
         try {
             accountService.update(account, "first_name", newFirstName);
             logger.info("Changing first name for account with email: " + account.getEmail());
@@ -139,7 +140,7 @@ public class AccountAPIImpl implements AccountAPI {
     }
 
     @Override
-    public void changeLastNameFor(Account account, String newLastName) {
+    public void changeLastNameFor(AccountDTO account, String newLastName) {
         logger.info("Changing last name for account with email: " + account.getEmail());
         try {
             accountService.update(account, "last_name", newLastName);

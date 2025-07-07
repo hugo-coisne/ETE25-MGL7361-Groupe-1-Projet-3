@@ -1,19 +1,21 @@
 package shop.dto;
 
 public class PublisherDTO {
+    private int id;
     private String name;
 
     public PublisherDTO(String name) {
         this.name = name;
     }
 
-    // SETTERS ----------------------------------------------------------------
-
-    public void setName(String name) {
+    public PublisherDTO(int id, String name) {
+        this.id = id;
         this.name = name;
     }
 
-    // GETTERS ----------------------------------------------------------------
+    public int getId() {
+        return id;
+    }
 
     public String getName() {
         return name;

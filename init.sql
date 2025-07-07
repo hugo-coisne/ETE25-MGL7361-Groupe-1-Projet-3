@@ -148,6 +148,7 @@ CREATE TABLE deliveries
     order_id      INT UNIQUE,
     address_id    INT,
     delivery_date DATE,
+    status        VARCHAR(50),
     FOREIGN KEY (order_id) REFERENCES orders (id),
     FOREIGN KEY (address_id) REFERENCES addresses (id)
 );
@@ -263,6 +264,6 @@ INSERT INTO invoices (invoice_number, order_number, invoice_date, total_price, p
 VALUES ('INV-20250623-AAAABBBB-001', '20250623-AAAABBBB', '20250623', 19.99, 'CARD'),
        ('INV-20250623-AABBAABB-001', '20250623-AABBAABB', '20250623', 14.99, 'PAYPAL');
 -- Deliveries
-INSERT INTO deliveries (order_id, address_id, delivery_date)
-VALUES (1, 1, '2025-06-12'),
-       (2, 2, '2025-06-11');
+INSERT INTO deliveries (order_id, address_id, delivery_date, status)
+VALUES (1, 1, '2025-06-12', 'In Transit'),
+       (2, 2, '2025-06-11', 'Delivered');
