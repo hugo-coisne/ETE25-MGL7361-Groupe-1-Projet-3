@@ -1,8 +1,8 @@
 package shop.dto;
 
 public class AuthorDTO {
-    private final int id;
-    private final String name;
+    private int id;
+    private String name;
 
     public AuthorDTO(int id, String name) {
         this.id = id;
@@ -13,7 +13,15 @@ public class AuthorDTO {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

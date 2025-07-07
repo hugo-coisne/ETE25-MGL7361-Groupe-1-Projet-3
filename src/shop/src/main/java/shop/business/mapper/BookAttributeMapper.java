@@ -22,4 +22,6 @@ public class BookAttributeMapper {
         if (model == null) return null;
         return new BookAttributeDTO(model.getName(), model.getType());
     }
+
+
 }

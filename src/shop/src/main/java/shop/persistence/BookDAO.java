@@ -3,8 +3,9 @@ package shop.persistence;
 import common.DBConnection;
 import shop.exception.DTOException;
 import shop.exception.DuplicationBookException;
-import shop.model.Book;
+import shop.model.*;
 import shop.dto.BookProperty;
+
 import java.sql.*;
 import java.util.*;
 import java.util.logging.Level;
@@ -106,6 +107,11 @@ public class BookDAO {
                 book.setPublicationDate(rs.getDate("publication_date"));
                 book.setStockQuantity(rs.getInt("stock_quantity"));
 
+                // 🔁 Ajouter les propriétés liées :
+                book.setAuthors(getAuthorsForBook(conn, book.getIsbn()));
+                book.setCategories(getCategoriesForBook(conn, book.getIsbn()));
+                book.setPublisher(getPublisherForBook(conn, book.getIsbn()));
+
                 books.add(book);
             }
         } catch (SQLException e) {
@@ -186,7 +192,6 @@ public class BookDAO {
                 switch (property) {
                     case PUBLISHER -> {
                         String publisherName = values.get(0);
-
                         // Vérifie si l'éditeur existe déjà
                         PreparedStatement ps = conn.prepareStatement("SELECT id FROM publishers WHERE name = ?");
                         ps.setString(1, publisherName);
@@ -208,9 +213,13 @@ public class BookDAO {
                         updateBook.setInt(1, publisherId);
                         updateBook.setString(2, book.getIsbn());
                         updateBook.executeUpdate();
+
+                        book.setPublisher(new Publisher(publisherName));
+
                     }
 
                     case AUTHOR -> {
+                        List<Author> authorsList = new ArrayList<>();
                         for (String authorName : values) {
                             // Vérifie si l'auteur existe
                             PreparedStatement ps = conn.prepareStatement("SELECT id FROM authors WHERE name = ?");
@@ -230,13 +239,18 @@ public class BookDAO {
 
                             // Relier le livre et l’auteur
                             PreparedStatement link = conn.prepareStatement("INSERT IGNORE INTO book_author(book_id, author_id) VALUES ((SELECT id FROM books WHERE isbn = ?), ?)");
+
                             link.setString(1, book.getIsbn());
                             link.setInt(2, authorId);
                             link.executeUpdate();
+                            authorsList.add(new Author(authorName));
+
                         }
+                        book.setAuthors(authorsList);
                     }
 
                     case CATEGORY -> {
+                        List<Category> categoriesList = new ArrayList<>();
                         for (String categoryName : values) {
                             // Vérifie si la catégorie existe
                             PreparedStatement ps = conn.prepareStatement("SELECT id FROM categories WHERE name = ?");
@@ -259,7 +273,10 @@ public class BookDAO {
                             link.setString(1, book.getIsbn());
                             link.setInt(2, categoryId);
                             link.executeUpdate();
+
+                            categoriesList.add(new Category(categoryName));
                         }
+                        book.setCategories(categoriesList);
                     }
 
                     default -> {
@@ -268,7 +285,7 @@ public class BookDAO {
                     }
                 }
             }
-
+            conn.commit();
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error while setting properties for book " + book.getIsbn(), e);
             throw new DTOException("Unable to set properties for book: " + book.getIsbn());
@@ -288,7 +305,7 @@ public class BookDAO {
                 switch (property) {
                     case PUBLISHER -> {
                         // Si l'éditeur à retirer correspond bien à celui du livre, on le retire (on met publisher_id à null)
-                        String publisherName = values.get(0);
+                        String publisherName = values.getFirst();
                         PreparedStatement ps = conn.prepareStatement("SELECT id FROM publishers WHERE name = ?");
                         ps.setString(1, publisherName);
                         ResultSet rs = ps.executeQuery();
@@ -377,6 +394,61 @@ public class BookDAO {
             }
             return false;
         }
+    }
+
+    private List<Author> getAuthorsForBook(Connection conn, String isbn) throws SQLException {
+        List<Author> authors = new ArrayList<>();
+        String query = """
+        SELECT a.id, a.name FROM authors a
+        JOIN book_author ba ON a.id = ba.author_id
+        JOIN books b ON ba.book_id = b.id
+        WHERE b.isbn = ?
+    """;
+
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, isbn);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                authors.add(new Author(rs.getInt("id"), rs.getString("name")));
+            }
+        }
+        return authors;
+    }
+
+    private List<Category> getCategoriesForBook(Connection conn, String isbn) throws SQLException {
+        List<Category> categories = new ArrayList<>();
+        String query = """
+        SELECT c.id, c.name FROM categories c
+        JOIN book_category bc ON c.id = bc.category_id
+        JOIN books b ON bc.book_id = b.id
+        WHERE b.isbn = ?
+    """;
+
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, isbn);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                categories.add(new Category(rs.getInt("id"), rs.getString("name")));
+            }
+        }
+        return categories;
+    }
+
+    private Publisher getPublisherForBook(Connection conn, String isbn) throws SQLException {
+        String query = """
+        SELECT p.id, p.name FROM publishers p
+        JOIN books b ON b.publisher_id = p.id
+        WHERE b.isbn = ?
+    """;
+
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, isbn);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Publisher(rs.getInt("id"), rs.getString("name"));
+            }
+        }
+        return null;
     }
 
 }
