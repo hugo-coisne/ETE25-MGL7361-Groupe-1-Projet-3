@@ -53,7 +53,7 @@ public class BookService {
         try {
             Book book = BookMapper.toModel(bookDto);
             bookDAO.setPropertiesFor(book, properties);
-        } catch (Exception e) {
+            } catch (Exception e) {
             throw new DTOException("Failed to set properties for book: " + bookDto.getIsbn());
         }
     }

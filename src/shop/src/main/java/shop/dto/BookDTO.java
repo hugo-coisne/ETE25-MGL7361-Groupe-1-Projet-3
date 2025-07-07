@@ -1,6 +1,5 @@
 package shop.dto;
 
-
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +13,7 @@ public class BookDTO {
     private double price;
     private int stockQuantity;
     private PublisherDTO publisher;
+    private List<CategoryDTO> categories;
     private List<AuthorDTO> authors;
 
     public BookDTO(String title, String isbn, double price) {
@@ -23,6 +23,7 @@ public class BookDTO {
         this.description = "";
         this.publicationDate = null;
         this.stockQuantity = 0;
+        this.categories = new ArrayList<>();
         this.authors = new ArrayList<>();
     }
 
@@ -53,6 +54,10 @@ public class BookDTO {
 
     public void setPublisher(PublisherDTO publisher) {
         this.publisher = publisher;
+    }
+
+    public void setCategories(List<CategoryDTO> categories) {
+        this.categories = categories;
     }
 
     public void setAuthors(List<AuthorDTO> authors) {
@@ -86,6 +91,10 @@ public class BookDTO {
 
     public PublisherDTO getPublisher() {
         return publisher;
+    }
+
+    public List<CategoryDTO> getCategories() {
+        return categories;
     }
 
     public List<AuthorDTO> getAuthors() {
