@@ -127,7 +127,7 @@ public class CartDAO {
             PreparedStatement cartStatement = conn.prepareStatement(
                     "SELECT id FROM carts WHERE account_id = ?");
             cartStatement.setInt(1, accountDto.getId());
-            logger.info("Executing query " + cartStatement.toString());
+            logger.info("Executing query " + cartStatement);
             ResultSet rs = cartStatement.executeQuery();
 
             if (!rs.next()) {
@@ -140,12 +140,12 @@ public class CartDAO {
             // Retrieve the book ID
             logger.info("Getting book ID for book title: " + bookDto.getTitle());
             PreparedStatement bookStatement = conn.prepareStatement(
-                    "SELECT id FROM books WHERE title LIKE ?"); // using the id would be better, but ids aren't provided
+                    "SELECT id FROM books WHERE isbn LIKE ?"); // using the id would be better, but ids aren't provided
                                                                 // in
                                                                 // dtos
-            bookStatement.setString(1, bookDto.getTitle());
+            bookStatement.setString(1, bookDto.getIsbn());
 
-            logger.info("Executing query " + bookStatement.toString());
+            logger.info("Executing query " + bookStatement);
             ResultSet brs = bookStatement.executeQuery();
 
             if (!brs.next()) {
@@ -159,12 +159,12 @@ public class CartDAO {
                     "SELECT quantity FROM cart_book WHERE cart_id = ? AND book_id = ?");
             checkStatement.setInt(1, cartId);
             checkStatement.setInt(2, bookId);
-            logger.info("Executing query " + checkStatement.toString());
+            logger.info("Executing query " + checkStatement);
             ResultSet checkRs = checkStatement.executeQuery();
 
             if (checkRs.next()) {
                 int quantity = checkRs.getInt("quantity");
-                System.out.println("Quantity in cart: " + quantity + "\n\n\n");
+//                System.out.println("Quantity in cart: " + quantity + "\n\n\n");
                 if (quantity > 0) {
                     logger.info("Book already in cart, incrementing quantity for account ID: " + accountDto.getId());
                     // Increment the quantity of the book in the cart

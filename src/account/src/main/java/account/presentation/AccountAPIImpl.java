@@ -18,8 +18,8 @@ public class AccountAPIImpl implements AccountAPI {
         logger.info("Attempting to sign in with email: " + email);
         try {
             AccountDTO accountDto = accountService.signin(email, password);
-            System.out.println("Connexion réussie.");
-            System.out.println("Bienvenue " + accountDto.getFirstName() + " " + accountDto.getLastName() + " !");
+//            System.out.println("Connexion réussie.");
+//            System.out.println("Bienvenue " + accountDto.getFirstName() + " " + accountDto.getLastName() + " !");
             return accountDto;
         } catch (InvalidCredentialsException e) {
             logger.warning("Sign in failed due to invalid arguments: " + e.getMessage());

@@ -43,15 +43,19 @@ public class CartService {
         logger.info(cart.toString());
         CartDTO cartDto = cart.toDTO();
         logger.info(cartDto.toString());
-        logger.info("Returning " + cartDto.toString());
+        logger.info("Returning " + cartDto);
         return cartDto;
     }
 
     public void addBookToCart(AccountDTO accountDto, BookDTO bookDto) throws UnsufficientStockException, InvalidCartException {
         accountDto = accountAPI.signin(accountDto.getEmail(), accountDto.getPassword());
+        CartDTO cart = this.getCart(accountDto);
         if (!bookAPI.isInStock(bookDto)) {
             logger.warning("Book is not in stock: " + bookDto.getTitle());
             throw new UnsufficientStockException("Book is not in stock: " + bookDto.getTitle());
+        } else if (cart.getBookIsbn().containsKey(bookDto.getIsbn()) && !bookAPI.isSufficientlyInStock(bookDto, cart.getBookIsbn().get(bookDto.getIsbn()))) {
+            logger.warning("Book " + bookDto.getTitle() + "is not in sufficient stock: " + bookDto.getTitle());
+            throw new UnsufficientStockException("Book is not in sufficient stock: " + bookDto.getTitle());
         }
         logger.info("Adding book to cart for account: " + accountDto.getEmail() + ", Book: " + bookDto.getTitle());
         cartDAO.addBookToCart(accountDto, bookDto);

@@ -25,7 +25,6 @@ public class CartAPIImpl implements CartAPI {
         CartDTO cartDto = cartService.getCart(accountDto);
         logger.info("Cart retrieved for account: " + accountDto.getEmail() + ", Cart ID: " + cartDto.getId()
                 + ", Total Price: " + cartDto.getTotalPrice());
-        System.out.println("Panier récupéré avec succès ! \n" + cartDto);
         return cartDto;
     }
 

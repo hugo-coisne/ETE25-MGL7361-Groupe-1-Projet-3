@@ -56,10 +56,10 @@ public class DeliveryDAO {
         int addressId = rs.getInt("address_id");
         java.sql.Date date = rs.getDate("delivery_date");
         String status = rs.getString("status");
-        LocalDate orderDate = rs.getDate("order_date").toLocalDate();
+        Date orderDate = rs.getDate("order_date");
         float orderPrice = rs.getFloat("total_price");
 
-        // Crée les objets DTO partiels
+        // Crï¿½e les objets DTO partiels
         OrderDTO orderDTO = new OrderDTO(orderNumber, orderDate, orderPrice, null); // Adapte si besoin
         AddressDTO addressDTO = new AddressDTO();
         addressDTO.setId(addressId);
@@ -125,7 +125,7 @@ public class DeliveryDAO {
         }
     }
 
-    // Récupère toutes les livraisons avec un statut spécifique
+    // Rï¿½cupï¿½re toutes les livraisons avec un statut spï¿½cifique
     public List<DeliveryDTO> findByStatus(String status) throws SQLException {
         String sql = """
         SELECT d.*, o.order_number, o.account_id, o.order_date, o.total_price
@@ -148,7 +148,7 @@ public class DeliveryDAO {
         }
     }
 
-    // Récupère toutes les livraisons par statut ET utilisateur
+    // Rï¿½cupï¿½re toutes les livraisons par statut ET utilisateur
     public List<DeliveryDTO> findByStatusAndAccountId(String status, int accountId) throws SQLException {
         String sql = """
         SELECT d.*, o.order_number, o.account_id, o.order_date, o.total_price
@@ -172,7 +172,7 @@ public class DeliveryDAO {
         }
     }
 
-    // Récupère toutes les livraisons dont le statut est différent de celui donné
+    // Rï¿½cupï¿½re toutes les livraisons dont le statut est diffï¿½rent de celui donnï¿½
     public List<DeliveryDTO> findByStatusNot(String status) throws SQLException {
         String sql = """
         SELECT d.*, o.order_number, o.account_id, o.order_date, o.total_price

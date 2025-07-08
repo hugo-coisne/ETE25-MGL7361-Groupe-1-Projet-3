@@ -151,7 +151,7 @@ public class OrderDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     String orderNumber = rs.getString("order_number");
-                    LocalDate orderDate = rs.getDate("order_date").toLocalDate();
+                    java.sql.Date orderDate = rs.getDate("order_date");
                     float orderPrice = (float) rs.getDouble("total_price");
                     Map<BookDTO, Integer> items = Map.of(); // Assuming items are fetched separately TODO
                     return new OrderDTO(orderNumber, orderDate, orderPrice, items);

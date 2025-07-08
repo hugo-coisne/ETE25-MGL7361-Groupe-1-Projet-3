@@ -31,8 +31,18 @@ public class CartDTO {
     }
 
     public void setBooks(Map<BookDTO, Integer> books) {
-        System.out.println("Setting books in CartDTO: " + books);
         this.bookDtos = books;
+        // update the booksIsbn list
+        this.booksIsbn = new HashMap<>();
+        if (books != null) {
+            for (Map.Entry<BookDTO, Integer> entry : books.entrySet()) {
+                BookDTO book = entry.getKey();
+                Integer quantity = entry.getValue();
+                if (book != null && book.getIsbn() != null && quantity != null && quantity > 0) {
+                    this.booksIsbn.merge(book.getIsbn(), quantity, Integer::sum);
+                }
+            }
+        }
     }
 
     // SETTERS ----------------------------------------------------------------
@@ -90,7 +100,7 @@ public class CartDTO {
                 int quantity = entry.getValue();
                 s = s + "\nBookDTO(title=" + bookDto.getTitle() + ", isbn=" + bookDto.getIsbn() + ", quantity=" + quantity + ")";
             }
-        } 
+        }
         s = s + "])";
         return s;
     }
@@ -109,5 +119,9 @@ public class CartDTO {
 
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public Map<BookDTO, Integer>  getBooksDto() {
+        return this.bookDtos;
     }
 }
