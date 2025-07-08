@@ -11,6 +11,9 @@ import delivery.dto.DeliveryDTO;
 import delivery.presentation.DeliveryAPIImpl;
 import order.dto.OrderDTO;
 import order.presentation.OrderAPIImpl;
+import payment.dto.InvoiceDTO;
+import payment.dto.PaymentMethod;
+import payment.presentation.InvoiceAPIImpl;
 import shop.dto.*;
 import shop.presentation.BookAPI;
 import shop.presentation.BookAPIImpl;
@@ -481,26 +484,19 @@ public class Main {
         cartAPI.remove(book, account);
         Main.scenarioDetailsStep("Contenu du panier : " + cartAPI.getCart(account));
 
-        // add multiple books to the cart TODO
+        Main.scenarioDetailsStep("5.3 Ajout d'un deuxième livre 'The Stranger'");
+        book = bookAPI.getBooksBy(Map.of(BookProperty.TITLE, "Stranger")).getFirst();
+        cartAPI.add(book, account);
+        Main.scenarioDetailsStep("Contenu du panier : " + cartAPI.getCart(account));
 
-        // remove book(s) from cart
+        Main.scenarioStep("À partir du panier, passer au paiement et régler la facture; les livres du panier\n" +
+                "constituent alors une nouvelle commande où chaque livre de la commande a un status \"En\n" +
+                "attente de livraison\"");
 
-        // place the order with payment
-        // books in cart should make a new order with a "awaiting delivery" status and
-        // be removed from the cart (use clearCart) and stock
-        // planned delivery dates should be shown on the invoice
-
-        // check history of orders
-
-        // check order details (invoice) for a specific order, showing especially if a
-        // given book was delivered or not
-
-        // deliver, simulating a passage of time, the order should be updated to
-        // "delivered" status
-
-        // check order details again, showing especially if a given book was delivered
-        // or not after the wait
-
+        InvoiceAPIImpl invoiceAPI = new InvoiceAPIImpl();
+        Main.scenarioStep("6.1 Simulation de paiement réussi (par carte), génération de la facture et de la commande");
+        InvoiceDTO invoice = invoiceAPI.createInvoice(account, PaymentMethod.CARD);
+        Main.scenarioDetailsStep("Facture créée : " + invoice);
     }
 
     public static void main(String[] args) {

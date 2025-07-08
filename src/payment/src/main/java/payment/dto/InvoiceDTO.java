@@ -60,4 +60,16 @@ public class InvoiceDTO {
     public String getOrderNumber() {
         return orderNumber;
     }
+
+    // OTHERS -----------------------------------------------------------------
+
+    public String toString() {
+        return "InvoiceDTO{" +
+                "invoiceNumber='" + invoiceNumber + '\'' +
+                ", invoiceDate=" + invoiceDate +
+                ", totalPrice=" + totalPrice +
+                ", paymentMethod=" + paymentMethod +
+                ", orderNumber='" + orderNumber + '\'' +
+                '}';
+    }
 }

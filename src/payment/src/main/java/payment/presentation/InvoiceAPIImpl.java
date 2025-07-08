@@ -1,6 +1,7 @@
 package payment.presentation;
 
-import order.dto.OrderDTO;
+import account.dto.AccountDTO;
+import account.dto.CartDTO;
 import payment.dto.PaymentMethod;
 import payment.business.InvoiceService;
 import payment.dto.InvoiceDTO;
@@ -12,7 +13,7 @@ public class InvoiceAPIImpl implements InvoiceAPI {
         this.invoiceService = new InvoiceService();
     }
 
-    public InvoiceDTO createInvoice(OrderDTO order, PaymentMethod paymentMethod) throws Exception {
-        return this.invoiceService.createInvoice(order, paymentMethod);
+    public InvoiceDTO createInvoice(AccountDTO account, PaymentMethod paymentMethod) throws Exception {
+        return this.invoiceService.createInvoice(account, paymentMethod);
     }
 }
