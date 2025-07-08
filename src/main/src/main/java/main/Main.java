@@ -20,6 +20,7 @@ import shop.presentation.BookAPIImpl;
 import shop.presentation.BookAttributeAPI;
 import shop.presentation.BookAttributeAPIImpl;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Map;
@@ -233,7 +234,7 @@ public class Main {
         // pour chaque livre;
         DeliveryDTO delivery = deliveryAPI.createDelivery(
                 address,
-                LocalDate.now().plusDays(3),
+                Date.valueOf(LocalDate.now().plusDays(3)),
                 "In Transit",
                 order
         );
@@ -497,6 +498,59 @@ public class Main {
         Main.scenarioStep("6.1 Simulation de paiement réussi (par carte), génération de la facture et de la commande");
         InvoiceDTO invoice = invoiceAPI.createInvoice(account, PaymentMethod.CARD);
         Main.scenarioDetailsStep("Facture créée : " + invoice);
+
+        DeliveryAPIImpl deliveryAPI = new DeliveryAPIImpl();
+        OrderAPIImpl orderAPI = new OrderAPIImpl();
+
+        OrderDTO order = orderAPI.findOrderByOrderNumber(invoice.getOrderNumber());
+        AddressDTO address = new AddressDTO();
+        address.setId(1);
+
+        Main.scenarioStep("8 : Le système se charge de la livraison de la commande aux dates de livraison prévues");
+        DeliveryDTO delivery = deliveryAPI.createDelivery(
+                address,
+                Date.valueOf(LocalDate.now().plusDays(3)),
+                "In Transit",
+                order
+        );
+
+        Main.scenarioDetailsStep("Created Delivery: ");
+        Main.scenarioDetailsStep("Status: " + delivery.getDeliveryStatus());
+        Main.scenarioDetailsStep("Delivery Date: " + delivery.getDeliveryDate());
+        Main.scenarioDetailsStep("Order: " + delivery.getOrder().getOrderNumber());
+
+        Main.scenarioStep("9 : Voir la liste des commandes en attente de livraison ainsi que l'historique des commandes livrées");
+        List<DeliveryDTO> pendingDeliveries = deliveryAPI.getAllOrdersInTransit();
+        Main.scenarioDetailsStep("Pending Deliveries (" + pendingDeliveries.size() + ") :");
+        for (DeliveryDTO pendingDelivery : pendingDeliveries) {
+            Main.scenarioDetailsStep("Order: " + pendingDelivery.getOrder().getOrderNumber() +
+                    ", Status: " + pendingDelivery.getDeliveryStatus());
+        }
+
+        List<DeliveryDTO> deliveredDeliveries = deliveryAPI.getAllOrdersDelivered();
+        Main.scenarioDetailsStep("Delivered Deliveries (" + deliveredDeliveries.size() + ") :");
+        for (DeliveryDTO deliveredDelivery : deliveredDeliveries) {
+            Main.scenarioDetailsStep("Order: " + deliveredDelivery.getOrder().getOrderNumber() +
+                    ", Status: " + deliveredDelivery.getDeliveryStatus());
+        }
+
+        Main.scenarioStep("10 : Une fois un livre est livré, sa date de livraison dans la commande est mise à jour et le statut passe de \"En attente de livraison\" à \"Livré\"");
+        deliveryAPI.updateStatusToDelivered(delivery);
+        Main.scenarioDetailsStep("Updated Status: " + delivery.getDeliveryStatus());
+
+        pendingDeliveries = deliveryAPI.getAllOrdersInTransit();
+        Main.scenarioDetailsStep("Pending Deliveries (" + pendingDeliveries.size() + ") :");
+        for (DeliveryDTO pendingDelivery : pendingDeliveries) {
+            Main.scenarioDetailsStep("Order: " + pendingDelivery.getOrder().getOrderNumber() +
+                    ", Status: " + pendingDelivery.getDeliveryStatus());
+        }
+
+        deliveredDeliveries = deliveryAPI.getAllOrdersDelivered();
+        Main.scenarioDetailsStep("Delivered Deliveries (" + deliveredDeliveries.size() + ") :");
+        for (DeliveryDTO deliveredDelivery : deliveredDeliveries) {
+            Main.scenarioDetailsStep("Order: " + deliveredDelivery.getOrder().getOrderNumber() +
+                    ", Status: " + deliveredDelivery.getDeliveryStatus());
+        }
     }
 
     public static void main(String[] args) {

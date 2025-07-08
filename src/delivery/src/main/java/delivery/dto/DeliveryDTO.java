@@ -2,19 +2,19 @@ package delivery.dto;
 
 import order.dto.OrderDTO;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
 public class DeliveryDTO {
 
     private AddressDTO address;
 
-    private LocalDate deliveryDate;
+    private Date deliveryDate;
 
     private String deliveryStatus;
 
     private OrderDTO order;
 
-    public DeliveryDTO(AddressDTO address, LocalDate deliveryDate, String deliveryStatus, OrderDTO order) {
+    public DeliveryDTO(AddressDTO address, Date deliveryDate, String deliveryStatus, OrderDTO order) {
         this.address = address;
         this.deliveryDate = deliveryDate;
         this.deliveryStatus = deliveryStatus;
@@ -33,11 +33,11 @@ public class DeliveryDTO {
         this.address = address;
     }
 
-    public LocalDate getDeliveryDate() {
+    public Date getDeliveryDate() {
         return deliveryDate;
     }
 
-    public void setDeliveryDate(LocalDate deliveryDate) {
+    public void setDeliveryDate(Date deliveryDate) {
         this.deliveryDate = deliveryDate;
     }
 

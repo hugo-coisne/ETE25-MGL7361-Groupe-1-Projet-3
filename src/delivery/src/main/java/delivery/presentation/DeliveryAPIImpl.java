@@ -6,8 +6,8 @@ import delivery.dto.DeliveryDTO;
 import order.dto.OrderDTO;
 import delivery.business.DeliveryService;
 
+import java.sql.Date;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
 
 public class DeliveryAPIImpl {
@@ -18,8 +18,8 @@ public class DeliveryAPIImpl {
         this.deliveryService = new DeliveryService();
     }
 
-    public DeliveryDTO createDelivery(AddressDTO address, LocalDate localDate, String deliveryStatus, OrderDTO order) {
-        return deliveryService.createDelivery(address, localDate, deliveryStatus, order);
+    public DeliveryDTO createDelivery(AddressDTO address, Date date, String deliveryStatus, OrderDTO order) throws Exception {
+        return deliveryService.createDelivery(address, date, deliveryStatus, order);
     }
 
     public void updateStatusToDelivered(DeliveryDTO delivery) throws Exception {

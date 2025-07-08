@@ -8,6 +8,7 @@ import order.dto.OrderDTO;
 import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -26,13 +27,13 @@ public class DeliveryServiceTest {
     }
 
     @Test
-    public void testCreateDelivery() {
+    public void testCreateDelivery() throws Exception {
         AddressDTO address = new AddressDTO();
-        LocalDate date = LocalDate.of(2025, 7, 1);
+        Date date = Date.valueOf(LocalDate.now());
         String status = "In Progress";
         OrderDTO order = new OrderDTO(
                 "ORDER-002",
-                LocalDate.now(),
+                Date.valueOf(LocalDate.now()),
                 20.01f,
                 null
         );
@@ -47,8 +48,8 @@ public class DeliveryServiceTest {
     }
 
     @Test
-    public void testUpdateDeliveryStatus() {
-        DeliveryDTO delivery = service.createDelivery(new AddressDTO(), LocalDate.now(), "In Transit", new OrderDTO());
+    public void testUpdateDeliveryStatus() throws Exception {
+        DeliveryDTO delivery = service.createDelivery(new AddressDTO(), Date.valueOf(LocalDate.now()), "In Transit", new OrderDTO());
         service.updateDeliveryStatus(delivery, "Delivered");
         assertEquals("Delivered", delivery.getDeliveryStatus());
     }

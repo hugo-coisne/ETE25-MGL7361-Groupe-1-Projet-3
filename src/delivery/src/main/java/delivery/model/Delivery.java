@@ -3,20 +3,20 @@ package delivery.model;
 import delivery.dto.AddressDTO;
 import order.dto.OrderDTO;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
 public class Delivery {
 
     private int id;
     private AddressDTO address;
 
-    private LocalDate deliveryDate;
+    private Date deliveryDate;
 
     private String deliveryStatus;
 
     private OrderDTO order;
 
-    public Delivery(int id, AddressDTO address, LocalDate deliveryDate, String deliveryStatus, OrderDTO order) {
+    public Delivery(int id, AddressDTO address, Date deliveryDate, String deliveryStatus, OrderDTO order) {
         this.id = id;
         this.address = address;
         this.deliveryDate = deliveryDate;
@@ -44,11 +44,11 @@ public class Delivery {
         this.address = address;
     }
 
-    public LocalDate getDeliveryDate() {
+    public Date getDeliveryDate() {
         return deliveryDate;
     }
 
-    public void setDeliveryDate(LocalDate deliveryDate) {
+    public void setDeliveryDate(Date deliveryDate) {
         this.deliveryDate = deliveryDate;
     }
 
