@@ -10,7 +10,7 @@
 
 package account {
 
-    package account.presentation { 
+    package account.presentation {
 
         interface CartAPI {
             + Cart getCart()
@@ -108,7 +108,7 @@ package shop {
 
     package shop.business {
         together {
-            
+
             package shop.business.entities {
                 abstract class BookAttribute {
                     + getName
@@ -162,7 +162,7 @@ package shop {
     }
 
     package shop.persistence {
-        
+
         class BookDAO {
 
         }
@@ -221,7 +221,7 @@ package order {
 
     package order.persistence {
         class OrderDAO {
-            
+
         }
 
         OrderService -up- OrderAPIImpl
@@ -229,7 +229,7 @@ package order {
     }
 }
 
-package deliver {
+package delivery {
     package delivery.presentation {
         interface DeliveryAPI {
             + Delivery createDelivery(Order order, Address address)
