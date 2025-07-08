@@ -13,7 +13,7 @@ package account {
     package account.presentation {
 
         interface CartAPI {
-            + Cart getCart()
+            + CartDTO getCart()
             + void addToCart(Book book, int quantity)
             + void removeFromCart(Book book)
             + void clearCart()
@@ -23,7 +23,7 @@ package account {
         class CartAPIImpl implements CartAPI
 
         interface AccountAPI {
-            + Account signin(String email, String password)
+            + AccountDTO signin(String email, String password)
             + void signup(String firstName, String lastName, String phone, String email, String password)
             + void updateAccount(Account account)
             + void changePassword(String oldPassword, String newPassword)
@@ -45,20 +45,42 @@ package account {
             }
         }
 
-        package account.business.entities {
-            class Account {
-                - firstName
-                - lastName
-                - phone
-                - email
-                - password
-            }
+    }
 
-            class Cart {
-                - totalPrice
-            }
+    package account.model {
+        class Account {
+            - id
+            - firstName
+            - lastName
+            - phone
+            - email
+            - password
+        }
+
+        class Cart {
+            - id
+            - totalPrice
+            - books
         }
     }
+
+    package account.dto {
+        class AccountDTO {
+            - firstName
+            - lastName
+            - phone
+            - email
+            - password
+        }
+
+        class CartDTO {
+            - totalPrice
+            - books
+        }
+    }
+
+
+
     package account.persistence {
         class CartDAO {
 
