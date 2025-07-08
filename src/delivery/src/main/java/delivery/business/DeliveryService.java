@@ -7,7 +7,7 @@ import order.dto.OrderDTO;
 import delivery.persistence.DeliveryDAO;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
+import java.sql.Date;
 import java.util.List;
 
 public class DeliveryService {
@@ -18,8 +18,10 @@ public class DeliveryService {
         this.deliveryDAO = new DeliveryDAO();
     }
 
-    public DeliveryDTO createDelivery(AddressDTO address, LocalDate deliveryDate, String deliveryStatus, OrderDTO order) {
-        return new DeliveryDTO(address, deliveryDate, deliveryStatus, order);
+    public DeliveryDTO createDelivery(AddressDTO address, Date deliveryDate, String deliveryStatus, OrderDTO order) throws Exception {
+        DeliveryDTO deliveryDTO = new DeliveryDTO(address, deliveryDate, deliveryStatus, order);
+        deliveryDAO.createDelivery(deliveryDTO);
+        return deliveryDTO;
     }
 
     public void updateDeliveryOrder(DeliveryDTO delivery, OrderDTO order) {
@@ -34,7 +36,7 @@ public class DeliveryService {
         delivery.setAddress(newAddress);
     }
 
-    public void updateDeliveryDate(DeliveryDTO delivery, LocalDate newDate) {
+    public void updateDeliveryDate(DeliveryDTO delivery, Date newDate) {
         delivery.setDeliveryDate(newDate);
     }
 

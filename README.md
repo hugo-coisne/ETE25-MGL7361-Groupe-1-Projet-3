@@ -19,3 +19,7 @@ docker compose up -d
 ```
 
 - Lancer l'application avec Maven. Le main se trouve dans `src/main/src/main/java/Main.java`.
+
+## Troubleshooting
+
+- Si il y a des problèmes au niveau des données, vous pouvez supprimer la base de données et la relancer en lançant le `init.sql` à la racine du projet.

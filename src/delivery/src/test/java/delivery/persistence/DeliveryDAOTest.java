@@ -12,6 +12,7 @@ import org.junit.jupiter.api.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
@@ -122,7 +123,7 @@ public class DeliveryDAOTest {
         // Arrange
         OrderDTO orderDTO = new OrderDTO(
                 "ORDER-TESTDAO-001",
-                LocalDate.now(),
+                Date.valueOf(LocalDate.now()),
                 99.99f,
                 null
         );
@@ -133,7 +134,7 @@ public class DeliveryDAOTest {
         DeliveryDTO delivery = new DeliveryDTO();
         delivery.setOrder(orderDTO);
         delivery.setAddress(addressDTO);
-        delivery.setDeliveryDate(LocalDate.now());
+        delivery.setDeliveryDate(Date.valueOf(LocalDate.now()));
         delivery.setDeliveryStatus("In Transit");
 
         // Act
@@ -148,9 +149,9 @@ public class DeliveryDAOTest {
     public void testUpdateDeliveryStatus() throws Exception {
         // Créer la livraison
         DeliveryDTO delivery = new DeliveryDTO();
-        delivery.setOrder(new OrderDTO("ORDER-TESTDAO-002", LocalDate.now(), 49.99f, null));
+        delivery.setOrder(new OrderDTO("ORDER-TESTDAO-002", Date.valueOf(LocalDate.now()), 49.99f, null));
         delivery.setAddress(new AddressDTO() {{ setId(1); }});
-        delivery.setDeliveryDate(LocalDate.now());
+        delivery.setDeliveryDate(Date.valueOf(LocalDate.now()));
         delivery.setDeliveryStatus("In Transit");
 
         // Insère si pas déjà là

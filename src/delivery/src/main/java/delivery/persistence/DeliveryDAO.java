@@ -37,7 +37,7 @@ public class DeliveryDAO {
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, orderId);
             stmt.setInt(2, addressId);
-            stmt.setDate(3, Date.valueOf(delivery.getDeliveryDate()));
+            stmt.setDate(3, delivery.getDeliveryDate());
             stmt.setString(4, delivery.getDeliveryStatus());
 
             int affectedRows = stmt.executeUpdate();
@@ -67,7 +67,7 @@ public class DeliveryDAO {
         DeliveryDTO delivery = new DeliveryDTO();
         delivery.setOrder(orderDTO);
         delivery.setAddress(addressDTO);
-        delivery.setDeliveryDate(date.toLocalDate());
+        delivery.setDeliveryDate(date);
         delivery.setDeliveryStatus(status);
 
         return delivery;
@@ -84,7 +84,7 @@ public class DeliveryDAO {
                 if (rs.next()) {
                     int orderId = rs.getInt("order_id");
                     int addressId = rs.getInt("address_id");
-                    LocalDate deliveryDate = rs.getDate("delivery_date").toLocalDate();
+                    Date deliveryDate = rs.getDate("delivery_date");
                     String status = rs.getString("status");
 
                     OrderDTO order = orderDAO.findById(orderId);
@@ -105,7 +105,7 @@ public class DeliveryDAO {
         Connection connection = DBConnection.getConnection();
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, delivery.getAddress().getId());
-            stmt.setDate(2, Date.valueOf(delivery.getDeliveryDate()));
+            stmt.setDate(2, delivery.getDeliveryDate());
             stmt.setString(3, delivery.getDeliveryStatus());
             stmt.setInt(4, orderId);
 
@@ -210,7 +210,7 @@ public class DeliveryDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     int deliveryId = rs.getInt("id");
-                    LocalDate deliveryDate = rs.getDate("delivery_date").toLocalDate();
+                    Date deliveryDate = rs.getDate("delivery_date");
                     String status = rs.getString("status");
 
                     int addressId = rs.getInt("address_id");

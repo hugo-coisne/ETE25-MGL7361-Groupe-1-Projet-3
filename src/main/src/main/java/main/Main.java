@@ -20,6 +20,7 @@ import shop.presentation.BookAPIImpl;
 import shop.presentation.BookAttributeAPI;
 import shop.presentation.BookAttributeAPIImpl;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Map;
@@ -233,7 +234,7 @@ public class Main {
         // pour chaque livre;
         DeliveryDTO delivery = deliveryAPI.createDelivery(
                 address,
-                LocalDate.now().plusDays(3),
+                Date.valueOf(LocalDate.now().plusDays(3)),
                 "In Transit",
                 order
         );
@@ -307,7 +308,7 @@ public class Main {
     }
 
     public static void scenario() throws Exception { // scenario described in the provided specifications
-        //Main.disableLogging();
+        Main.disableLogging();
 
         // signup
         // create an account with first name, last name, phone, email and password
@@ -501,14 +502,14 @@ public class Main {
         DeliveryAPIImpl deliveryAPI = new DeliveryAPIImpl();
         OrderAPIImpl orderAPI = new OrderAPIImpl();
 
-        OrderDTO order = orderAPI.findOrderByOrderNumber("20250623-AAAABBBB");
+        OrderDTO order = orderAPI.findOrderByOrderNumber(invoice.getOrderNumber());
         AddressDTO address = new AddressDTO();
         address.setId(1);
 
         Main.scenarioStep("8 : Le système se charge de la livraison de la commande aux dates de livraison prévues");
         DeliveryDTO delivery = deliveryAPI.createDelivery(
                 address,
-                LocalDate.now().plusDays(3),
+                Date.valueOf(LocalDate.now().plusDays(3)),
                 "In Transit",
                 order
         );
