@@ -46,24 +46,6 @@ public class CartAPIImpl implements CartAPI {
     }
 
     @Override
-    public void add(List<BookDTO> bookDtos, AccountDTO accountDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'add'");
-    }
-
-    @Override
-    public void add(BookDTO bookDto, int quantity, AccountDTO accountDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'add'");
-    }
-
-    @Override
-    public void add(Map<BookDTO, Integer> bookDtoQuantities, AccountDTO accountDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'add'");
-    }
-
-    @Override
     public void remove(BookDTO bookDto, AccountDTO accountDto) {
         try {
             cartService.removeBookFromCart(accountDto, bookDto);
@@ -76,24 +58,6 @@ public class CartAPIImpl implements CartAPI {
             logger.severe("Error removing book from cart: " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void remove(BookDTO bookDto, int quantity, AccountDTO accountDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'remove'");
-    }
-
-    @Override
-    public void remove(List<BookDTO> bookDtos, AccountDTO accountDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'remove'");
-    }
-
-    @Override
-    public void remove(Map<BookDTO, Integer> bookDtoQuantities, AccountDTO accountDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'remove'");
     }
 
     @Override

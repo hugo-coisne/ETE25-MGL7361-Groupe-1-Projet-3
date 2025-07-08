@@ -1,0 +1,216 @@
+@startuml
+class account.dto.AccountDTO {
+- String firstName
+- String lastName
+- String phone
+- String email
+- String password
+- int id
++ Account toAccount()
++ String toString()
++ String getFirstName()
++ void setFirstName(String)
++ String getLastName()
++ void setLastName(String)
++ String getPhone()
++ void setPhone(String)
++ String getEmail()
++ void setEmail(String)
++ String getPassword()
++ void setPassword(String)
++ void setId(int)
++ int getId()
+}
+
+
+class account.business.CartService {
+~ {static} CartService instance
+~ Logger logger
+~ AccountAPI accountAPI
+~ BookAPI bookAPI
+~ CartDAO cartDAO
++ {static} CartService getInstance()
++ CartDTO getCart(AccountDTO)
++ void addBookToCart(AccountDTO,BookDTO)
++ void removeBookFromCart(AccountDTO,BookDTO)
++ void clearCart(AccountDTO)
+}
+
+
+class account.presentation.CartAPIImpl {
+- {static} CartService cartService
+~ {static} Logger logger
++ CartDTO getCart(AccountDTO)
++ void add(BookDTO,AccountDTO)
++ void add(List<BookDTO>,AccountDTO)
++ void add(BookDTO,int,AccountDTO)
++ void add(Map<BookDTO,Integer>,AccountDTO)
++ void remove(BookDTO,AccountDTO)
++ void remove(BookDTO,int,AccountDTO)
++ void remove(List<BookDTO>,AccountDTO)
++ void remove(Map<BookDTO,Integer>,AccountDTO)
++ void clearCart(AccountDTO)
+}
+
+
+class account.dto.CartDTO {
+- Map<String,Integer> booksIsbn
+- int userId
+- Map<BookDTO,Integer> bookDtos
+- double totalPrice
+- int id
++ void add(BookDTO,int)
++ void setBooks(Map<BookDTO,Integer>)
++ void setBookIsbn(Map<String,Integer>)
++ void addBookIsbn(Map<String,Integer>)
++ void removeBookIsbn(Map<String,Integer>)
++ Map<String,Integer> getBookIsbn()
++ int getUserId()
++ double getTotalPrice()
++ int getId()
++ String toString()
++ Cart toCart()
++ void setId(int)
++ void setTotalPrice(double)
++ Map<BookDTO,Integer> getBooksDto()
+}
+
+
+interface account.presentation.AccountAPI {
+~ AccountDTO signin(String,String)
+~ void signup(String,String,String,String,String)
+~ void changePhoneFor(AccountDTO,String)
+~ void changeEmailFor(AccountDTO,String)
+~ void changeFirstNameFor(AccountDTO,String)
+~ void changeLastNameFor(AccountDTO,String)
+~ void changePasswordFor(AccountDTO,String)
+~ void delete(AccountDTO)
+}
+
+class account.presentation.AccountAPIImpl {
+~ Logger logger
+~ AccountService accountService
++ AccountDTO signin(String,String)
++ void signup(String,String,String,String,String)
++ void delete(AccountDTO)
++ void changePasswordFor(AccountDTO,String)
++ void changePhoneFor(AccountDTO,String)
++ void changeEmailFor(AccountDTO,String)
++ void changeFirstNameFor(AccountDTO,String)
++ void changeLastNameFor(AccountDTO,String)
+}
+
+
+interface account.presentation.CartAPI {
++ CartDTO getCart(AccountDTO)
++ void add(BookDTO,AccountDTO)
++ void add(BookDTO,int,AccountDTO)
++ void add(List<BookDTO>,AccountDTO)
++ void add(Map<BookDTO,Integer>,AccountDTO)
++ void remove(BookDTO,AccountDTO)
++ void remove(BookDTO,int,AccountDTO)
++ void remove(List<BookDTO>,AccountDTO)
++ void remove(Map<BookDTO,Integer>,AccountDTO)
++ void clearCart(AccountDTO)
+}
+
+
+class account.business.ArgumentValidator {
++ {static} List<String> checkEmail(String)
+- {static} List<String> checkEmailLocalPart(String,List<String>)
+- {static} List<String> checkEmailDomainPart(String,List<String>)
++ {static} List<String> checkPhone(String)
++ {static} List<String> checkNames(String,String)
++ {static} List<String> checkPassword(String)
++ {static} void checkAccountSignupArguments(Account)
++ {static} void checkAccountSigninpArguments(String,String)
+}
+
+
+class account.persistence.AccountDAO {
+~ Logger logger
+~ {static} AccountDAO instance
++ {static} AccountDAO getInstance()
++ void insert(Account)
++ Account findByEmailAndPassword(String,String)
++ void deleteAccountWithId(int)
++ void update(Account)
+}
+
+
+
+class account.model.Cart {
+- Map<BookDTO,Integer> booksDto
+- int id
+- double totalPrice
++ void setTotalPrice(double)
++ double getTotalPrice()
++ void setId(int)
++ int getId()
++ int getQuantity(BookDTO)
++ CartDTO toDTO()
++ void setBooksDto(Map<BookDTO,Integer>)
++ Map<BookDTO,Integer> getBooks()
++ void addBook(BookDTO,int)
++ String toString()
+}
+
+
+class account.model.Account {
+- String firstName
+- String lastName
+- String phone
+- String email
+- String password
+- int id
++ AccountDTO toDto()
++ String toString()
++ String getFirstName()
++ void setFirstName(String)
++ String getLastName()
++ void setLastName(String)
++ String getPhone()
++ void setPhone(String)
++ String getEmail()
++ void setEmail(String)
++ String getPassword()
++ void setPassword(String)
++ void setId(int)
++ int getId()
+}
+
+
+class account.business.AccountService {
+~ {static} AccountService instance
+~ Logger logger
+~ AccountDAO accountDao
+~ CartAPI cartAPI
++ {static} AccountService getInstance()
++ void create(AccountDTO)
++ AccountDTO signin(String,String)
++ void delete(AccountDTO)
++ void update(AccountDTO,String,String)
+}
+
+
+class account.persistence.CartDAO {
+~ Logger logger
++ Cart createCartFor(AccountDTO)
++ Cart getCart(AccountDTO)
++ void addBookToCart(AccountDTO,BookDTO)
++ void removeBookFromCart(Account,BookDTO)
++ void clearCart(Account)
+}
+
+
+
+
+account.presentation.CartAPI <|.. account.presentation.CartAPIImpl
+account.presentation.AccountAPI <|.. account.presentation.AccountAPIImpl
+
+
+account.presentation.AccountAPIImpl -- account.business.AccountService
+account.presentation.CartAPIImpl -- account.business.CartService
+account.business.AccountService -- account.persistence.AccountDAO
+account.business.CartService -- account.persistence.CartDAO
+@enduml
