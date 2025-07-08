@@ -263,7 +263,3 @@ VALUES ('20250623-AAAABBBB',
 INSERT INTO invoices (invoice_number, order_number, invoice_date, total_price, payment_method)
 VALUES ('INV-20250623-AAAABBBB-001', '20250623-AAAABBBB', '20250623', 19.99, 'CARD'),
        ('INV-20250623-AABBAABB-001', '20250623-AABBAABB', '20250623', 14.99, 'PAYPAL');
--- Deliveries
-INSERT INTO deliveries (order_id, address_id, delivery_date, status)
-VALUES (1, 1, '2025-06-12', 'In Transit'),
-       (2, 2, '2025-06-11', 'Delivered');
