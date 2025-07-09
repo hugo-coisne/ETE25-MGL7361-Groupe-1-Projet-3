@@ -2,6 +2,7 @@ package ca.uqam.mgl7361.lel.gp1.lel.gp1.account.business;
 
 import java.util.logging.Logger;
 
+import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.apis.BookAPIImpl;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.dto.AccountDTO;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.dto.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.exception.InvalidCartException;
@@ -10,9 +11,8 @@ import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.model.Cart;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.persistence.CartDAO;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.presentation.AccountAPI;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.presentation.AccountAPIImpl;
-import ca.uqam.mgl7361.lel.gp1.shop.dto.BookDTO;
-import ca.uqam.mgl7361.lel.gp1.shop.presentation.BookAPI;
-import ca.uqam.mgl7361.lel.gp1.shop.presentation.BookAPIImpl;
+import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.shop.BookDTO;
+import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.interfaces.BookAPI;
 
 public class CartService {
 

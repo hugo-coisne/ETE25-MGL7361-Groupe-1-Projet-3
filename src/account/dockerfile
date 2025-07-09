@@ -1,0 +1,15 @@
+# Étape 1 : build multi-module
+FROM maven:3.9-eclipse-temurin-21 AS builder
+WORKDIR /app
+
+COPY common /app/common
+RUN mvn -f common/pom.xml clean install
+
+COPY account /app/account
+RUN mvn -f account/pom.xml clean package -DskipTests
+
+# Étape 2 : image finale
+FROM eclipse-temurin:21-jdk
+WORKDIR /app
+COPY --from=builder /app/account/target/account-*.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]

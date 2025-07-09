@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.model.Cart;
-import ca.uqam.mgl7361.lel.gp1.shop.dto.BookDTO;
+import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.shop.BookDTO;
 
 public class CartDTO {
     private Map<String, Integer> booksIsbn;

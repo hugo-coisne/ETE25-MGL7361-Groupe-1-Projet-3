@@ -14,8 +14,8 @@ import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.exception.InvalidCartException;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.model.Account;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.model.Cart;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.DBConnection;
-import ca.uqam.mgl7361.lel.gp1.shop.dto.BookDTO;
-import ca.uqam.mgl7361.lel.gp1.shop.dto.PublisherDTO;
+import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.shop.BookDTO;
+import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.shop.PublisherDTO;
 
 public class CartDAO {
 
