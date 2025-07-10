@@ -33,7 +33,12 @@ public class CartService {
 
     public CartDTO getCart(AccountDTO accountDto) {
         logger.info("Retrieving cart for account: " + accountDto.getEmail());
-        accountDto = accountAPI.signin(accountDto.getEmail(), accountDto.getPassword());
+        try {
+            accountDto = accountAPI.signin(accountDto.getEmail(), accountDto.getPassword());
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         Cart cart = cartDAO.getCart(accountDto);
 
         if (cart.getId() < 0 || cart.getTotalPrice() < 0) {
@@ -48,7 +53,12 @@ public class CartService {
     }
 
     public void addBookToCart(AccountDTO accountDto, BookDTO bookDto) throws UnsufficientStockException, InvalidCartException {
-        accountDto = accountAPI.signin(accountDto.getEmail(), accountDto.getPassword());
+        try {
+            accountDto = accountAPI.signin(accountDto.getEmail(), accountDto.getPassword());
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         CartDTO cart = this.getCart(accountDto);
         if (!bookAPI.isInStock(bookDto)) {
             logger.warning("Book is not in stock: " + bookDto.getTitle());
@@ -62,12 +72,22 @@ public class CartService {
     }
 
     public void removeBookFromCart(AccountDTO accountDto, BookDTO bookDto) throws InvalidCartException {
-        accountDto = accountAPI.signin(accountDto.getEmail(), accountDto.getPassword());
+        try {
+            accountDto = accountAPI.signin(accountDto.getEmail(), accountDto.getPassword());
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         cartDAO.removeBookFromCart(accountDto.toAccount(), bookDto);
     }
 
     public void clearCart(AccountDTO accountDto) throws InvalidCartException {
-        accountDto = accountAPI.signin(accountDto.getEmail(), accountDto.getPassword());
+        try {
+            accountDto = accountAPI.signin(accountDto.getEmail(), accountDto.getPassword());
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         cartDAO.clearCart(accountDto.toAccount());
     }
 

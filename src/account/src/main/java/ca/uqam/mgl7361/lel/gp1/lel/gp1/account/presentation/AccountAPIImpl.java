@@ -14,47 +14,16 @@ public class AccountAPIImpl implements AccountAPI {
     AccountService accountService = AccountService.getInstance();
 
     @Override
-    public AccountDTO signin(String email, String password) {
+    public AccountDTO signin(String email, String password) throws InvalidCredentialsException {
         logger.info("Attempting to sign in with email: " + email);
-        try {
-            AccountDTO accountDto = accountService.signin(email, password);
-//            System.out.println("Connexion réussie.");
-//            System.out.println("Bienvenue " + accountDto.getFirstName() + " " + accountDto.getLastName() + " !");
-            return accountDto;
-        } catch (InvalidCredentialsException e) {
-            logger.warning("Sign in failed due to invalid arguments: " + e.getMessage());
-            System.out.println(
-                    "Identifiants incorrects. Veuillez vérifier les informations saisies.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.severe("Error during sign in: " + e.getMessage());
-            System.out.println("Une erreur est survenue lors de la connexion. Veuillez réessayer plus tard.");
-        }
-        return null;
+        AccountDTO accountDto = accountService.signin(email, password);
+        return accountDto;
     }
 
     @Override
-    public void signup(String firstName, String lastName, String phone, String email, String password) {
+    public void signup(String firstName, String lastName, String phone, String email, String password) throws IllegalArgumentException, DuplicateEmailException {
         logger.info("Creating account for: " + firstName + " " + lastName + " with email: " + email);
-        try {
-            accountService.create(new AccountDTO(firstName, lastName, phone, email, password));
-            System.out.println("Compte créé avec succès. Vous pouvez maintenant vous connecter.");
-        } catch (DuplicateEmailException e) {
-            logger.warning("AccountDTO not created because " + e.getMessage() + " is already in database.");
-            System.out.println("Le courriel " + e.getMessage()
-                    + " est déjà utilisé. S'il s'agit bien de votre email, veuillez vous connecter."); // see if
-                                                                                                       // password reset
-                                                                                                       // is needed
-        } catch (IllegalArgumentException e) {
-            logger.warning("AccountDTO not created because " + e.getMessage());
-            System.out.println("Compte non créé. Veuillez vérifier les informations saisies. " + e.getMessage());
-        }
-
-        catch (Exception e) {
-            e.printStackTrace();
-            logger.severe("Error creating account: " + e.getMessage());
-        }
-
+        accountService.create(new AccountDTO(firstName, lastName, phone, email, password));
     }
 
     @Override
