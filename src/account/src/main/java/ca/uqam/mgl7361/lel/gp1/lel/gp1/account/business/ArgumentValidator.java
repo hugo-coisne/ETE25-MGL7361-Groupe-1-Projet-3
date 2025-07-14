@@ -1,8 +1,11 @@
 package ca.uqam.mgl7361.lel.gp1.lel.gp1.account.business;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.exception.InvalidArgumentException;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.model.Account;
 
 public class ArgumentValidator {
@@ -156,11 +159,12 @@ public class ArgumentValidator {
         return issues;
     }
 
-    public static void checkAccountSignupArguments(Account account) throws IllegalArgumentException {
+    public static void checkAccountSignupArguments(Account account) throws InvalidArgumentException {
         // This method can be used to validate the account object before performing
         // operations
         // It can throw exceptions if any of the required fields are missing or invalid
 
+        
         if (account == null) {
             throw new IllegalArgumentException("Account cannot be null");
         }
@@ -168,22 +172,27 @@ public class ArgumentValidator {
         List<String> emailIssues = checkEmail(account.getEmail());
         List<String> passwordIssues = checkPassword(account.getPassword());
         List<String> phoneIssues = checkPhone(account.getPhone());
-
+        
         if (!namesIssues.isEmpty() || !emailIssues.isEmpty() || !passwordIssues.isEmpty()) {
-            StringBuilder errorMessage = new StringBuilder("\nInvalid account details:");
+            Map<String, List<String>> issues = new HashMap<>();
+            // StringBuilder errorMessage = new StringBuilder("\nInvalid account details:");
             if (!namesIssues.isEmpty()) {
-                errorMessage.append("\n - Names issues:").append("\n   - ").append(String.join("\n   - ", namesIssues));
+                issues.put("names", namesIssues);
+                // errorMessage.append("\n - Names issues:").append("\n   - ").append(String.join("\n   - ", namesIssues));
             }
             if (!phoneIssues.isEmpty()) {
-                errorMessage.append("\n - Phone issues:").append("\n   - ").append(String.join("\n   - ", phoneIssues));
+                issues.put("phone", phoneIssues);
+                // errorMessage.append("\n - Phone issues:").append("\n   - ").append(String.join("\n   - ", phoneIssues));
             }
             if (!emailIssues.isEmpty()) {
-                errorMessage.append("\n - Email issues:").append("\n   - ").append(String.join("\n   - ", emailIssues));
+                issues.put("email", emailIssues);
+                // errorMessage.append("\n - Email issues:").append("\n   - ").append(String.join("\n   - ", emailIssues));
             }
             if (!passwordIssues.isEmpty()) {
-                errorMessage.append("\n - Password issues:").append("\n   - ").append(String.join("\n   - ", passwordIssues)).append("\n");
+                issues.put("password", passwordIssues);
+                // errorMessage.append("\n - Password issues:").append("\n   - ").append(String.join("\n   - ", passwordIssues)).append("\n");
             }
-            throw new IllegalArgumentException(errorMessage.toString());
+            throw new InvalidArgumentException(issues);
         }
     }
 

@@ -5,6 +5,7 @@ import com.sun.net.httpserver.*;
 
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.dto.AccountDTO;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.exception.DuplicateEmailException;
+import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.exception.InvalidArgumentException;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.presentation.AccountAPIImpl;
 
 import java.io.*;
@@ -29,15 +30,15 @@ public class Main {
             logger.info("Content type " + exchange.getRequestHeaders().getFirst("Content-Type"));
 
             if (!exchange.getRequestHeaders().getFirst("Content-Type").equalsIgnoreCase("application/json")) {
-                logger.warn("Content-Type : "
-                        + exchange.getRequestHeaders().getFirst("Content-Type") + " use application/json only.");
+                logger.warn("Unsupported Content-Type : "
+                        + exchange.getRequestHeaders().getFirst("Content-Type"));
                 sendResponse(exchange, 415, "{\"error\":\"Unsupported Media Type\"}");
                 return;
             }
 
             if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
-                logger.warn("Method not allowed: " + exchange.getRequestMethod() + ". Use POST only.");
-                sendResponse(exchange, 405, "{\"error\":\"Method Not Allowed\"}");
+                logger.warn("Method not allowed: " + exchange.getRequestMethod());
+                sendResponse(exchange, 405, "{\"error\":\"Method not allowed\"}");
                 return;
             }
 
@@ -50,10 +51,12 @@ public class Main {
                 sendResponse(exchange, 201, "{\"message\":\"Account created\"}");
             } catch (DuplicateEmailException e) {
                 logger.warn("AccountDTO not created because " + e.getMessage() + " is already in database.");
-                sendResponse(exchange, 409, "{\"error\":\"Email already exists\"}");
-            } catch (IllegalArgumentException e) {
-                logger.warn("AccountDTO not created because " + e.getMessage());
-                sendResponse(exchange, 400, "{\"error\": \"Invalid argument\"}"); // TODO : provide details
+                sendResponse(exchange, 409, "{\"error\":\"Email is already used\"}");
+            } catch (InvalidArgumentException e) {
+                logger.warn("AccountDTO not created because " + e.getProblems());
+                String issues = objectMapper.writeValueAsString(e.getProblems());
+                String response = String.format("{\"error\": \"Invalid argument\", \"details\":%s}", issues);
+                sendResponse(exchange, 400, response);
             } catch (Exception e) {
                 logger.error("Error creating account: " + e.getMessage());
                 logger.error(e.getStackTrace().toString());
@@ -62,12 +65,17 @@ public class Main {
 
         server.createContext("/signin", exchange -> {
             if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
-                logger.warn("Method not allowed " + exchange.getRequestMethod());
-                sendResponse(exchange, 405, "Method Not Allowed");
+                logger.warn("Method not allowed: " + exchange.getRequestMethod());
+                sendResponse(exchange, 405, "{\"error\":\"Method not allowed\"}");
+                return;
             }
             if (!exchange.getRequestHeaders().getFirst("Content-Type").equalsIgnoreCase("application/json")) {
-
+                logger.warn("Unsupported Content-Type : "
+                        + exchange.getRequestHeaders().getFirst("Content-Type"));
+                sendResponse(exchange, 415, "{\"error\":\"Unsupported media type\"}");
+                return;
             }
+
         });
 
         server.setExecutor(null); // single-threaded
