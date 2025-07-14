@@ -1,6 +1,6 @@
 package ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.business;
 
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.dto.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.account.dto.AccountDTO;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.dto.AddressDTO;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.dto.DeliveryDTO;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.persistence.DeliveryDAO;

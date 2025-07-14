@@ -1,11 +1,11 @@
 package ca.uqam.mgl7361.lel.gp1.lel.gp1.main;
 
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.dto.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.dto.CartDTO;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.presentation.AccountAPI;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.presentation.AccountAPIImpl;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.presentation.CartAPI;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.presentation.CartAPIImpl;
+import ca.uqam.mgl7361.lel.gp1.account.dto.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.account.dto.CartDTO;
+import ca.uqam.mgl7361.lel.gp1.account.presentation.api.AccountAPI;
+import ca.uqam.mgl7361.lel.gp1.account.presentation.api.CartAPI;
+import ca.uqam.mgl7361.lel.gp1.account.presentation.api.impl.AccountAPIImpl;
+import ca.uqam.mgl7361.lel.gp1.account.presentation.api.impl.CartAPIImpl;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.dto.AddressDTO;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.dto.DeliveryDTO;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.presentation.DeliveryAPIImpl;

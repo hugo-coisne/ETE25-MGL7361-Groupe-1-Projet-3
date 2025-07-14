@@ -1,9 +1,9 @@
 package ca.uqam.mgl7361.lel.gp1.order.business;
 
 
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.dto.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.account.dto.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.order.dto.OrderDTO;
+import ca.uqam.mgl7361.lel.gp1.account.dto.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.account.dto.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.order.business.mapper.OrderMapper;
 import ca.uqam.mgl7361.lel.gp1.order.model.Order;
 import ca.uqam.mgl7361.lel.gp1.order.persistence.OrderDAO;

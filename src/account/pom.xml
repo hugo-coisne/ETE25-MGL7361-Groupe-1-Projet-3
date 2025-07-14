@@ -12,7 +12,7 @@
   <properties>
     <maven.compiler.source>21</maven.compiler.source>
     <maven.compiler.target>21</maven.compiler.target>
-    <mainClass>ca.uqam.mgl7361.lel.gp1.lel.gp1.account.Main</mainClass>
+    <mainClass>ca.uqam.mgl7361.lel.gp1.account.Main</mainClass>
   </properties>
 
   <build>  
