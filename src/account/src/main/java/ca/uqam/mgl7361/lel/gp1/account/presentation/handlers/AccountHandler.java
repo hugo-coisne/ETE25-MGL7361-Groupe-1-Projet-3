@@ -53,20 +53,23 @@ public class AccountHandler extends BaseHandler implements HttpHandler {
             return;
         }
 
+        if (checkRequestMethod(exchange, "DELETE")){
+            handleDeleteAccount(exchange);
+            return;
+        }
+
         logger.warn("Not found: " + path);
         sendResponse(exchange, 404, "{\"error\":\"Not found\"}");
     }
 
     public void handleSignin(HttpExchange exchange) throws IOException {
-        if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
-            logger.warn("Method not allowed");
-            sendResponse(exchange, 405, "{\"error\":\"Method not allowed\"}");
-            return;
-        }
 
-        if (!"application/json".equalsIgnoreCase(exchange.getRequestHeaders().getFirst("Content-Type"))) {
-            logger.warn("Unsupported Content-Type");
-            sendResponse(exchange, 415, "{\"error\":\"Unsupported Media Type\"}");
+        try {
+            checkContentType(exchange, "application/json");
+            checkRequestMethod(exchange, "POST");
+        } catch (IOException e) {
+            logger.error("Error checking request method or content type: " + e.getMessage());
+            sendResponse(exchange, 400, "{\"error\":\"Bad Request\"}");
             return;
         }
 
@@ -87,15 +90,12 @@ public class AccountHandler extends BaseHandler implements HttpHandler {
 
     public void handleSignup(HttpExchange exchange) throws IOException {
 
-        if (!"application/json".equalsIgnoreCase(exchange.getRequestHeaders().getFirst("Content-Type"))) {
-            logger.warn("Unsupported Content-Type");
-            sendResponse(exchange, 415, "{\"error\":\"Unsupported Media Type\"}");
-            return;
-        }
-
-        if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
-            logger.warn("Method not allowed");
-            sendResponse(exchange, 405, "{\"error\":\"Method not allowed\"}");
+        try {
+            checkContentType(exchange, "application/json");
+            checkRequestMethod(exchange, "POST");
+        } catch (IOException e) {
+            logger.error("Error checking request method or content type: " + e.getMessage());
+            sendResponse(exchange, 400, "{\"error\":\"Bad Request\"}");
             return;
         }
 
@@ -118,6 +118,25 @@ public class AccountHandler extends BaseHandler implements HttpHandler {
         }
     }
 
+    public boolean checkRequestMethod(HttpExchange exchange, String expectedMethod) throws IOException {
+        if (!expectedMethod.equalsIgnoreCase(exchange.getRequestMethod())) {
+            logger.warn("Method not allowed: " + exchange.getRequestMethod());
+            sendResponse(exchange, 405, "{\"error\":\"Method not allowed\"}");
+            throw new IOException("Method not allowed: " + exchange.getRequestMethod());
+        }
+        logger.info("Request method is valid: " + expectedMethod);
+        return true;
+    }
+
+    public void checkContentType(HttpExchange exchange, String expectedContentType) throws IOException {
+        String contentType = exchange.getRequestHeaders().getFirst("Content-Type");
+        if (contentType == null || !contentType.equalsIgnoreCase(expectedContentType)) {
+            logger.warn("Unsupported Content-Type: " + contentType);
+            sendResponse(exchange, 415, "{\"error\":\"Unsupported Media Type\"}");
+            throw new IOException("Unsupported Content-Type: " + contentType);
+        }
+    }
+
     private static AccountDTO parseAccountDTOFromJson(String body) {
         logger.info("Parsing AccountDTO from JSON");
         try {
@@ -128,6 +147,16 @@ public class AccountHandler extends BaseHandler implements HttpHandler {
     }
 
     private void handlePropertyChange(HttpExchange exchange, String path) throws IOException {
+
+        try {
+            checkContentType(exchange, "application/json");
+            checkRequestMethod(exchange, "PATCH");
+        } catch (IOException e) {
+            logger.error("Error checking request method or content type: " + e.getMessage());
+            sendResponse(exchange, 400, "{\"error\":\"Bad Request\"}");
+            return;
+        }
+
         logger.info("/account/change called");
         String property = path.substring(path.indexOf("/") + 1);
         String body = new String(exchange.getRequestBody().readAllBytes());
@@ -154,6 +183,36 @@ public class AccountHandler extends BaseHandler implements HttpHandler {
         } catch (DuplicateEmailException e) {
             logger.warn("Email already exists: " + account.getEmail());
             sendResponse(exchange, 401, "{\"error\" :\"Email is already used\"}");
+        }
+    }
+
+    private void handleDeleteAccount(HttpExchange exchange) throws IOException {
+
+        try {
+            checkContentType(exchange, "application/json");
+            checkRequestMethod(exchange, "DELETE");
+        } catch (IOException e) {
+            logger.error("Error checking request method or content type: " + e.getMessage());
+            sendResponse(exchange, 400, "{\"error\":\"Bad Request\"}");
+            return;
+        }
+
+        String body = new String(exchange.getRequestBody().readAllBytes());
+        Map<String, String> map = objectMapper.readValue(body, new TypeReference<>() {
+        });
+        AccountDTO account = new AccountDTO();
+        account.setEmail(map.get("email"));
+        account.setPassword(map.get("password"));
+        logger.info("Attempting to delete account with email: " + account.getEmail());
+        try {
+            api.delete(account);
+            sendResponse(exchange, 200, "{\"status\":\"success\", \"message\" : \"Account deleted succesfully\"}");
+        } catch (InvalidCredentialsException e) {
+            logger.warn("Deletion failed due to invalid credentials: " + e.getMessage());
+            sendResponse(exchange, 401, "{\"error\":\"Invalid credentials\"}");
+        } catch (Exception e) {
+            logger.error("Error during account deletion: " + e.getMessage(), e);
+            sendResponse(exchange, 500, "{\"error\":\"Internal server error\"}");
         }
     }
 }

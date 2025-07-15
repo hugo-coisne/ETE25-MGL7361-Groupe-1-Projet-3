@@ -37,19 +37,8 @@ public class AccountAPIImpl implements AccountAPI {
     }
 
     @Override
-    public void delete(AccountDTO account) {
+    public void delete(AccountDTO account) throws InvalidCredentialsException {
         logger.info("Attempting to delete account with email: " + account.getEmail());
-        try {
-            accountService.delete(account);
-            System.out.println("Compte supprimé avec succès.");
-        } catch (InvalidCredentialsException e) {
-            logger.warning("Deletion failed due to invalid credentials: " + e.getMessage());
-            System.out.println("Identifiants incorrects. Veuillez vérifier les informations saisies.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.severe("Error during account deletion: " + e.getMessage());
-            System.out
-                    .println("Une erreur est survenue lors de la suppression du compte. Veuillez réessayer plus tard.");
-        }
+        accountService.delete(account);
     }
 }
