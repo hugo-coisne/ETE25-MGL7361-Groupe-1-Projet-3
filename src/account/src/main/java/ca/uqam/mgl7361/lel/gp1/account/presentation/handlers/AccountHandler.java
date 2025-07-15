@@ -31,27 +31,25 @@ public class AccountHandler extends BaseHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String path = exchange.getRequestURI()
-            .getPath()
-            .replaceAll("/+$", "")
-            .replaceFirst("/account/", "");
+                .getPath()
+                .replaceAll("/+$", "")
+                .replaceFirst("/account/", "");
         String method = exchange.getRequestMethod();
 
         logger.info("Received request on: " + path + " [" + method + "]");
 
-
-        if (path.equals("signup")){
+        if (path.equals("signup")) {
             handleSignup(exchange);
             return;
         }
 
-        if (path.equals("signin")){
+        if (path.equals("signin")) {
             handleSignin(exchange);
             return;
         }
 
-        if (path.startsWith("change")){
-            logger.info("/account/change called");
-            logger.info("path");
+        if (path.startsWith("change")) {
+            handlePropertyChange(exchange, path);
             return;
         }
 
@@ -129,4 +127,33 @@ public class AccountHandler extends BaseHandler implements HttpHandler {
         }
     }
 
+    private void handlePropertyChange(HttpExchange exchange, String path) throws IOException {
+        logger.info("/account/change called");
+        String property = path.substring(path.indexOf("/") + 1);
+        String body = new String(exchange.getRequestBody().readAllBytes());
+        Map<String, String> map = objectMapper.readValue(body, new TypeReference<>() {
+        });
+        String newValue = map.get("newValue");
+        AccountDTO account = new AccountDTO();
+        account.setEmail(map.get("email"));
+        account.setPassword(map.get("password"));
+
+        try {
+            api.changePropertyFor(account, property, newValue);
+            sendResponse(exchange, 200, "{\"status\":\"success\", \"message\" : \"Property updated successfully\"}");
+        } catch (InvalidCredentialsException e) {
+            logger.warn("Invalid credentials");
+            sendResponse(exchange, 401, "{\"error\":\"Invalid credentials, could not update account.\"}");
+        } catch (InvalidArgumentException e) {
+            logger.warn("Invalid argument: " + e.getMessage());
+            String issues = objectMapper.writeValueAsString(e.getProblems());
+            sendResponse(exchange, 400, String.format("{\"error\":\"Invalid argument\",\"details\":%s}", issues));
+        } catch (IllegalArgumentException e) {
+            logger.warn("Invalid argument: " + e.getMessage());
+            sendResponse(exchange, 404, "{\"error\" : \" Invalid property: " + property + "\"}");
+        } catch (DuplicateEmailException e) {
+            logger.warn("Email already exists: " + account.getEmail());
+            sendResponse(exchange, 401, "{\"error\" :\"Email is already used\"}");
+        }
+    }
 }

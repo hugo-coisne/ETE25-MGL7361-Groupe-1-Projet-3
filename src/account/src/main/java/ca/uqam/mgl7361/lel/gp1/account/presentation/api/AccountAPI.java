@@ -7,15 +7,7 @@ public interface AccountAPI {
 
     void signup(String firstName, String lastName, String phone, String email, String password) throws Exception;
 
-    void changePhoneFor(AccountDTO account, String newPhone);
-
-    void changeEmailFor(AccountDTO account, String newEmail);
-
-    void changeFirstNameFor(AccountDTO account, String newFirstName);
-
-    void changeLastNameFor(AccountDTO account, String newLastName);
-
-    void changePasswordFor(AccountDTO account, String newPassword);
+    void changePropertyFor(AccountDTO account, String property, String newValue) throws Exception;
 
     void delete(AccountDTO account);
 }

@@ -1,9 +1,13 @@
 package ca.uqam.mgl7361.lel.gp1.account.business;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import ca.uqam.mgl7361.lel.gp1.account.dto.AccountDTO;
 import ca.uqam.mgl7361.lel.gp1.account.exception.DuplicateEmailException;
+import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidArgumentException;
 import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidCredentialsException;
 import ca.uqam.mgl7361.lel.gp1.account.model.Account;
 import ca.uqam.mgl7361.lel.gp1.account.persistence.AccountDAO;
@@ -58,31 +62,42 @@ public class AccountService {
     }
 
     public void update(AccountDTO accountDto, String parameterToBeUpdated, String newValue)
-            throws InvalidCredentialsException {
+            throws InvalidCredentialsException, IllegalArgumentException, DuplicateEmailException {
         // Logic to update an existing account
         Account account = accountDto.toAccount();
         logger.info("Updating account with email: " + account.getEmail() + ", parameter: " + parameterToBeUpdated
-                + ", new value: " + newValue + ", old value: " + account.getPassword());
+                + ", new value: " + newValue);
         Account authenticatedAccount = signin(account.getEmail(), account.getPassword()).toAccount();
         logger.info("Authenticated account: " + authenticatedAccount.toString());
+        List<String> problems = new ArrayList<>();
         switch (parameterToBeUpdated.toLowerCase()) {
             case "phone":
+                problems = ArgumentValidator.checkPhone(newValue);
                 authenticatedAccount.setPhone(newValue);
                 break;
             case "email":
+                problems = ArgumentValidator.checkEmail(newValue);
                 authenticatedAccount.setEmail(newValue);
                 break;
-            case "first_name":
+            case "firstname":
+                problems = ArgumentValidator.checkName(newValue);
                 authenticatedAccount.setFirstName(newValue);
                 break;
-            case "last_name":
+            case "lastname":
+                problems = ArgumentValidator.checkName(newValue);
                 authenticatedAccount.setLastName(newValue);
                 break;
             case "password":
+                problems = ArgumentValidator.checkPassword(newValue);
                 authenticatedAccount.setPassword(newValue);
                 break;
             default:
-                throw new IllegalArgumentException("Invalid parameter to update: " + parameterToBeUpdated);
+                throw new IllegalArgumentException("Invalid property: " + parameterToBeUpdated);
+        }
+        if (!problems.isEmpty()) {
+            logger.warning("Invalid argument: " + parameterToBeUpdated + ", problems: " + problems);
+            Map<String, List<String>> problemsMap = Map.of(parameterToBeUpdated, problems);
+            throw new InvalidArgumentException(problemsMap);
         }
         accountDao.update(authenticatedAccount);
         logger.info("Account updated successfully.");

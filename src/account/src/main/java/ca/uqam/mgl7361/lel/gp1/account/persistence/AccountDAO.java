@@ -121,7 +121,7 @@ public class AccountDAO {
         }
     }
 
-    public void update(Account authenticatedAccount) {
+    public void update(Account authenticatedAccount) throws DuplicateEmailException {
         logger.info("Updating account in database for: " + authenticatedAccount.toString());
 
         try (Connection conn = DBConnection.getConnection();
@@ -141,6 +141,16 @@ public class AccountDAO {
                 logger.info("Account updated successfully.");
             } else {
                 logger.warning("No account found with ID " + authenticatedAccount.getId());
+            }
+        } catch (SQLIntegrityConstraintViolationException e) {
+            logger.severe("SQL Integrity Constraint Violation: " + e.getMessage());
+
+            String errorMessage = e.getMessage();
+            // Check if the error is due to a duplicate email
+            if (errorMessage.contains("Duplicate entry") && errorMessage.contains("email")) {
+                throw new DuplicateEmailException(authenticatedAccount.getEmail());
+            } else {
+                throw new RuntimeException("Erreur d'intégrité SQL inconnue : " + e.getMessage(), e);
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors de la mise à jour du compte dans la base de données", e);

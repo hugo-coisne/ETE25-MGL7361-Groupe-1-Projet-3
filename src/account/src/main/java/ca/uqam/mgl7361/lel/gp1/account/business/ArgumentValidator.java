@@ -24,7 +24,7 @@ public class ArgumentValidator {
             issues.add("Email must contain exactly one '@'");
 
         if (atIndex < 1)
-            issues.add("Email must have at least one character before '@'");
+            issues.add("Email must contain exactly one '@' and have at least one character before '@'");
 
         if (!issues.isEmpty())
             return issues;
@@ -137,6 +137,21 @@ public class ArgumentValidator {
         return issues;
     }
 
+    public static List<String> checkName(String name) {
+        List<String> issues = new ArrayList<>();
+        // Should not be null or empty
+        if (name == null || name.isEmpty()) {
+            issues.add("Name cannot be null or empty");
+            return issues;
+        }
+
+        // Length checks
+        if (name.length() < 1 || name.length() > 50)
+            issues.add("First name must be between 1 and 50 characters long");
+
+        return issues;
+    }
+
     public static List<String> checkPassword(String password) {
         List<String> issues = new ArrayList<>();
         // Should not be null or empty
@@ -164,7 +179,6 @@ public class ArgumentValidator {
         // operations
         // It can throw exceptions if any of the required fields are missing or invalid
 
-        
         if (account == null) {
             throw new IllegalArgumentException("Account cannot be null");
         }
@@ -172,32 +186,37 @@ public class ArgumentValidator {
         List<String> emailIssues = checkEmail(account.getEmail());
         List<String> passwordIssues = checkPassword(account.getPassword());
         List<String> phoneIssues = checkPhone(account.getPhone());
-        
+
         if (!namesIssues.isEmpty() || !emailIssues.isEmpty() || !passwordIssues.isEmpty()) {
             Map<String, List<String>> issues = new HashMap<>();
             // StringBuilder errorMessage = new StringBuilder("\nInvalid account details:");
             if (!namesIssues.isEmpty()) {
                 issues.put("names", namesIssues);
-                // errorMessage.append("\n - Names issues:").append("\n   - ").append(String.join("\n   - ", namesIssues));
+                // errorMessage.append("\n - Names issues:").append("\n -
+                // ").append(String.join("\n - ", namesIssues));
             }
             if (!phoneIssues.isEmpty()) {
                 issues.put("phone", phoneIssues);
-                // errorMessage.append("\n - Phone issues:").append("\n   - ").append(String.join("\n   - ", phoneIssues));
+                // errorMessage.append("\n - Phone issues:").append("\n -
+                // ").append(String.join("\n - ", phoneIssues));
             }
             if (!emailIssues.isEmpty()) {
                 issues.put("email", emailIssues);
-                // errorMessage.append("\n - Email issues:").append("\n   - ").append(String.join("\n   - ", emailIssues));
+                // errorMessage.append("\n - Email issues:").append("\n -
+                // ").append(String.join("\n - ", emailIssues));
             }
             if (!passwordIssues.isEmpty()) {
                 issues.put("password", passwordIssues);
-                // errorMessage.append("\n - Password issues:").append("\n   - ").append(String.join("\n   - ", passwordIssues)).append("\n");
+                // errorMessage.append("\n - Password issues:").append("\n -
+                // ").append(String.join("\n - ", passwordIssues)).append("\n");
             }
             throw new InvalidArgumentException(issues);
         }
     }
 
     public static void checkAccountSigninpArguments(String email, String password) throws IllegalArgumentException {
-        // This method can be used to validate the provided email and password before attempting to sign in
+        // This method can be used to validate the provided email and password before
+        // attempting to sign in
         // It can throw exceptions if any of the required fields are missing or invalid
 
         List<String> emailIssues = checkEmail(email);
@@ -209,7 +228,8 @@ public class ArgumentValidator {
                 errorMessage.append("\n - Email issues:").append("\n   - ").append(String.join("\n   - ", emailIssues));
             }
             if (!passwordIssues.isEmpty()) {
-                errorMessage.append("\n - Password issues:").append("\n   - ").append(String.join("\n   - ", passwordIssues)).append("\n");
+                errorMessage.append("\n - Password issues:").append("\n   - ")
+                        .append(String.join("\n   - ", passwordIssues)).append("\n");
             }
             throw new IllegalArgumentException(errorMessage.toString());
         }
