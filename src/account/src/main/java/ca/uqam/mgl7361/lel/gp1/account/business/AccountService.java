@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.springframework.stereotype.Service;
+
 import ca.uqam.mgl7361.lel.gp1.account.dto.AccountDTO;
 import ca.uqam.mgl7361.lel.gp1.account.exception.DuplicateEmailException;
 import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidArgumentException;
@@ -14,6 +16,7 @@ import ca.uqam.mgl7361.lel.gp1.account.persistence.AccountDAO;
 import ca.uqam.mgl7361.lel.gp1.account.presentation.api.CartAPI;
 import ca.uqam.mgl7361.lel.gp1.account.presentation.api.impl.CartAPIImpl;
 
+@Service
 public class AccountService {
 
     static AccountService instance = null;
