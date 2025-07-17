@@ -20,11 +20,11 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>3.2.6</version> <!-- ou celui utilisé dans ton projet -->
+        <version>3.2.6</version>
         <executions>
           <execution>
             <goals>
-              <goal>repackage</goal> <!-- essentiel -->
+              <goal>repackage</goal>
             </goals>
           </execution>
         </executions>
