@@ -7,7 +7,11 @@ import ca.uqam.mgl7361.lel.gp1.shop.dto.AuthorDTO;
 import ca.uqam.mgl7361.lel.gp1.shop.dto.BookAttributeDTO;
 import ca.uqam.mgl7361.lel.gp1.shop.dto.CategoryDTO;
 import ca.uqam.mgl7361.lel.gp1.shop.dto.PublisherDTO;
+import ca.uqam.mgl7361.lel.gp1.shop.exception.AttributesException;
+import ca.uqam.mgl7361.lel.gp1.shop.exception.AuthorsException;
+import ca.uqam.mgl7361.lel.gp1.shop.exception.CategoriesException;
 import ca.uqam.mgl7361.lel.gp1.shop.exception.DTOException;
+import ca.uqam.mgl7361.lel.gp1.shop.exception.PublishersException;
 import ca.uqam.mgl7361.lel.gp1.shop.dto.BookProperty;
 
 import java.util.List;
@@ -35,7 +39,7 @@ public class BookAttributeServiceTest {
     }
 
     @Test
-    void testGetAuthorsReturnsCorrectData() {
+    void testGetAuthorsReturnsCorrectData() throws DTOException, AttributesException, AuthorsException {
         service.addAttributes(List.of(new BookAttributeDTO("AuteurTest", BookProperty.AUTHOR)));
 
         List<String> names = service.getAuthors().stream()
@@ -46,7 +50,7 @@ public class BookAttributeServiceTest {
     }
 
     @Test
-    void testGetCategoriesReturnsCorrectData() {
+    void testGetCategoriesReturnsCorrectData() throws DTOException, AttributesException, CategoriesException {
         service.addAttributes(List.of(new BookAttributeDTO("CategorieTest", BookProperty.CATEGORY)));
 
         List<String> names = service.getCategories().stream()
@@ -57,7 +61,7 @@ public class BookAttributeServiceTest {
     }
 
     @Test
-    void testGetPublishersReturnsCorrectData() {
+    void testGetPublishersReturnsCorrectData() throws DTOException, AttributesException, PublishersException {
         service.addAttributes(List.of(new BookAttributeDTO("EditeurTest", BookProperty.PUBLISHER)));
 
         List<String> names = service.getPublishers().stream()
@@ -68,7 +72,7 @@ public class BookAttributeServiceTest {
     }
 
     @Test
-    public void testRemoveAttribute() throws DTOException {
+    public void testRemoveAttribute() throws DTOException, AttributesException, CategoriesException {
         BookAttributeDTO category = new BookAttributeDTO("ToRemove Category", BookProperty.CATEGORY);
         service.addAttributes(List.of(category));
 

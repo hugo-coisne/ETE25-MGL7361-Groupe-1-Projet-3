@@ -19,7 +19,7 @@ class BookAttributeAPIImplTest {
     }
 
     @AfterEach
-    void tearDown() {
+    void tearDown() throws Exception {
         api.removeAttribute(new BookAttributeDTO("Auteur API", BookProperty.AUTHOR));
         api.removeAttribute(new BookAttributeDTO("Catégorie API", BookProperty.CATEGORY));
         api.removeAttribute(new BookAttributeDTO("Éditeur API", BookProperty.PUBLISHER));
@@ -27,7 +27,7 @@ class BookAttributeAPIImplTest {
 
     @Test
     @Order(1)
-    void testAddAndGetAttributes() {
+    void testAddAndGetAttributes() throws Exception {
         api.addAttributes(List.of(
                 new BookAttributeDTO("Auteur API", BookProperty.AUTHOR),
                 new BookAttributeDTO("Catégorie API", BookProperty.CATEGORY),
@@ -45,7 +45,7 @@ class BookAttributeAPIImplTest {
 
     @Test
     @Order(2)
-    void testRemoveAttribute() {
+    void testRemoveAttribute() throws Exception {
         api.removeAttribute(new BookAttributeDTO("Auteur API", BookProperty.AUTHOR));
         var authors = api.getAuthors();
         assertFalse(authors.stream().anyMatch(a -> a.getName().equals("Auteur API")));
