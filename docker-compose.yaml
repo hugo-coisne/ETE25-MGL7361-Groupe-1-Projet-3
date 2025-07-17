@@ -1,4 +1,19 @@
 services:
+
+  traefik:
+    image: traefik:v3.4
+    container_name: traefik
+    command:
+      - "--api.insecure=true"
+      - "--api.dashboard=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"  # Optional: Traefik dashboard
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
   db:
     image: mariadb
     restart: always
@@ -16,6 +31,13 @@ services:
     build:
       context: src
       dockerfile: account/dockerfile
+    environment:
+      - CONTEXT_PATH=${USER_PATH}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.account.rule=PathPrefix(`$USER_PATH`)"
+      - "traefik.http.routers.account.entrypoints=web"
+      - "traefik.http.services.account.loadbalancer.server.port=8080"
     ports:
       - "8081:8080"
     depends_on:
@@ -26,6 +48,11 @@ services:
     build:
       context: src
       dockerfile: shop/dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.shop.rule=PathPrefix(`$SHOP_PATH`)"
+      - "traefik.http.routers.shop.entrypoints=web"
+      - "traefik.http.services.shop.loadbalancer.server.port=8080"
     ports:
       - "8082:8080"
     depends_on:

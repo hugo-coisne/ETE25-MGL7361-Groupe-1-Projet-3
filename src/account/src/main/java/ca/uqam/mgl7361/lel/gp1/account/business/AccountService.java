@@ -50,14 +50,18 @@ public class AccountService {
         return accountDto;
     }
 
-    public void delete(AccountDTO accountDto) throws InvalidCredentialsException, InvalidCartException {
+    public void delete(AccountDTO accountDto) throws InvalidCredentialsException {
         // Logic to delete an account
         Account account = accountDto.toAccount();
         logger.info("Deleting account with email: " + account.getEmail());
         logger.info("First signing in with email: " + account.getEmail());
         Account authenticatedAccount = signin(account.getEmail(), account.getPassword()).toAccount();
         logger.info("Deleting cart for account with email: " + authenticatedAccount.getEmail());
-        cartService.clearCart(authenticatedAccount.toDto());
+        try {
+            cartService.clearCart(authenticatedAccount.toDto());
+        } catch (InvalidCartException e) {
+            logger.warning("No cart to delete for account: " + authenticatedAccount.getEmail());
+        }
         logger.info("Deleting account with email " + authenticatedAccount.getEmail());
         accountDao.deleteAccountWithId(authenticatedAccount.getId());
         logger.info("Account with email " + authenticatedAccount.getEmail() + " deleted successfully.");
