@@ -10,11 +10,10 @@ import org.springframework.stereotype.Service;
 import ca.uqam.mgl7361.lel.gp1.account.dto.AccountDTO;
 import ca.uqam.mgl7361.lel.gp1.account.exception.DuplicateEmailException;
 import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidArgumentException;
+import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidCartException;
 import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidCredentialsException;
 import ca.uqam.mgl7361.lel.gp1.account.model.Account;
 import ca.uqam.mgl7361.lel.gp1.account.persistence.AccountDAO;
-import ca.uqam.mgl7361.lel.gp1.account.presentation.api.CartAPI;
-import ca.uqam.mgl7361.lel.gp1.account.presentation.api.impl.CartAPIImpl;
 
 @Service
 public class AccountService {
@@ -24,7 +23,7 @@ public class AccountService {
     Logger logger = Logger.getLogger(AccountService.class.getName());
 
     AccountDAO accountDao = AccountDAO.getInstance();
-    CartAPI cartAPI = new CartAPIImpl();
+    static CartService cartService = CartService.getInstance();
 
     public static AccountService getInstance() {
         if (instance == null) {
@@ -51,14 +50,14 @@ public class AccountService {
         return accountDto;
     }
 
-    public void delete(AccountDTO accountDto) throws InvalidCredentialsException {
+    public void delete(AccountDTO accountDto) throws InvalidCredentialsException, InvalidCartException {
         // Logic to delete an account
         Account account = accountDto.toAccount();
         logger.info("Deleting account with email: " + account.getEmail());
         logger.info("First signing in with email: " + account.getEmail());
         Account authenticatedAccount = signin(account.getEmail(), account.getPassword()).toAccount();
         logger.info("Deleting cart for account with email: " + authenticatedAccount.getEmail());
-        cartAPI.clearCart(authenticatedAccount.toDto());
+        cartService.clearCart(authenticatedAccount.toDto());
         logger.info("Deleting account with email " + authenticatedAccount.getEmail());
         accountDao.deleteAccountWithId(authenticatedAccount.getId());
         logger.info("Account with email " + authenticatedAccount.getEmail() + " deleted successfully.");
