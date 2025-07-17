@@ -1,6 +1,6 @@
 {
-    "java.configuration.updateBuildConfiguration": "automatic",
-    "java.project.sourcePaths": [
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.project.sourcePaths": [
     "src/common",
     "src/order",
     "src/delivery",
@@ -8,5 +8,6 @@
     "src/account",
     "src/shop",
     "src/main"
-    ],
+  ],
+  "java.compile.nullAnalysis.mode": "automatic"
 }
