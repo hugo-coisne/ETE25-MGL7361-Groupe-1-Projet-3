@@ -13,6 +13,8 @@ public class PublisherDTO {
         this.name = name;
     }
 
+    public PublisherDTO() {} // Default constructor for serialization/deserialization
+
     public int getId() {
         return id;
     }

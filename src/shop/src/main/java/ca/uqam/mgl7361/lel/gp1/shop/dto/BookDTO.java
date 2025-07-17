@@ -27,6 +27,8 @@ public class BookDTO {
         this.authors = new ArrayList<>();
     }
 
+    public BookDTO(){} // Default constructor for serialization/deserialization
+
     // SETTERS ----------------------------------------------------------------
     public void setTitle(String title) {
         this.title = title;

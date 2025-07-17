@@ -11,98 +11,63 @@ import ca.uqam.mgl7361.lel.gp1.shop.persistence.BookDAO;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.sql.*;
 
+import org.springframework.stereotype.Service;
 
+@Service
 public class BookService {
     private final BookDAO bookDAO;
-
 
     public BookService() {
         this.bookDAO = new BookDAO();
     }
 
-    public BookDTO createBook(BookDTO bookDTO) throws DTOException, DuplicationBookException {
+    public BookDTO createBook(BookDTO bookDTO) throws DuplicationBookException, Exception {
         Book book = BookMapper.toModel(bookDTO);
-        try {
-            bookDAO.save(book);
-            return BookMapper.toDTO(book);
-        } catch (DuplicationBookException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new DTOException("Failed to create book: " + e.getMessage());
-        }
+        bookDAO.save(book);
+
+        return BookMapper.toDTO(book);
     }
 
-    public List<BookDTO> getBooksBy(Map<BookProperty, String> criteria) throws DTOException {
+    public List<BookDTO> getBooksBy(Map<BookProperty, String> criteria) {
         // TODO : Add checking for criteria validity
-        // TODO : Add the ability to retrieve publisher, categories and authors information, and add them to the Book then the BookDTO
-        try {
-            List<Book> books = this.bookDAO.getBooksBy(criteria);
+        // TODO : Add the ability to retrieve publisher, categories and authors
+        // information, and add them to the Book then the BookDTO
+        List<Book> books = this.bookDAO.getBooksBy(criteria);
 
-            return books.stream()
-                    .map(BookMapper::toDTO)
-                    .collect(Collectors.toList());
-
-        } catch (Exception e) {
-            throw new DTOException("Failed to retrieve books by criteria");
-        }
+        return books.stream()
+                .map(BookMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     public void setPropertiesFor(BookDTO bookDto, Map<BookProperty, List<String>> properties) throws DTOException {
-        try {
-            Book book = BookMapper.toModel(bookDto);
-            bookDAO.setPropertiesFor(book, properties);
-            } catch (Exception e) {
-            throw new DTOException("Failed to set properties for book: " + bookDto.getIsbn());
-        }
+        Book book = BookMapper.toModel(bookDto);
+        bookDAO.setPropertiesFor(book, properties);
     }
 
-    public void addBook(BookDTO bookDto) throws DTOException {
-        try {
-            Book book = BookMapper.toModel(bookDto);
-            bookDAO.save(book);
-        } catch (SQLException e) {
-            throw new DTOException("Erreur SQL lors de l'ajout du livre : " + bookDto.getIsbn());
-        } catch (Exception e) {
-            throw new DTOException("Erreur inattendue lors de l'ajout du livre : " + bookDto.getIsbn());
-        }
+    public void addBook(BookDTO bookDto) throws DuplicationBookException, Exception {
+        Book book = BookMapper.toModel(bookDto);
+        bookDAO.save(book);
     }
 
-    public void deleteBook(BookDTO bookDto) throws DTOException {
-        try {
-            Book book = BookMapper.toModel(bookDto);
-            bookDAO.deleteBook(book);
-        } catch (Exception e) {
-            throw new DTOException("Failed to delete book: " + bookDto.getIsbn());
-        }
+    public void deleteBook(BookDTO bookDto) throws DTOException, Exception {
+        Book book = BookMapper.toModel(bookDto);
+        bookDAO.deleteBook(book);
     }
 
     public void removePropertiesFrom(BookDTO bookDto, Map<BookProperty, List<String>> properties) throws DTOException {
-        try {
-            Book book = BookMapper.toModel(bookDto);
-            bookDAO.removePropertiesFrom(book, properties);
-        } catch (Exception e) {
-            throw new DTOException("Failed to remove properties from book: " + bookDto.getIsbn());
-        }
+        Book book = BookMapper.toModel(bookDto);
+        bookDAO.removePropertiesFrom(book, properties);
     }
 
     public boolean isInStock(BookDTO bookDto) throws DTOException {
-        try {
-            Book book = BookMapper.toModel(bookDto);
-            return bookDAO.isInStock(book);
-        } catch (SQLException e) {
-            throw new DTOException("Failed to check stock for book: " + bookDto.getIsbn());
-        }
+        Book book = BookMapper.toModel(bookDto);
+        return bookDAO.isInStock(book);
     }
 
     public boolean isSufficientlyInStock(BookDTO bookDto, int quantity) throws DTOException {
-        try {
-            Book book = BookMapper.toModel(bookDto);
-            return bookDAO.isSufficientlyInStock(book, quantity);
-        } catch (SQLException e) {
-            throw new DTOException("Failed to check stock quantity for book: " + bookDto.getIsbn());
-        }
+        Book book = BookMapper.toModel(bookDto);
+        return bookDAO.isSufficientlyInStock(book, quantity);
     }
 
 }

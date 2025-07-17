@@ -16,6 +16,10 @@ public class BookAttributeDTO {
         this.type = type;
     }
 
+    public BookAttributeDTO() {
+        // Default constructor for serialization/deserialization
+    }
+
     public String getName() {
         return name;
     }

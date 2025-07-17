@@ -21,7 +21,7 @@ public class BookServiceTest {
     }
 
     @BeforeEach
-    void clean() throws DTOException {
+    void clean() throws Exception {
         // Nettoyage : on supprime les livres de test s’ils existent
         try {
             BookDTO toDelete = new BookDTO("Test Book", "ISBN_TEST", 10.99);
@@ -31,7 +31,7 @@ public class BookServiceTest {
     }
 
     @Test
-    void testCreateAndGetBookBy() {
+    void testCreateAndGetBookBy() throws DuplicationBookException, Exception {
         BookDTO dto = new BookDTO("Test Book", "ISBN_TEST", 10.99);
         service.createBook(dto);
 
@@ -45,7 +45,7 @@ public class BookServiceTest {
     }
 
     @Test
-    void testSetAndRemoveProperties() {
+    void testSetAndRemoveProperties() throws DuplicationBookException, Exception {
         BookDTO dto = new BookDTO("Test Book", "ISBN_TEST", 10.99);
         service.addBook(dto);
 
@@ -85,7 +85,7 @@ public class BookServiceTest {
     }
 
     @Test
-    void testInStock() {
+    void testInStock() throws DuplicationBookException, Exception {
         BookDTO dto = new BookDTO("Stock Book", "ISBN_STOCK", 9.99);
         dto.setStockQuantity(3);
         service.addBook(dto);
@@ -106,7 +106,7 @@ public class BookServiceTest {
     }
 
     @Test
-    void testIsSufficientlyInStock() {
+    void testIsSufficientlyInStock() throws DuplicationBookException, Exception {
         BookDTO dto = new BookDTO("Stock Book", "ISBN_STOCK", 12.99);
         dto.setStockQuantity(5);
         service.addBook(dto);

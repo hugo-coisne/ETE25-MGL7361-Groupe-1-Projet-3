@@ -9,6 +9,10 @@ public class AuthorDTO {
         this.name = name;
     }
 
+    public AuthorDTO() {
+        // Default constructor for serialization/deserialization
+    }
+
     public int getId() {
         return id;
     }

@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 public class BookDAO {
     Logger logger = Logger.getLogger(BookDAO.class.getName());
 
-    public void save(Book book) throws Exception {
+    public void save(Book book) throws DuplicationBookException, Exception {
         // Logic to save the book to a database or any storage
         logger.log(Level.INFO, String.format("Saving book: %s:%s", book.getTitle(), book.getIsbn()));
         try (
@@ -26,8 +26,7 @@ public class BookDAO {
                         "INSERT INTO books " +
                                 "(title, description, isbn, publication_date, price, stock_quantity)" +
                                 " VALUES (?, ?, ?, ?, ?, ?)",
-                        Statement.RETURN_GENERATED_KEYS
-                )) {
+                        Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, book.getTitle());
             statement.setString(2, book.getDescription());
             statement.setString(3, book.getIsbn());
@@ -50,11 +49,15 @@ public class BookDAO {
             } else {
                 throw new Exception("An error occurred while saving the book: " + errorMessage, e);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new Exception("An error occurred while saving the book: " + e.getMessage(), e);
         }
 
     }
 
-    private PreparedStatement buildGetBooksQuery(Connection conn, Map<BookProperty, String> criteria) throws SQLException {
+    private PreparedStatement buildGetBooksQuery(Connection conn, Map<BookProperty, String> criteria)
+            throws SQLException {
         StringBuilder baseQuery = new StringBuilder("SELECT DISTINCT books.* FROM books ");
         Set<BookProperty> keys = criteria.keySet();
 
@@ -93,19 +96,18 @@ public class BookDAO {
         return statement;
     }
 
-    public List<Book> getBooksBy(Map<BookProperty, String> criteria) throws Exception {
+    public List<Book> getBooksBy(Map<BookProperty, String> criteria) {
         List<Book> books = new ArrayList<>();
+        logger.log(Level.INFO, String.format("Retrieving books: %s", books));
         try (
                 Connection conn = DBConnection.getConnection();
                 PreparedStatement statement = buildGetBooksQuery(conn, criteria);
-                ResultSet rs = statement.executeQuery()
-        ) {
+                ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
                 Book book = new Book(
                         rs.getString("title"),
                         rs.getString("isbn"),
-                        rs.getDouble("price")
-                );
+                        rs.getDouble("price"));
                 book.setDescription(rs.getString("description"));
                 book.setPublicationDate(rs.getDate("publication_date"));
                 book.setStockQuantity(rs.getInt("stock_quantity"));
@@ -117,68 +119,67 @@ public class BookDAO {
 
                 books.add(book);
             }
+            return books;
         } catch (SQLException e) {
-            throw new Exception("Error retrieving books", e);
+            logger.log(Level.SEVERE, "Error retrieving books", e);
         }
-        logger.log(Level.INFO, String.format("Retrieving books: %s", books));
-        return books;
+        return Collections.emptyList(); // Return an empty list in case of error
     }
 
-    public void deleteBook(Book book) throws Exception {
+    public void deleteBook(Book book) throws DTOException, Exception {
         logger.log(Level.INFO, "Deleting book: " + book.getTitle() + " (ISBN: " + book.getIsbn() + ")");
 
-        try (
-                Connection conn = DBConnection.getConnection()
-        ) {
+        try (Connection conn = DBConnection.getConnection()) {
             conn.setAutoCommit(false); // début de transaction
 
-            //Récupérer l’ID du livre via l’ISBN
+            // Récupérer l’ID du livre via l’ISBN
             int bookId = -1;
-            try (PreparedStatement getIdStmt = conn.prepareStatement(
-                    "SELECT id FROM books WHERE isbn = ?")) {
-                getIdStmt.setString(1, book.getIsbn());
-                try (ResultSet rs = getIdStmt.executeQuery()) {
-                    if (rs.next()) {
-                        bookId = rs.getInt("id");
-                    } else {
-                        throw new DTOException("No book found with ISBN: " + book.getIsbn());
-                    }
-                }
+            PreparedStatement getIdStmt = conn.prepareStatement(
+                    "SELECT id FROM books WHERE isbn = ?");
+            getIdStmt.setString(1, book.getIsbn());
+            ResultSet rs = getIdStmt.executeQuery();
+            if (rs.next()) {
+                bookId = rs.getInt("id");
+            } else {
+                throw new DTOException("No book found with ISBN: " + book.getIsbn());
             }
 
-            //Supprimer les associations dans book_author
-            try (PreparedStatement deleteAuthorsStmt = conn.prepareStatement(
-                    "DELETE FROM book_author WHERE book_id = ?")) {
-                deleteAuthorsStmt.setInt(1, bookId);
-                deleteAuthorsStmt.executeUpdate();
+            // Supprimer les associations dans book_author
+            PreparedStatement deleteAuthorsStmt = conn.prepareStatement(
+                    "DELETE FROM book_author WHERE book_id = ?");
+            deleteAuthorsStmt.setInt(1, bookId);
+            deleteAuthorsStmt.executeUpdate();
+
+            // Supprimer les associations dans book_category
+            PreparedStatement deleteCategoriesStmt = conn.prepareStatement(
+                    "DELETE FROM book_category WHERE book_id = ?");
+            deleteCategoriesStmt.setInt(1, bookId);
+            deleteCategoriesStmt.executeUpdate();
+
+            // D'abord vérifier qu'il n'est dans aucun panier
+            PreparedStatement checkInCartStmt = conn.prepareStatement(
+                    "SELECT COUNT(*) FROM cart_book WHERE book_id = ?");
+            checkInCartStmt.setInt(1, bookId);
+            ResultSet cartCheckRs = checkInCartStmt.executeQuery();
+            if (cartCheckRs.next() && cartCheckRs.getInt(1) > 0) {
+                throw new DTOException("Cannot delete book with ISBN=" + book.getIsbn() +
+                        " because it is currently in one or more carts.");
             }
 
-            //Supprimer les associations dans book_category
-            try (PreparedStatement deleteCategoriesStmt = conn.prepareStatement(
-                    "DELETE FROM book_category WHERE book_id = ?")) {
-                deleteCategoriesStmt.setInt(1, bookId);
-                deleteCategoriesStmt.executeUpdate();
-            }
-
-            //Supprimer le livre lui-même
-            try (PreparedStatement deleteBookStmt = conn.prepareStatement(
-                    "DELETE FROM books WHERE id = ?")) {
-                deleteBookStmt.setInt(1, bookId);
-                int rowsDeleted = deleteBookStmt.executeUpdate();
-                if (rowsDeleted == 0) {
-                    throw new DTOException("Book not deleted. It may not exist.");
-                }
+            // Supprimer le livre lui-même
+            PreparedStatement deleteBookStmt = conn.prepareStatement(
+                    "DELETE FROM books WHERE id = ?");
+            deleteBookStmt.setInt(1, bookId);
+            int rowsDeleted = deleteBookStmt.executeUpdate();
+            if (rowsDeleted == 0) {
+                throw new DTOException("Book not deleted. It may not exist.");
             }
 
             conn.commit();
             logger.info("Book and its associations deleted successfully.");
 
-        } catch (DTOException e) {
-            throw e; // on propage cette exception spécifique telle quelle
-
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error deleting book with ISBN " + book.getIsbn(), e);
-            throw new Exception("An error occurred while deleting the book: " + e.getMessage(), e);
+        } catch (SQLException e) {
+            throw new Exception("Error deleting book: " + e.getMessage());
         }
     }
 
@@ -190,7 +191,8 @@ public class BookDAO {
                 BookProperty property = entry.getKey();
                 List<String> values = entry.getValue();
 
-                if (values == null || values.isEmpty()) continue;
+                if (values == null || values.isEmpty())
+                    continue;
 
                 switch (property) {
                     case PUBLISHER -> {
@@ -204,7 +206,8 @@ public class BookDAO {
                             publisherId = rs.getInt("id");
                         } else {
                             // Créer le publisher s'il n'existe pas
-                            PreparedStatement insert = conn.prepareStatement("INSERT INTO publishers(name) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
+                            PreparedStatement insert = conn.prepareStatement("INSERT INTO publishers(name) VALUES (?)",
+                                    Statement.RETURN_GENERATED_KEYS);
                             insert.setString(1, publisherName);
                             insert.executeUpdate();
                             ResultSet genKeys = insert.getGeneratedKeys();
@@ -212,7 +215,8 @@ public class BookDAO {
                             publisherId = genKeys.getInt(1);
                         }
 
-                        PreparedStatement updateBook = conn.prepareStatement("UPDATE books SET publisher_id = ? WHERE isbn = ?");
+                        PreparedStatement updateBook = conn
+                                .prepareStatement("UPDATE books SET publisher_id = ? WHERE isbn = ?");
                         updateBook.setInt(1, publisherId);
                         updateBook.setString(2, book.getIsbn());
                         updateBook.executeUpdate();
@@ -232,7 +236,8 @@ public class BookDAO {
                             if (rs.next()) {
                                 authorId = rs.getInt("id");
                             } else {
-                                PreparedStatement insert = conn.prepareStatement("INSERT INTO authors(name) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
+                                PreparedStatement insert = conn.prepareStatement("INSERT INTO authors(name) VALUES (?)",
+                                        Statement.RETURN_GENERATED_KEYS);
                                 insert.setString(1, authorName);
                                 insert.executeUpdate();
                                 ResultSet genKeys = insert.getGeneratedKeys();
@@ -241,7 +246,8 @@ public class BookDAO {
                             }
 
                             // Relier le livre et l’auteur
-                            PreparedStatement link = conn.prepareStatement("INSERT IGNORE INTO book_author(book_id, author_id) VALUES ((SELECT id FROM books WHERE isbn = ?), ?)");
+                            PreparedStatement link = conn.prepareStatement(
+                                    "INSERT IGNORE INTO book_author(book_id, author_id) VALUES ((SELECT id FROM books WHERE isbn = ?), ?)");
 
                             link.setString(1, book.getIsbn());
                             link.setInt(2, authorId);
@@ -263,7 +269,8 @@ public class BookDAO {
                             if (rs.next()) {
                                 categoryId = rs.getInt("id");
                             } else {
-                                PreparedStatement insert = conn.prepareStatement("INSERT INTO categories(name) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
+                                PreparedStatement insert = conn.prepareStatement(
+                                        "INSERT INTO categories(name) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
                                 insert.setString(1, categoryName);
                                 insert.executeUpdate();
                                 ResultSet genKeys = insert.getGeneratedKeys();
@@ -272,7 +279,8 @@ public class BookDAO {
                             }
 
                             // Relier le livre et la catégorie
-                            PreparedStatement link = conn.prepareStatement("INSERT IGNORE INTO book_category(book_id, category_id) VALUES ((SELECT id FROM books WHERE isbn = ?), ?)");
+                            PreparedStatement link = conn.prepareStatement(
+                                    "INSERT IGNORE INTO book_category(book_id, category_id) VALUES ((SELECT id FROM books WHERE isbn = ?), ?)");
                             link.setString(1, book.getIsbn());
                             link.setInt(2, categoryId);
                             link.executeUpdate();
@@ -303,11 +311,13 @@ public class BookDAO {
                 BookProperty property = entry.getKey();
                 List<String> values = entry.getValue();
 
-                if (values == null || values.isEmpty()) continue;
+                if (values == null || values.isEmpty())
+                    continue;
 
                 switch (property) {
                     case PUBLISHER -> {
-                        // Si l'éditeur à retirer correspond bien à celui du livre, on le retire (on met publisher_id à null)
+                        // Si l'éditeur à retirer correspond bien à celui du livre, on le retire (on met
+                        // publisher_id à null)
                         String publisherName = values.getFirst();
                         PreparedStatement ps = conn.prepareStatement("SELECT id FROM publishers WHERE name = ?");
                         ps.setString(1, publisherName);
@@ -315,8 +325,7 @@ public class BookDAO {
                         if (rs.next()) {
                             int publisherId = rs.getInt("id");
                             PreparedStatement update = conn.prepareStatement(
-                                    "UPDATE books SET publisher_id = NULL WHERE isbn = ? AND publisher_id = ?"
-                            );
+                                    "UPDATE books SET publisher_id = NULL WHERE isbn = ? AND publisher_id = ?");
                             update.setString(1, book.getIsbn());
                             update.setInt(2, publisherId);
                             update.executeUpdate();
@@ -331,8 +340,7 @@ public class BookDAO {
                             if (rs.next()) {
                                 int authorId = rs.getInt("id");
                                 PreparedStatement delete = conn.prepareStatement(
-                                        "DELETE FROM book_author WHERE book_id = (SELECT id FROM books WHERE isbn = ?) AND author_id = ?"
-                                );
+                                        "DELETE FROM book_author WHERE book_id = (SELECT id FROM books WHERE isbn = ?) AND author_id = ?");
                                 delete.setString(1, book.getIsbn());
                                 delete.setInt(2, authorId);
                                 delete.executeUpdate();
@@ -348,8 +356,7 @@ public class BookDAO {
                             if (rs.next()) {
                                 int categoryId = rs.getInt("id");
                                 PreparedStatement delete = conn.prepareStatement(
-                                        "DELETE FROM book_category WHERE book_id = (SELECT id FROM books WHERE isbn = ?) AND category_id = ?"
-                                );
+                                        "DELETE FROM book_category WHERE book_id = (SELECT id FROM books WHERE isbn = ?) AND category_id = ?");
                                 delete.setString(1, book.getIsbn());
                                 delete.setInt(2, categoryId);
                                 delete.executeUpdate();
@@ -369,44 +376,46 @@ public class BookDAO {
         }
     }
 
-    public boolean isInStock(Book book) throws SQLException {
+    public boolean isInStock(Book book) {
         String query = "SELECT stock_quantity FROM books WHERE isbn = ?";
         try (
                 Connection conn = DBConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(query)
-        ) {
+                PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, book.getIsbn());
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return rs.getInt("stock_quantity") > 0;
             }
-            return false;
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error checking stock for book: " + book.getIsbn(), e);
         }
+        return false;
     }
 
-    public boolean isSufficientlyInStock(Book book, int quantity) throws SQLException {
+    public boolean isSufficientlyInStock(Book book, int quantity) {
         String query = "SELECT stock_quantity FROM books WHERE isbn = ?";
         try (
                 Connection conn = DBConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(query)
-        ) {
+                PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, book.getIsbn());
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return rs.getInt("stock_quantity") >= quantity;
             }
-            return false;
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error checking stock for book: " + book.getIsbn(), e);
         }
+        return false;
     }
 
-    private List<Author> getAuthorsForBook(Connection conn, String isbn) throws SQLException {
+    private List<Author> getAuthorsForBook(Connection conn, String isbn) {
         List<Author> authors = new ArrayList<>();
         String query = """
-        SELECT a.id, a.name FROM authors a
-        JOIN book_author ba ON a.id = ba.author_id
-        JOIN books b ON ba.book_id = b.id
-        WHERE b.isbn = ?
-    """;
+                    SELECT a.id, a.name FROM authors a
+                    JOIN book_author ba ON a.id = ba.author_id
+                    JOIN books b ON ba.book_id = b.id
+                    WHERE b.isbn = ?
+                """;
 
         try (PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, isbn);
@@ -414,18 +423,21 @@ public class BookDAO {
             while (rs.next()) {
                 authors.add(new Author(rs.getInt("id"), rs.getString("name")));
             }
+            return authors;
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error retrieving authors for book: " + isbn, e);
+            return Collections.emptyList(); // Return an empty list in case of error
         }
-        return authors;
     }
 
-    private List<Category> getCategoriesForBook(Connection conn, String isbn) throws SQLException {
+    private List<Category> getCategoriesForBook(Connection conn, String isbn) {
         List<Category> categories = new ArrayList<>();
         String query = """
-        SELECT c.id, c.name FROM categories c
-        JOIN book_category bc ON c.id = bc.category_id
-        JOIN books b ON bc.book_id = b.id
-        WHERE b.isbn = ?
-    """;
+                    SELECT c.id, c.name FROM categories c
+                    JOIN book_category bc ON c.id = bc.category_id
+                    JOIN books b ON bc.book_id = b.id
+                    WHERE b.isbn = ?
+                """;
 
         try (PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, isbn);
@@ -433,16 +445,19 @@ public class BookDAO {
             while (rs.next()) {
                 categories.add(new Category(rs.getInt("id"), rs.getString("name")));
             }
+            return categories;
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error retrieving categories for book: " + isbn, e);
+            return Collections.emptyList(); // Return an empty list in case of error
         }
-        return categories;
     }
 
-    private Publisher getPublisherForBook(Connection conn, String isbn) throws SQLException {
+    private Publisher getPublisherForBook(Connection conn, String isbn) {
         String query = """
-        SELECT p.id, p.name FROM publishers p
-        JOIN books b ON b.publisher_id = p.id
-        WHERE b.isbn = ?
-    """;
+                    SELECT p.id, p.name FROM publishers p
+                    JOIN books b ON b.publisher_id = p.id
+                    WHERE b.isbn = ?
+                """;
 
         try (PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, isbn);
@@ -450,6 +465,8 @@ public class BookDAO {
             if (rs.next()) {
                 return new Publisher(rs.getInt("id"), rs.getString("name"));
             }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error retrieving publisher for book: " + isbn, e);
         }
         return null;
     }

@@ -9,6 +9,8 @@ public class CategoryDTO {
         this.name = name;
     }
 
+    public CategoryDTO(){} // Default constructor for serialization/deserialization
+
     public int getId() {
         return id;
     }

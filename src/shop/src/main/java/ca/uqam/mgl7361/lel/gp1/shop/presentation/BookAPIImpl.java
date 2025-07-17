@@ -6,6 +6,8 @@ import java.util.Map;
 import ca.uqam.mgl7361.lel.gp1.shop.business.BookService;
 import ca.uqam.mgl7361.lel.gp1.shop.dto.BookDTO;
 import ca.uqam.mgl7361.lel.gp1.shop.dto.BookProperty;
+import ca.uqam.mgl7361.lel.gp1.shop.exception.DTOException;
+import ca.uqam.mgl7361.lel.gp1.shop.exception.DuplicationBookException;
 
 public class BookAPIImpl implements BookAPI {
     private final BookService bookService;
@@ -31,19 +33,25 @@ public class BookAPIImpl implements BookAPI {
     }
 
     @Override
-    public BookDTO createBook(BookDTO bookDTO) {
+    public BookDTO createBook(BookDTO bookDTO) throws DuplicationBookException, Exception {
         return bookService.createBook(bookDTO);
+
     }
 
 
     @Override
-    public void deleteBook(BookDTO bookDTO) {
+    public void deleteBook(BookDTO bookDTO) throws DTOException, Exception {
         bookService.deleteBook(bookDTO);
     }
 
     @Override
     public void addBook(BookDTO bookDTO) {
-        bookService.addBook(bookDTO);
+        try {
+            bookService.addBook(bookDTO);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Override
