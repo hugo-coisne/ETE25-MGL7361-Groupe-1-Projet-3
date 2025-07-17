@@ -69,7 +69,7 @@ public class AccountController {
         account.setEmail(request.get("email"));
         account.setPassword(request.get("password"));
         String newValue = request.get("newValue");
-        logger.info("property :" +property);
+        logger.info("property :" + property);
         try {
             accountService.update(account, property, newValue);
             return ResponseEntity.ok(Map.of("status", "success", "message", "Property updated successfully"));
@@ -85,14 +85,11 @@ public class AccountController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteAccount(@RequestBody Map<String, String> request) {
-        AccountDTO account = new AccountDTO();
-        account.setEmail(request.get("email"));
-        account.setPassword(request.get("password"));
-        logger.info("Deleting account for: {}", account.getEmail());
+    public ResponseEntity<?> deleteAccount(@RequestBody AccountDTO accountDto) {
+        logger.info("Deleting account for: {}", accountDto.getEmail());
 
         try {
-            accountService.delete(account);
+            accountService.delete(accountDto);
             return ResponseEntity.ok(Map.of("status", "success", "message", "Account deleted successfully"));
         } catch (InvalidCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid credentials"));
