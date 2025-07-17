@@ -8,6 +8,9 @@ public class PublisherDTO {
         this.name = name;
     }
 
+    public PublisherDTO() {
+    }
+
     public PublisherDTO(int id, String name) {
         this.id = id;
         this.name = name;

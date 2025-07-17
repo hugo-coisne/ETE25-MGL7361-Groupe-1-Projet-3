@@ -4,7 +4,6 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class BookDTO {
     private String title;
     private String description;
@@ -25,6 +24,9 @@ public class BookDTO {
         this.stockQuantity = 0;
         this.categories = new ArrayList<>();
         this.authors = new ArrayList<>();
+    }
+
+    public BookDTO() {
     }
 
     // SETTERS ----------------------------------------------------------------

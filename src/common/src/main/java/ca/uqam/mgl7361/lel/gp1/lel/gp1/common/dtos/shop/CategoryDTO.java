@@ -9,6 +9,9 @@ public class CategoryDTO {
         this.name = name;
     }
 
+    public CategoryDTO() {
+    }
+
     public int getId() {
         return id;
     }
@@ -23,4 +26,5 @@ public class CategoryDTO {
 
     public void setName(String name) {
         this.name = name;
-    }}
+    }
+}

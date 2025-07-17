@@ -9,6 +9,9 @@ public class AuthorDTO {
         this.name = name;
     }
 
+    public AuthorDTO() {
+    }
+
     public int getId() {
         return id;
     }
