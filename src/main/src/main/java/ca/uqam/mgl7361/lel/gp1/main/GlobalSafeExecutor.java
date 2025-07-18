@@ -1,4 +1,4 @@
-package ca.uqam.mgl7361.lel.gp1.lel.gp1.main;
+package ca.uqam.mgl7361.lel.gp1.main;
 
 import ca.uqam.mgl7361.lel.gp1.account.middleware.AccountSafeExecutor;
 import ca.uqam.mgl7361.lel.gp1.common.RunnableWithException;

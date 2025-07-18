@@ -1,24 +1,11 @@
-package ca.uqam.mgl7361.lel.gp1.lel.gp1.main;
+package ca.uqam.mgl7361.lel.gp1.main;
 
-import ca.uqam.mgl7361.lel.gp1.account.dto.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.account.dto.CartDTO;
-import ca.uqam.mgl7361.lel.gp1.account.presentation.api.AccountAPI;
-import ca.uqam.mgl7361.lel.gp1.account.presentation.api.CartAPI;
-import ca.uqam.mgl7361.lel.gp1.account.presentation.api.impl.AccountAPIImpl;
-import ca.uqam.mgl7361.lel.gp1.account.presentation.api.impl.CartAPIImpl;
-import ca.uqam.mgl7361.lel.gp1.delivery.dto.AddressDTO;
-import ca.uqam.mgl7361.lel.gp1.delivery.dto.DeliveryDTO;
-import ca.uqam.mgl7361.lel.gp1.delivery.presentation.DeliveryAPIImpl;
-import ca.uqam.mgl7361.lel.gp1.order.dto.OrderDTO;
-import ca.uqam.mgl7361.lel.gp1.order.presentation.OrderAPIImpl;
-import ca.uqam.mgl7361.lel.gp1.payment.dto.InvoiceDTO;
-import ca.uqam.mgl7361.lel.gp1.payment.dto.PaymentMethod;
-import ca.uqam.mgl7361.lel.gp1.payment.presentation.InvoiceAPIImpl;
-import ca.uqam.mgl7361.lel.gp1.shop.dto.*;
-import ca.uqam.mgl7361.lel.gp1.shop.presentation.BookAPI;
-import ca.uqam.mgl7361.lel.gp1.shop.presentation.BookAPIImpl;
-import ca.uqam.mgl7361.lel.gp1.shop.presentation.BookAttributeAPI;
-import ca.uqam.mgl7361.lel.gp1.shop.presentation.BookAttributeAPIImpl;
+import ca.uqam.mgl7361.lel.gp1.common.interfaces.*;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.*;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.order.*;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.*;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.*;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.*;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -31,7 +18,7 @@ import java.util.logging.Logger;
 
 public class Main {
     public static void account() {
-        AccountAPI accountAPI = new AccountAPIImpl();
+        AccountAPI userClient = new AccountAPIImpl();
         String firstName = "John";
         String lastName = "Doe";
         String phone = "1234567890";
@@ -40,78 +27,78 @@ public class Main {
         String wrongPassword = "Password123";
 
         // Try to sign in with an unregistered account
-        accountAPI.signin(email, password);
+        userClient.signin(email, password);
         System.out.println("");
 
         // Create a new account
-        accountAPI.signup(firstName, lastName, phone, email, password);
+        userClient.signup(firstName, lastName, phone, email, password);
         System.out.println("");
 
         // Sign in with the newly created account but with a wrong password
-        accountAPI.signin(email, wrongPassword);
+        userClient.signin(email, wrongPassword);
         System.out.println("");
 
         // Sign in with the correct password
-        AccountDTO account = accountAPI.signin(email, password);
+        AccountDTO account = userClient.signin(email, password);
         System.out.println("");
 
         // Change password
         String newPassword = "NewP@ssword123";
-        accountAPI.changePasswordFor(account, newPassword);
+        userClient.changePasswordFor(account, newPassword);
         System.out.println("");
 
         // Try to sign in with the new password
-        AccountDTO account2 = accountAPI.signin(email, newPassword);
+        AccountDTO account2 = userClient.signin(email, newPassword);
         System.out.println("");
 
         // Change phone number
         String newPhone = "0987654321";
-        accountAPI.changePhoneFor(account2, newPhone);
+        userClient.changePhoneFor(account2, newPhone);
         System.out.println("");
 
         // Try to sign in with the new password with new phone number
-        AccountDTO account3 = accountAPI.signin(email, newPassword);
+        AccountDTO account3 = userClient.signin(email, newPassword);
         System.out.println("");
 
         // Change first name
         String newFirstName = "Jane";
-        accountAPI.changeFirstNameFor(account3, newFirstName);
+        userClient.changeFirstNameFor(account3, newFirstName);
         System.out.println("");
 
         // Try to sign in with the new password with new first name
-        AccountDTO account4 = accountAPI.signin(email, newPassword);
+        AccountDTO account4 = userClient.signin(email, newPassword);
         System.out.println("");
 
         // Change last name
         String newLastName = "Smith";
-        accountAPI.changeLastNameFor(account4, newLastName);
+        userClient.changeLastNameFor(account4, newLastName);
         System.out.println("");
 
         // Try to sign in with the new password with new last name
-        AccountDTO account5 = accountAPI.signin(email, newPassword);
+        AccountDTO account5 = userClient.signin(email, newPassword);
         System.out.println("");
 
         // Change email
         String newEmail = "jane.smith@mail.com";
-        accountAPI.changeEmailFor(account5, newEmail);
+        userClient.changeEmailFor(account5, newEmail);
         System.out.println("");
 
         // Try to sign in with the new password with new email
-        AccountDTO account6 = accountAPI.signin(newEmail, newPassword);
+        AccountDTO account6 = userClient.signin(newEmail, newPassword);
         System.out.println("");
 
         // Delete the account
-        accountAPI.delete(account6);
+        userClient.delete(account6);
         System.out.println("");
 
         // Try to sign in again to confirm deletion
-        accountAPI.signin(newEmail, newPassword);
+        userClient.signin(newEmail, newPassword);
         System.out.println("");
     }
 
     public static void cart() {
         BookAPI bookAPI = new BookAPIImpl();
-        AccountAPI accountAPI = new AccountAPIImpl();
+        AccountAPI userClient = new AccountAPIImpl();
         String firstName = "John";
         String lastName = "Doe";
         String phone = "1234567890";
@@ -119,10 +106,10 @@ public class Main {
         String password = "P@ssword123";
 
         // Create a new account
-        accountAPI.signup(firstName, lastName, phone, email, password);
+        userClient.signup(firstName, lastName, phone, email, password);
         System.out.println("");
         // Sign in with the correct password
-        AccountDTO account = accountAPI.signin(email, password);
+        AccountDTO account = userClient.signin(email, password);
         System.out.println("");
 
         // Get a CartAPI instance for the signed-in account
@@ -181,7 +168,7 @@ public class Main {
 
         // Add multiple books to the cart
 
-        accountAPI.delete(account);
+        userClient.delete(account);
 
     }
 
@@ -318,12 +305,12 @@ public class Main {
         String password = "P@ssword123";
 
         Main.scenarioStep("1. L'utilisateur devrait créer un compte et se connecter pour pouvoir utiliser l'application");
-        AccountAPI accountAPI = new AccountAPIImpl();
+        AccountAPI userClient = new AccountAPIImpl();
         Main.scenarioStep("1.1 Création d'un compte");
-        accountAPI.signup(firstName, lastName, phone, email, password);
+        userClient.signup(firstName, lastName, phone, email, password);
 
         Main.scenarioStep("1.2 Tentative de création du même compte");
-        accountAPI.signup(firstName, lastName, phone, email, password);
+        userClient.signup(firstName, lastName, phone, email, password);
 
         Main.scenarioStep("1.3 Tentative de création d'un autre compte");
         firstName = "Paul";
@@ -331,10 +318,10 @@ public class Main {
         phone = "1234567891";
         email = "paul.smith@mail.com";
         password = "P@ssword1234";
-        accountAPI.signup(firstName, lastName, phone, email, password);
+        userClient.signup(firstName, lastName, phone, email, password);
 
         Main.scenarioStep("1.4 Connexion à au deuxième compte crée");
-        AccountDTO account = accountAPI.signin(email, password);
+        AccountDTO account = userClient.signin(email, password);
         Main.scenarioDetailsStep("Connecté avec le compte - " + account);
         /* Should show that signin was a success */
 
@@ -460,10 +447,10 @@ public class Main {
         phone = "1234567892";
         email = "JohnDoe@mail.com";
         password = "P@ssword1234";
-        accountAPI.signup(firstName, lastName, phone, email, password);
+        userClient.signup(firstName, lastName, phone, email, password);
 
         Main.scenarioStep("5.1.2 Connexion à au deuxième compte crée");
-        account = accountAPI.signin(email, password);
+        account = userClient.signin(email, password);
         Main.scenarioDetailsStep("Connecté avec le compte - " + account);
 
         Main.scenarioStep("5.2 Recherche de livre (titre: 'The')");
