@@ -1,4 +1,4 @@
-package ca.uqam.mgl7361.lel.gp1.common.dtos.user;
+package ca.uqam.mgl7361.lel.gp1.common.dtos.account;
 
 import java.util.HashMap;
 import java.util.Map;

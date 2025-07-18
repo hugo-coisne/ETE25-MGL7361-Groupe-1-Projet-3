@@ -1,4 +1,4 @@
-package ca.uqam.mgl7361.lel.gp1.account.persistence;
+package ca.uqam.mgl7361.lel.gp1.user.persistence;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,9 +8,9 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.util.logging.Logger;
 
-import ca.uqam.mgl7361.lel.gp1.account.exception.DuplicateEmailException;
-import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidCredentialsException;
-import ca.uqam.mgl7361.lel.gp1.account.model.Account;
+import ca.uqam.mgl7361.lel.gp1.user.exception.DuplicateEmailException;
+import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCredentialsException;
+import ca.uqam.mgl7361.lel.gp1.user.model.Account;
 import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
 
 public class AccountDAO {

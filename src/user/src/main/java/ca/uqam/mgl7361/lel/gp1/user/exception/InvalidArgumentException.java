@@ -1,4 +1,4 @@
-package ca.uqam.mgl7361.lel.gp1.account.exception;
+package ca.uqam.mgl7361.lel.gp1.user.exception;
 
 import java.util.List;
 import java.util.Map;

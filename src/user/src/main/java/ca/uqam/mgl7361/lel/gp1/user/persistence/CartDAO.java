@@ -1,4 +1,4 @@
-package ca.uqam.mgl7361.lel.gp1.account.persistence;
+package ca.uqam.mgl7361.lel.gp1.user.persistence;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -9,10 +9,10 @@ import java.sql.Statement;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import ca.uqam.mgl7361.lel.gp1.account.dto.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidCartException;
-import ca.uqam.mgl7361.lel.gp1.account.model.Account;
-import ca.uqam.mgl7361.lel.gp1.account.model.Cart;
+import ca.uqam.mgl7361.lel.gp1.user.dto.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCartException;
+import ca.uqam.mgl7361.lel.gp1.user.model.Account;
+import ca.uqam.mgl7361.lel.gp1.user.model.Cart;
 import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.PublisherDTO;

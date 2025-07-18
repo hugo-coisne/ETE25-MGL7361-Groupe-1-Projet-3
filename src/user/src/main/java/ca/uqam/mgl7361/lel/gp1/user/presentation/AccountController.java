@@ -1,4 +1,4 @@
-package ca.uqam.mgl7361.lel.gp1.account.presentation;
+package ca.uqam.mgl7361.lel.gp1.user.presentation;
 
 import java.util.Map;
 
@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ca.uqam.mgl7361.lel.gp1.account.business.AccountService;
-import ca.uqam.mgl7361.lel.gp1.account.dto.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.account.exception.DuplicateEmailException;
-import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidArgumentException;
-import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidCredentialsException;
+import ca.uqam.mgl7361.lel.gp1.user.business.AccountService;
+import ca.uqam.mgl7361.lel.gp1.user.dto.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.user.exception.DuplicateEmailException;
+import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidArgumentException;
+import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCredentialsException;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController

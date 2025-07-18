@@ -1,4 +1,4 @@
-package ca.uqam.mgl7361.lel.gp1.account.business;
+package ca.uqam.mgl7361.lel.gp1.user.business;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,13 +7,13 @@ import java.util.logging.Logger;
 
 import org.springframework.stereotype.Service;
 
-import ca.uqam.mgl7361.lel.gp1.account.dto.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.account.exception.DuplicateEmailException;
-import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidArgumentException;
-import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidCartException;
-import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidCredentialsException;
-import ca.uqam.mgl7361.lel.gp1.account.model.Account;
-import ca.uqam.mgl7361.lel.gp1.account.persistence.AccountDAO;
+import ca.uqam.mgl7361.lel.gp1.user.dto.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.user.exception.DuplicateEmailException;
+import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidArgumentException;
+import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCartException;
+import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCredentialsException;
+import ca.uqam.mgl7361.lel.gp1.user.model.Account;
+import ca.uqam.mgl7361.lel.gp1.user.persistence.AccountDAO;
 
 @Service
 public class AccountService {

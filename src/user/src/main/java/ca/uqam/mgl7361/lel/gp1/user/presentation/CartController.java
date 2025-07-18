@@ -1,4 +1,4 @@
-package ca.uqam.mgl7361.lel.gp1.account.presentation;
+package ca.uqam.mgl7361.lel.gp1.user.presentation;
 
 import java.util.Map;
 
@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ca.uqam.mgl7361.lel.gp1.account.business.CartService;
-import ca.uqam.mgl7361.lel.gp1.account.dto.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.account.dto.CartDTO;
-import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidCartException;
-import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidCredentialsException;
-import ca.uqam.mgl7361.lel.gp1.account.exception.UnsufficientStockException;
+import ca.uqam.mgl7361.lel.gp1.user.business.CartService;
+import ca.uqam.mgl7361.lel.gp1.user.dto.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.user.dto.CartDTO;
+import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCartException;
+import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCredentialsException;
+import ca.uqam.mgl7361.lel.gp1.user.exception.UnsufficientStockException;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 
 @RestController

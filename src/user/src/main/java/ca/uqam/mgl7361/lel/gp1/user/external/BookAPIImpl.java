@@ -1,4 +1,4 @@
-package ca.uqam.mgl7361.lel.gp1.account.external;
+package ca.uqam.mgl7361.lel.gp1.user.external;
 
 import java.util.List;
 import java.util.Map;

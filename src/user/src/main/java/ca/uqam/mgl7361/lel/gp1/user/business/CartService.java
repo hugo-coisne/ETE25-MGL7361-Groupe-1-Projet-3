@@ -1,17 +1,17 @@
-package ca.uqam.mgl7361.lel.gp1.account.business;
+package ca.uqam.mgl7361.lel.gp1.user.business;
 
 import java.util.logging.Logger;
 
 import org.springframework.stereotype.Service;
 
-import ca.uqam.mgl7361.lel.gp1.account.dto.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.account.dto.CartDTO;
-import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidCartException;
-import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidCredentialsException;
-import ca.uqam.mgl7361.lel.gp1.account.exception.UnsufficientStockException;
-import ca.uqam.mgl7361.lel.gp1.account.external.BookAPIImpl;
-import ca.uqam.mgl7361.lel.gp1.account.model.Cart;
-import ca.uqam.mgl7361.lel.gp1.account.persistence.CartDAO;
+import ca.uqam.mgl7361.lel.gp1.user.dto.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.user.dto.CartDTO;
+import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCartException;
+import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCredentialsException;
+import ca.uqam.mgl7361.lel.gp1.user.exception.UnsufficientStockException;
+import ca.uqam.mgl7361.lel.gp1.user.external.BookAPIImpl;
+import ca.uqam.mgl7361.lel.gp1.user.model.Cart;
+import ca.uqam.mgl7361.lel.gp1.user.persistence.CartDAO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 import ca.uqam.mgl7361.lel.gp1.common.interfaces.BookAPI;
 

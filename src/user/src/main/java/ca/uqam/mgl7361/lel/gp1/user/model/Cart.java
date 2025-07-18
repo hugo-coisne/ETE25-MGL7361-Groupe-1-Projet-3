@@ -1,9 +1,9 @@
-package ca.uqam.mgl7361.lel.gp1.account.model;
+package ca.uqam.mgl7361.lel.gp1.user.model;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import ca.uqam.mgl7361.lel.gp1.account.dto.CartDTO;
+import ca.uqam.mgl7361.lel.gp1.user.dto.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 
 public class Cart {

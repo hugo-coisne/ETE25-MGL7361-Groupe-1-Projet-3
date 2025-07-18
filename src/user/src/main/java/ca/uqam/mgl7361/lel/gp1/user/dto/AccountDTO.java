@@ -1,6 +1,6 @@
-package ca.uqam.mgl7361.lel.gp1.account.dto;
+package ca.uqam.mgl7361.lel.gp1.user.dto;
 
-import ca.uqam.mgl7361.lel.gp1.account.model.Account;
+import ca.uqam.mgl7361.lel.gp1.user.model.Account;
 
 public class AccountDTO {
     private String firstName;

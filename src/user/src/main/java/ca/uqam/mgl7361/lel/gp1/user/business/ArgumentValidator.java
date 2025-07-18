@@ -1,12 +1,12 @@
-package ca.uqam.mgl7361.lel.gp1.account.business;
+package ca.uqam.mgl7361.lel.gp1.user.business;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidArgumentException;
-import ca.uqam.mgl7361.lel.gp1.account.model.Account;
+import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidArgumentException;
+import ca.uqam.mgl7361.lel.gp1.user.model.Account;
 
 public class ArgumentValidator {
 
