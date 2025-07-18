@@ -1,6 +1,6 @@
 cd src/common
 mvn clean install package -DskipTests
-cd ../account
+cd ../user
 mvn clean install package -DskipTests
 cd ../shop
 mvn clean install package -DskipTests

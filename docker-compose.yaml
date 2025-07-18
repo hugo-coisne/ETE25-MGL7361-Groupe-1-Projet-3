@@ -26,18 +26,18 @@ services:
       - ./db_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
   
-  account:
-    container_name: account
+  user:
+    container_name: user
     build:
       context: src
-      dockerfile: account/dockerfile
+      dockerfile: user/dockerfile
     environment:
       - CONTEXT_PATH=${USER_PATH}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.account.rule=PathPrefix(`$USER_PATH`)"
-      - "traefik.http.routers.account.entrypoints=web"
-      - "traefik.http.services.account.loadbalancer.server.port=8080"
+      - "traefik.http.routers.user.rule=PathPrefix(`$USER_PATH`)"
+      - "traefik.http.routers.user.entrypoints=web"
+      - "traefik.http.services.user.loadbalancer.server.port=8080"
     ports:
       - "8081:8080"
     depends_on:
