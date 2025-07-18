@@ -1,40 +1,63 @@
 package ca.uqam.mgl7361.lel.gp1.delivery.presentation;
 
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.account.AccountDTO;
 import ca.uqam.mgl7361.lel.gp1.delivery.business.DeliveryService;
 import ca.uqam.mgl7361.lel.gp1.delivery.dto.AddressDTO;
 import ca.uqam.mgl7361.lel.gp1.delivery.dto.DeliveryDTO;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
-public class DeliveryAPIImpl {
+public class DeliveryAPIImpl implements DeliveryAPI {
 
     private final DeliveryService deliveryService;
 
-    public DeliveryAPIImpl() throws Exception {
+    public DeliveryAPIImpl() {
         this.deliveryService = new DeliveryService();
     }
 
-    public DeliveryDTO createDelivery(AddressDTO address, Date date, String deliveryStatus, OrderDTO order)
-            throws Exception {
-        return deliveryService.createDelivery(address, date, deliveryStatus, order);
+    @Override
+    public DeliveryDTO createDelivery(AddressDTO address, Date date, String inProgress, OrderDTO order) {
+        try {
+            return deliveryService.createDelivery(address, date, inProgress, order);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null; // or handle the exception as needed
+        }
     }
 
-    public void updateStatusToDelivered(DeliveryDTO delivery) throws Exception {
-        deliveryService.updateStatusToDelivered(delivery);
+    @Override
+    public void updateStatusToDelivered(DeliveryDTO delivery) {
+        try {
+            deliveryService.updateStatusToDelivered(delivery);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
-    public List<DeliveryDTO> getAllOrdersInTransit() throws Exception {
-        return deliveryService.getAllOrdersInTransit();
+    public List<DeliveryDTO> getAllOrdersInTransit() {
+        try {
+            return deliveryService.getAllOrdersInTransit();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null; // or handle the exception as needed
+        }
     }
 
-    public List<DeliveryDTO> getAllOrdersInTransit(AccountDTO account) throws Exception {
-        return deliveryService.getAllOrdersInTransit(account);
-    }
+    // public List<DeliveryDTO> getAllOrdersInTransit(AccountDTO account) throws Exception {
+    //     return deliveryService.getAllOrdersInTransit(account);
+    // }
 
-    public List<DeliveryDTO> getAllOrdersDelivered() throws Exception {
-        return deliveryService.getAllOrdersDelivered();
+    public List<DeliveryDTO> getAllOrdersDelivered() {
+        try {
+            return deliveryService.getAllOrdersDelivered();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null; // or handle the exception as needed
+        }
     }
+	
 }

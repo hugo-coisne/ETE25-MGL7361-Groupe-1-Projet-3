@@ -93,3 +93,20 @@ services:
       - "8084:8080"
     depends_on:
       - db
+    
+  delivery:
+    container_name: delivery
+    build:
+      context: src
+      dockerfile: delivery/dockerfile
+    environment:
+    - CONTEXT_PATH=${DELIVERY_PATH}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.delivery.rule=PathPrefix(`$DELIVERY_PATH`)"
+      - "traefik.http.routers.delivery.entrypoints=web"
+      - "traefik.http.services.delivery.loadbalancer.server.port=8080"
+    ports:
+      - "8085:8080"
+    depends_on:
+      - db

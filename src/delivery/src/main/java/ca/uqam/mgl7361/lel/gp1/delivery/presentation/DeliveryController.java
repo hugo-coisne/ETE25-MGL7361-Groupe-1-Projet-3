@@ -1,5 +1,96 @@
 package ca.uqam.mgl7361.lel.gp1.delivery.presentation;
 
+import ca.uqam.mgl7361.lel.gp1.delivery.business.DeliveryService;
+import ca.uqam.mgl7361.lel.gp1.delivery.dto.CreateDeliveryRequest;
+import ca.uqam.mgl7361.lel.gp1.delivery.dto.DeliveryDTO;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/deliveries")
 public class DeliveryController {
-    
+
+    private static final Logger logger = LogManager.getLogger(DeliveryController.class);
+    private final DeliveryService deliveryService;
+
+    public DeliveryController() {
+        this.deliveryService = new DeliveryService();
+    }
+
+    @Operation(summary = "Create a delivery")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Delivery created successfully"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PostMapping
+    public ResponseEntity<DeliveryDTO> createDelivery(@RequestBody CreateDeliveryRequest request) {
+        try {
+            logger.info("Creating delivery for order: {}", request.getOrder().getOrderNumber());
+            DeliveryDTO delivery = deliveryService.createDelivery(
+                request.getAddress(),
+                request.getDate(),
+                request.getInProgress(),
+                request.getOrder()
+            );
+            return ResponseEntity.ok(delivery);
+        } catch (Exception e) {
+            logger.error("Error creating delivery", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @Operation(summary = "Update delivery status to delivered")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Delivery status updated"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PutMapping("/delivered")
+    public ResponseEntity<Void> updateStatusToDelivered(@RequestBody DeliveryDTO delivery) {
+        try {
+            logger.info("Marking delivery as delivered: {}", delivery);
+            deliveryService.updateStatusToDelivered(delivery);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            logger.error("Error updating delivery status", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @Operation(summary = "Get all deliveries in transit")
+    @ApiResponse(responseCode = "200", description = "List of in-transit deliveries")
+    @GetMapping("/in-transit")
+    public ResponseEntity<List<DeliveryDTO>> getAllOrdersInTransit() {
+        try {
+            logger.info("Retrieving all orders in transit");
+            List<DeliveryDTO> deliveries = deliveryService.getAllOrdersInTransit();
+            return ResponseEntity.ok(deliveries);
+        } catch (Exception e) {
+            logger.error("Error fetching orders in transit", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @Operation(summary = "Get all delivered orders")
+    @ApiResponse(responseCode = "200", description = "List of delivered orders")
+    @GetMapping("/delivered")
+    public ResponseEntity<List<DeliveryDTO>> getAllOrdersDelivered() {
+        try {
+            logger.info("Retrieving all delivered orders");
+            List<DeliveryDTO> deliveries = deliveryService.getAllOrdersDelivered();
+            return ResponseEntity.ok(deliveries);
+        } catch (Exception e) {
+            logger.error("Error fetching delivered orders", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

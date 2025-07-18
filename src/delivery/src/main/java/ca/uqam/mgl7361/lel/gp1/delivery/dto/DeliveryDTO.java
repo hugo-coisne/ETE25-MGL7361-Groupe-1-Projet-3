@@ -2,7 +2,7 @@ package ca.uqam.mgl7361.lel.gp1.delivery.dto;
 
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class DeliveryDTO {
 

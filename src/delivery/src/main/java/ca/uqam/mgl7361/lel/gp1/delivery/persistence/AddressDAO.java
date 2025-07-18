@@ -8,15 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddressDAO {
-    private final Connection connection = DBConnection.getConnection();
 
-    public AddressDAO() throws Exception {
+    public AddressDAO() {
     }
 
     public void create(Address address) throws Exception {
         String sql = "INSERT INTO addresses (account_id, first_name, last_name, phone, street, city, postal_code) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = DBConnection.getConnection();
+                PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, address.getAccountId());
             stmt.setString(2, address.getFirstName());
             stmt.setString(3, address.getLastName());
@@ -26,22 +26,21 @@ public class AddressDAO {
             stmt.setString(7, address.getPostalCode());
             stmt.executeUpdate();
 
-            try (ResultSet keys = stmt.getGeneratedKeys()) {
-                if (keys.next()) {
-                    address.setId(keys.getInt(1));
-                }
+            ResultSet keys = stmt.getGeneratedKeys();
+            if (keys.next()) {
+                address.setId(keys.getInt(1));
             }
         }
     }
 
     public Address findById(int id) throws Exception {
         String sql = "SELECT * FROM addresses WHERE id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = DBConnection.getConnection();
+                PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return map(rs);
-                }
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return map(rs);
             }
         }
         return null;
@@ -50,13 +49,18 @@ public class AddressDAO {
     public List<Address> findByAccountId(int accountId) throws Exception {
         String sql = "SELECT * FROM addresses WHERE account_id = ?";
         List<Address> addresses = new ArrayList<>();
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = DBConnection.getConnection();
+                PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, accountId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    addresses.add(map(rs));
-                }
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                addresses.add(map(rs));
             }
+
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            throw new Exception("Error finding addresses by account ID: " + e.getMessage(), e);
         }
         return addresses;
     }
@@ -65,7 +69,8 @@ public class AddressDAO {
         String sql = "UPDATE addresses SET first_name = ?, last_name = ?, phone = ?, street = ?, city = ?, postal_code = ? "
                 +
                 "WHERE id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = DBConnection.getConnection();
+                PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, address.getFirstName());
             stmt.setString(2, address.getLastName());
             stmt.setString(3, address.getPhone());
@@ -74,18 +79,26 @@ public class AddressDAO {
             stmt.setString(6, address.getPostalCode());
             stmt.setInt(7, address.getId());
             stmt.executeUpdate();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            throw new Exception("Error updating address: " + e.getMessage(), e);
         }
     }
 
-    public void delete(int id) throws Exception {
+    public void delete(int id) {
         String sql = "DELETE FROM addresses WHERE id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection connection = DBConnection.getConnection();
+                PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             stmt.executeUpdate();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
-    private Address map(ResultSet rs) throws Exception {
+    private Address map(ResultSet rs) throws SQLException {
         Address address = new Address();
         address.setId(rs.getInt("id"));
         address.setAccountId(rs.getInt("account_id"));
