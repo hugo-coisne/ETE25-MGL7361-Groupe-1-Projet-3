@@ -1,22 +1,26 @@
 package ca.uqam.mgl7361.lel.gp1.payment.business;
 
-import ca.uqam.mgl7361.lel.gp1.account.dto.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.account.dto.CartDTO;
-import ca.uqam.mgl7361.lel.gp1.account.presentation.api.AccountAPI;
-import ca.uqam.mgl7361.lel.gp1.account.presentation.api.impl.AccountAPIImpl;
-import ca.uqam.mgl7361.lel.gp1.account.presentation.api.impl.CartAPIImpl;
-import ca.uqam.mgl7361.lel.gp1.order.dto.OrderDTO;
-import ca.uqam.mgl7361.lel.gp1.order.presentation.OrderAPIImpl;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.account.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.account.CartDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
+import ca.uqam.mgl7361.lel.gp1.payment.external.BookAPIImpl;
+import ca.uqam.mgl7361.lel.gp1.payment.external.OrderAPIImpl;
 import ca.uqam.mgl7361.lel.gp1.payment.dto.PaymentMethod;
+import ca.uqam.mgl7361.lel.gp1.payment.external.AccountAPIImpl;
+import ca.uqam.mgl7361.lel.gp1.payment.external.CartAPIImpl;
 import ca.uqam.mgl7361.lel.gp1.payment.business.mapper.InvoiceMapper;
 import ca.uqam.mgl7361.lel.gp1.payment.model.Invoice;
 import ca.uqam.mgl7361.lel.gp1.payment.dto.InvoiceDTO;
 import ca.uqam.mgl7361.lel.gp1.payment.persistence.InvoiceDAO;
-import ca.uqam.mgl7361.lel.gp1.shop.dto.BookDTO;
-import ca.uqam.mgl7361.lel.gp1.shop.presentation.BookAPIImpl;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
+import ca.uqam.mgl7361.lel.gp1.common.interfaces.AccountAPI;
+import ca.uqam.mgl7361.lel.gp1.common.interfaces.CartAPI;
 
 import java.util.Map;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class InvoiceService {
     private final InvoiceDAO invoiceDAO;
 
@@ -58,7 +62,7 @@ public class InvoiceService {
         }
         account = accountAPI.signin(account.getEmail(), account.getPassword());
 
-        CartAPIImpl cartAPI = new CartAPIImpl();
+        CartAPI cartAPI = new CartAPIImpl();
         CartDTO cart = cartAPI.getCart(account);
         if (!isValidCart(cart)) {
             throw new IllegalArgumentException("Cart is invalid or contains insufficient stock");

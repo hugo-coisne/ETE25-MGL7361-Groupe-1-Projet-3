@@ -76,3 +76,20 @@ services:
       - "8083:8080"
     depends_on:
       - db
+  
+  payment:
+    container_name: payment
+    build:
+      context: src
+      dockerfile: payment/dockerfile
+    environment:
+    - CONTEXT_PATH=${PAYMENT_PATH}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.payment.rule=PathPrefix(`$PAYMENT_PATH`)"
+      - "traefik.http.routers.payment.entrypoints=web"
+      - "traefik.http.services.payment.loadbalancer.server.port=8080"
+    ports:
+      - "8084:8080"
+    depends_on:
+      - db

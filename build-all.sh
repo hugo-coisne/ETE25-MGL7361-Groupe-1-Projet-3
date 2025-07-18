@@ -6,5 +6,7 @@ cd ../shop
 mvn clean install package -DskipTests
 cd ../order
 mvn clean install package -DskipTests
+cd ../payment
+mvn clean install package -DskipTests
 cd ../..
 docker compose build
