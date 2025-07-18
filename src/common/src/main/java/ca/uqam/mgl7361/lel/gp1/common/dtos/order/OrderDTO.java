@@ -10,6 +10,7 @@ public class OrderDTO {
     private final Date orderDate;
     private final float orderPrice;
     private final Map<BookDTO, Integer> items; // Map of books to their quantities
+    private int id; // Assuming there's an ID field for the order
 
     public OrderDTO(
             String orderNumber,
@@ -46,5 +47,14 @@ public class OrderDTO {
 
     public Map<BookDTO, Integer> getItems() {
         return items;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int setId(int id) {
+        this.id = id;
+        return this.id;
     }
 }

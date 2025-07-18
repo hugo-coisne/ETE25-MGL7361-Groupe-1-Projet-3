@@ -1,7 +1,8 @@
-package ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.persistence;
+package ca.uqam.mgl7361.lel.gp1.delivery.persistence;
 
 import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.model.Address;
+import ca.uqam.mgl7361.lel.gp1.delivery.model.Address;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +10,10 @@ import java.util.List;
 public class AddressDAO {
     private final Connection connection = DBConnection.getConnection();
 
-    public AddressDAO() throws SQLException {}
+    public AddressDAO() throws Exception {
+    }
 
-    public void create(Address address) throws SQLException {
+    public void create(Address address) throws Exception {
         String sql = "INSERT INTO addresses (account_id, first_name, last_name, phone, street, city, postal_code) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -32,7 +34,7 @@ public class AddressDAO {
         }
     }
 
-    public Address findById(int id) throws SQLException {
+    public Address findById(int id) throws Exception {
         String sql = "SELECT * FROM addresses WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -45,7 +47,7 @@ public class AddressDAO {
         return null;
     }
 
-    public List<Address> findByAccountId(int accountId) throws SQLException {
+    public List<Address> findByAccountId(int accountId) throws Exception {
         String sql = "SELECT * FROM addresses WHERE account_id = ?";
         List<Address> addresses = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -59,8 +61,9 @@ public class AddressDAO {
         return addresses;
     }
 
-    public void update(Address address) throws SQLException {
-        String sql = "UPDATE addresses SET first_name = ?, last_name = ?, phone = ?, street = ?, city = ?, postal_code = ? " +
+    public void update(Address address) throws Exception {
+        String sql = "UPDATE addresses SET first_name = ?, last_name = ?, phone = ?, street = ?, city = ?, postal_code = ? "
+                +
                 "WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, address.getFirstName());
@@ -74,7 +77,7 @@ public class AddressDAO {
         }
     }
 
-    public void delete(int id) throws SQLException {
+    public void delete(int id) throws Exception {
         String sql = "DELETE FROM addresses WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -82,7 +85,7 @@ public class AddressDAO {
         }
     }
 
-    private Address map(ResultSet rs) throws SQLException {
+    private Address map(ResultSet rs) throws Exception {
         Address address = new Address();
         address.setId(rs.getInt("id"));
         address.setAccountId(rs.getInt("account_id"));
@@ -95,4 +98,3 @@ public class AddressDAO {
         return address;
     }
 }
-

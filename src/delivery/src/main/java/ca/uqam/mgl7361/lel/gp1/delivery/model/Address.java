@@ -1,4 +1,4 @@
-package ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.model;
+package ca.uqam.mgl7361.lel.gp1.delivery.model;
 
 public class Address {
     private int id;

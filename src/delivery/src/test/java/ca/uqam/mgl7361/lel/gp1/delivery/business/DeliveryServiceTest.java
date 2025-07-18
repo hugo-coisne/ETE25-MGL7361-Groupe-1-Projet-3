@@ -1,13 +1,12 @@
-package ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.business;
+package ca.uqam.mgl7361.lel.gp1.delivery.business;
 
-import ca.uqam.mgl7361.lel.gp1.account.dto.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.dto.AddressDTO;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.dto.DeliveryDTO;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.persistence.DeliveryDAO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.account.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.delivery.dto.AddressDTO;
+import ca.uqam.mgl7361.lel.gp1.delivery.dto.DeliveryDTO;
+import ca.uqam.mgl7361.lel.gp1.delivery.persistence.DeliveryDAO;
 import ca.uqam.mgl7361.lel.gp1.order.dto.OrderDTO;
 import org.junit.jupiter.api.*;
 
-import java.sql.SQLException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
@@ -21,7 +20,7 @@ public class DeliveryServiceTest {
     private DeliveryDAO deliveryDAO;
 
     @BeforeAll
-    public void setup() throws SQLException {
+    public void setup() throws Exception {
         deliveryDAO = new DeliveryDAO(); // DAO r�el connect� � la base de test
         service = new DeliveryService(deliveryDAO);
     }
@@ -55,26 +54,26 @@ public class DeliveryServiceTest {
     }
 
     @Test
-    public void testGetAllOrdersInTransit() throws SQLException {
+    public void testGetAllOrdersInTransit() throws Exception {
         List<DeliveryDTO> deliveries = service.getAllOrdersInTransit();
         assertNotNull(deliveries);
         // Optionnel : tu peux v�rifier la taille ou le contenu si tu as des donn�es de test
     }
 
     @Test
-    public void testGetAllOrdersDelivered() throws SQLException {
+    public void testGetAllOrdersDelivered() throws Exception {
         List<DeliveryDTO> deliveries = service.getAllOrdersDelivered();
         assertNotNull(deliveries);
     }
 
     @Test
-    public void testGetAllOrdersNotDelivered() throws SQLException {
+    public void testGetAllOrdersNotDelivered() throws Exception {
         List<DeliveryDTO> deliveries = service.getAllOrdersNotDelivered();
         assertNotNull(deliveries);
     }
 
     @Test
-    public void testGetAllOrdersInTransitWithAccount() throws SQLException {
+    public void testGetAllOrdersInTransitWithAccount() throws Exception {
         AccountDTO account = new AccountDTO();
         account.setId(1);  // Assure-toi que cet id existe en base test
         List<DeliveryDTO> deliveries = service.getAllOrdersInTransit(account);

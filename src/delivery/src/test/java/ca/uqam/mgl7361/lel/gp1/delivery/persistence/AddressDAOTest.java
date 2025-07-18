@@ -1,7 +1,8 @@
-package ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.persistence;
+package ca.uqam.mgl7361.lel.gp1.delivery.persistence;
 
 import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.model.Address;
+import ca.uqam.mgl7361.lel.gp1.delivery.model.Address;
+
 import org.junit.jupiter.api.*;
 
 import java.nio.file.Files;
@@ -27,7 +28,8 @@ public class AddressDAOTest {
 
     private static AddressDAO addressDAO;
 
-    public AddressDAOTest() throws SQLException {}
+    public AddressDAOTest() throws Exception {
+    }
 
     @BeforeAll
     public static void setupDatabase() throws Exception {
@@ -47,26 +49,26 @@ public class AddressDAOTest {
             }
 
             stmt.execute("""
-                CREATE TABLE IF NOT EXISTS accounts (
-                    id INT PRIMARY KEY AUTO_INCREMENT
-                )
-            """);
+                        CREATE TABLE IF NOT EXISTS accounts (
+                            id INT PRIMARY KEY AUTO_INCREMENT
+                        )
+                    """);
 
             stmt.execute("INSERT INTO accounts (id) VALUES (1) ON DUPLICATE KEY UPDATE id = id");
 
             stmt.execute("""
-                CREATE TABLE IF NOT EXISTS addresses (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-                    account_id INT,
-                    first_name VARCHAR(50),
-                    last_name VARCHAR(50),
-                    phone VARCHAR(20),
-                    street VARCHAR(100),
-                    city VARCHAR(50),
-                    postal_code VARCHAR(10),
-                    FOREIGN KEY (account_id) REFERENCES accounts(id)
-                )
-            """);
+                        CREATE TABLE IF NOT EXISTS addresses (
+                            id INT AUTO_INCREMENT PRIMARY KEY,
+                            account_id INT,
+                            first_name VARCHAR(50),
+                            last_name VARCHAR(50),
+                            phone VARCHAR(20),
+                            street VARCHAR(100),
+                            city VARCHAR(50),
+                            postal_code VARCHAR(10),
+                            FOREIGN KEY (account_id) REFERENCES accounts(id)
+                        )
+                    """);
         }
     }
 
@@ -78,7 +80,7 @@ public class AddressDAOTest {
     }
 
     @Test
-    public void testCreateAndFindById() throws SQLException {
+    public void testCreateAndFindById() throws Exception {
         Address address = new Address(1, "John", "Doe", "123456789", "123 Main St", "Paris", "75001");
         addressDAO.create(address);
 
@@ -91,7 +93,7 @@ public class AddressDAOTest {
     }
 
     @Test
-    public void testUpdate() throws SQLException {
+    public void testUpdate() throws Exception {
         Address address = new Address(1, "Jane", "Smith", "999888777", "456 Elm St", "Lyon", "69000");
         addressDAO.create(address);
 
@@ -103,7 +105,7 @@ public class AddressDAOTest {
     }
 
     @Test
-    public void testDelete() throws SQLException {
+    public void testDelete() throws Exception {
         Address address = new Address(1, "Mark", "Lee", "111222333", "789 Oak St", "Nice", "06000");
         addressDAO.create(address);
         int id = address.getId();
@@ -115,7 +117,7 @@ public class AddressDAOTest {
     }
 
     @Test
-    public void testFindByAccountId() throws SQLException {
+    public void testFindByAccountId() throws Exception {
         Address a1 = new Address(1, "Alice", "Dupont", "123123123", "10 Rue A", "Paris", "75002");
         Address a2 = new Address(1, "Bob", "Martin", "456456456", "20 Rue B", "Paris", "75003");
         addressDAO.create(a1);

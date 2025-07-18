@@ -1,12 +1,11 @@
-package ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.business;
+package ca.uqam.mgl7361.lel.gp1.delivery.business;
 
-import ca.uqam.mgl7361.lel.gp1.account.dto.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.dto.AddressDTO;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.dto.DeliveryDTO;
-import ca.uqam.mgl7361.lel.gp1.order.dto.OrderDTO;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.persistence.DeliveryDAO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.account.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.delivery.dto.AddressDTO;
+import ca.uqam.mgl7361.lel.gp1.delivery.dto.DeliveryDTO;
+import ca.uqam.mgl7361.lel.gp1.delivery.persistence.DeliveryDAO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 
-import java.sql.SQLException;
 import java.sql.Date;
 import java.util.List;
 
@@ -14,11 +13,12 @@ public class DeliveryService {
 
     private final DeliveryDAO deliveryDAO;
 
-    public DeliveryService() throws SQLException {
+    public DeliveryService() throws Exception {
         this.deliveryDAO = new DeliveryDAO();
     }
 
-    public DeliveryDTO createDelivery(AddressDTO address, Date deliveryDate, String deliveryStatus, OrderDTO order) throws Exception {
+    public DeliveryDTO createDelivery(AddressDTO address, Date deliveryDate, String deliveryStatus, OrderDTO order)
+            throws Exception {
         DeliveryDTO deliveryDTO = new DeliveryDTO(address, deliveryDate, deliveryStatus, order);
         deliveryDAO.createDelivery(deliveryDTO);
         return deliveryDTO;
@@ -40,25 +40,23 @@ public class DeliveryService {
         delivery.setDeliveryDate(newDate);
     }
 
-
-
     public DeliveryService(DeliveryDAO deliveryDAO) {
         this.deliveryDAO = deliveryDAO;
     }
 
-    public List<DeliveryDTO> getAllOrdersInTransit() throws SQLException {
+    public List<DeliveryDTO> getAllOrdersInTransit() throws Exception {
         return deliveryDAO.findByStatus("In Transit");
     }
 
-    public List<DeliveryDTO> getAllOrdersInTransit(AccountDTO account) throws SQLException {
+    public List<DeliveryDTO> getAllOrdersInTransit(AccountDTO account) throws Exception {
         return deliveryDAO.findByStatusAndAccountId("In Transit", account.getId());
     }
 
-    public List<DeliveryDTO> getAllOrdersDelivered() throws SQLException {
+    public List<DeliveryDTO> getAllOrdersDelivered() throws Exception {
         return deliveryDAO.findByStatus("Delivered");
     }
 
-    public List<DeliveryDTO> getAllOrdersNotDelivered() throws SQLException {
+    public List<DeliveryDTO> getAllOrdersNotDelivered() throws Exception {
         return deliveryDAO.findByStatusNot("Delivered");
     }
 
@@ -78,6 +76,5 @@ public class DeliveryService {
     public void updateStatusToCanceled(DeliveryDTO delivery) {
         delivery.setDeliveryStatus("Canceled");
     }
-
 
 }

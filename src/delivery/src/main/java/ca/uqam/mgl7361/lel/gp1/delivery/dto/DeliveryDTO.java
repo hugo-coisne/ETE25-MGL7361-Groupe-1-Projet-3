@@ -1,6 +1,6 @@
-package ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.dto;
+package ca.uqam.mgl7361.lel.gp1.delivery.dto;
 
-import ca.uqam.mgl7361.lel.gp1.order.dto.OrderDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 
 import java.sql.Date;
 

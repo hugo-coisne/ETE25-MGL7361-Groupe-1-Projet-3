@@ -1,4 +1,4 @@
-package ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.dto;
+package ca.uqam.mgl7361.lel.gp1.delivery.dto;
 
 public class AddressDTO {
     private int id;

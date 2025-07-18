@@ -17,7 +17,7 @@ public class BookAPIImpl implements BookAPI {
     }
 
     @Override
-    public List<BookDTO> getBooksBy(Map<BookProperty, String> criteria) {
+    public List<BookDTO> getBooksBy(Map<BookProperty, String> criteria) throws Exception {
 
         return this.bookService.getBooksBy(criteria);
     }
