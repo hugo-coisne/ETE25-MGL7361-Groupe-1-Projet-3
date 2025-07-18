@@ -1,23 +1,22 @@
 package ca.uqam.mgl7361.lel.gp1.order.persistence;
 
-
-import ca.uqam.mgl7361.lel.gp1.account.dto.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.account.AccountDTO;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.DBConnection;
 import ca.uqam.mgl7361.lel.gp1.order.dto.OrderDTO;
 import ca.uqam.mgl7361.lel.gp1.order.model.Order;
-import ca.uqam.mgl7361.lel.gp1.shop.dto.BookDTO;
+import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.shop.BookDTO;
 
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 
 public class OrderDAO {
     private final Logger logger = Logger.getLogger(OrderDAO.class.getName());
@@ -40,16 +39,13 @@ public class OrderDAO {
                 Connection conn = DBConnection.getConnection();
                 PreparedStatement insertOrder = conn.prepareStatement(
                         "INSERT INTO orders (order_number, account_id, total_price, order_date) VALUES (?, ?, ?, ?)",
-                        PreparedStatement.RETURN_GENERATED_KEYS
-                );
+                        PreparedStatement.RETURN_GENERATED_KEYS);
                 PreparedStatement insertContent = conn.prepareStatement(
                         "INSERT INTO order_contents (" +
                                 "order_number, book_isbn, book_title, book_description, " +
                                 "book_price, book_publisher, book_publication_date, " +
                                 "book_authors, quantity) " +
-                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-                )
-        ) {
+                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
             conn.setAutoCommit(false);
 
             // Insert order
@@ -107,12 +103,12 @@ public class OrderDAO {
             order = new Order(orderNumber, date, books);
             order.setOrderPrice((float) total_price);
             logger.info("Order and order contents inserted successfully.");
-        } catch (Exception e) {
+            return order;
+        } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error creating order", e);
             throw new Exception("Error creating order: " + e.getMessage(), e);
         }
 
-        return order;
     }
 
     private String nullable(String value) {
@@ -123,29 +119,27 @@ public class OrderDAO {
         String sql = "SELECT id FROM orders WHERE order_number = ?";
         try (
                 Connection conn = DBConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)
-        ) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, orderNumber);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt("id");
                 } else {
-                    throw new Exception("Order not found for order_number: " + orderNumber);
+                    logger.warning("No order found with order number: " + orderNumber);
+                    return 0;
                 }
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             throw new Exception("Error finding order id by order number: " + e.getMessage(), e);
         }
     }
-
 
     public OrderDTO findById(int orderId) throws Exception {
         String sql = "SELECT id, order_number, account_id, order_date, total_price FROM orders WHERE id = ?";
 
         try (
                 Connection conn = DBConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)
-        ) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, orderId);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -156,10 +150,11 @@ public class OrderDAO {
                     Map<BookDTO, Integer> items = Map.of(); // Assuming items are fetched separately TODO
                     return new OrderDTO(orderNumber, orderDate, orderPrice, items);
                 } else {
-                    throw new Exception("No order found with id: " + orderId);
+                    logger.info("No order found with id: " + orderId);
+                    return null;
                 }
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             throw new Exception("Error fetching order by ID: " + e.getMessage(), e);
         }
     }

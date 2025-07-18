@@ -1,6 +1,6 @@
 package ca.uqam.mgl7361.lel.gp1.order.dto;
 
-import ca.uqam.mgl7361.lel.gp1.shop.dto.BookDTO;
+import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.shop.BookDTO;
 
 
 import java.sql.Date;
