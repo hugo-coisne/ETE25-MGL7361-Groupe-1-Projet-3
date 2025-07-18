@@ -56,8 +56,7 @@ public class BookDAO {
 
     }
 
-    private PreparedStatement buildGetBooksQuery(Connection conn, Map<BookProperty, String> criteria)
-            throws SQLException {
+    private PreparedStatement buildGetBooksQuery(Connection conn, Map<BookProperty, String> criteria) throws Exception {
         StringBuilder baseQuery = new StringBuilder("SELECT DISTINCT books.* FROM books ");
         Set<BookProperty> keys = criteria.keySet();
 
@@ -86,17 +85,23 @@ public class BookDAO {
 
         logger.log(Level.INFO, baseQuery.toString());
 
-        PreparedStatement statement = conn.prepareStatement(baseQuery.toString());
-
-        int index = 1;
-        for (BookProperty key : keys) {
-            statement.setString(index++, "%" + criteria.get(key) + "%");
+        PreparedStatement statement;
+        try {
+            statement = conn.prepareStatement(baseQuery.toString());
+            int index = 1;
+            for (BookProperty key : keys) {
+                statement.setString(index++, "%" + criteria.get(key) + "%");
+            }
+    
+            return statement;
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error building query for books", e);
+            throw new Exception("Error building query for books: " + e.getMessage(), e);
         }
 
-        return statement;
     }
 
-    public List<Book> getBooksBy(Map<BookProperty, String> criteria) {
+    public List<Book> getBooksBy(Map<BookProperty, String> criteria) throws Exception {
         List<Book> books = new ArrayList<>();
         logger.log(Level.INFO, String.format("Retrieving books: %s", books));
         try (

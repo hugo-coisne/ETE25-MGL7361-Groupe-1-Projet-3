@@ -29,9 +29,15 @@ public class BookController {
     @PostMapping("/search")
     public ResponseEntity<List<BookDTO>> getBooksBy(@RequestBody Map<BookProperty, String> criteria) {
         logger.info("Searching books with criteria: {}", criteria);
-        List<BookDTO> books = bookService.getBooksBy(criteria);
-        logger.info("Found {} books matching criteria", books.size());
-        return ResponseEntity.ok(books);
+        List<BookDTO> books;
+        try {
+            books = bookService.getBooksBy(criteria);
+            logger.info("Found {} books matching criteria", books.size());
+            return ResponseEntity.ok(books);
+        } catch (Exception e) {
+            logger.error("Error retrieving books by criteria: {}", criteria, e);
+            return ResponseEntity.status(500).body(List.of());
+        }
     }
 
     @Operation(summary = "Create a new book")
