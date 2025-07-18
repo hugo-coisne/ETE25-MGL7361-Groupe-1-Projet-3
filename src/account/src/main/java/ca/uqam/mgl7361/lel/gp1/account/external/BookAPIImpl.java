@@ -3,9 +3,9 @@ package ca.uqam.mgl7361.lel.gp1.account.external;
 import java.util.List;
 import java.util.Map;
 
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.shop.BookDTO;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.shop.BookProperty;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.interfaces.BookAPI;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookProperty;
+import ca.uqam.mgl7361.lel.gp1.common.interfaces.BookAPI;
 
 public class BookAPIImpl implements BookAPI {
 

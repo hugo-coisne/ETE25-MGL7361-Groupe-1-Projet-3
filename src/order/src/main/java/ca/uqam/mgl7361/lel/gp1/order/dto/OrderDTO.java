@@ -1,10 +1,9 @@
 package ca.uqam.mgl7361.lel.gp1.order.dto;
 
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.shop.BookDTO;
-
-
 import java.sql.Date;
 import java.util.Map;
+
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 
 public class OrderDTO {
     private final String orderNumber;

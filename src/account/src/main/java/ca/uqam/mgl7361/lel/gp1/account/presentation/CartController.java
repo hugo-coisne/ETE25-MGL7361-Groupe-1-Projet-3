@@ -17,7 +17,7 @@ import ca.uqam.mgl7361.lel.gp1.account.dto.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidCartException;
 import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidCredentialsException;
 import ca.uqam.mgl7361.lel.gp1.account.exception.UnsufficientStockException;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.shop.BookDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 
 @RestController
 @RequestMapping("/cart")

@@ -1,7 +1,7 @@
 package ca.uqam.mgl7361.lel.gp1.shop.persistence;
 
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.DBConnection;
 import ca.uqam.mgl7361.lel.gp1.shop.model.BookAttribute;
+import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
 import ca.uqam.mgl7361.lel.gp1.shop.exception.AttributesException;
 import ca.uqam.mgl7361.lel.gp1.shop.exception.AuthorsException;
 import ca.uqam.mgl7361.lel.gp1.shop.exception.CategoriesException;

@@ -1,10 +1,10 @@
-package ca.uqam.mgl7361.lel.gp1.lel.gp1.common.interfaces;
+package ca.uqam.mgl7361.lel.gp1.common.interfaces;
 
 import java.util.List;
 import java.util.Map;
 
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.shop.BookDTO;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.shop.BookProperty;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookProperty;
 
 public interface BookAPI {
     List<BookDTO> getBooksBy(Map<BookProperty, String> criteria) throws Exception;

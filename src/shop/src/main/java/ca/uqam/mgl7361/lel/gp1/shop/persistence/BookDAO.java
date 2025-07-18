@@ -1,12 +1,12 @@
 package ca.uqam.mgl7361.lel.gp1.shop.persistence;
 
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.DBConnection;
 import ca.uqam.mgl7361.lel.gp1.shop.exception.DTOException;
 import ca.uqam.mgl7361.lel.gp1.shop.exception.DuplicationBookException;
 import ca.uqam.mgl7361.lel.gp1.shop.model.Author;
 import ca.uqam.mgl7361.lel.gp1.shop.model.Book;
 import ca.uqam.mgl7361.lel.gp1.shop.model.Category;
 import ca.uqam.mgl7361.lel.gp1.shop.model.Publisher;
+import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
 import ca.uqam.mgl7361.lel.gp1.shop.dto.BookProperty;
 
 import java.sql.*;

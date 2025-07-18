@@ -1,6 +1,6 @@
 package ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.persistence;
 
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.DBConnection;
+import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.dto.AddressDTO;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.dto.DeliveryDTO;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.model.Delivery;

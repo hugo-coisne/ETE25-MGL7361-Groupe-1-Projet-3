@@ -1,10 +1,10 @@
 package ca.uqam.mgl7361.lel.gp1.order.persistence;
 
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.account.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.DBConnection;
+import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.account.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 import ca.uqam.mgl7361.lel.gp1.order.dto.OrderDTO;
 import ca.uqam.mgl7361.lel.gp1.order.model.Order;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.shop.BookDTO;
 
 import java.sql.Connection;
 import java.sql.Date;

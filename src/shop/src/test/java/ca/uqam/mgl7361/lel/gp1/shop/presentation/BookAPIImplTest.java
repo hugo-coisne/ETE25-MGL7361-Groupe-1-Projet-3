@@ -1,7 +1,8 @@
 package ca.uqam.mgl7361.lel.gp1.shop.presentation;
 
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.DBConnection;
 import org.junit.jupiter.api.*;
+
+import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
 import ca.uqam.mgl7361.lel.gp1.shop.dto.BookDTO;
 
 import java.sql.Connection;

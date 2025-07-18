@@ -1,5 +1,6 @@
 package ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.persistence;
 
+import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
 import ca.uqam.mgl7361.lel.gp1.lel.gp1.delivery.model.Address;
 import org.junit.jupiter.api.*;
 
@@ -8,7 +9,6 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.List;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.DBConnection;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -2,13 +2,13 @@ package ca.uqam.mgl7361.lel.gp1.order.business;
 
 import ca.uqam.mgl7361.lel.gp1.order.dto.OrderDTO;
 import ca.uqam.mgl7361.lel.gp1.order.external.BookAPIImpl;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.account.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.account.CartDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.account.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.account.CartDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookProperty;
 import ca.uqam.mgl7361.lel.gp1.order.business.mapper.OrderMapper;
 import ca.uqam.mgl7361.lel.gp1.order.model.Order;
 import ca.uqam.mgl7361.lel.gp1.order.persistence.OrderDAO;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.shop.BookDTO;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.shop.BookProperty;
 
 import java.util.HashMap;
 import java.util.List;

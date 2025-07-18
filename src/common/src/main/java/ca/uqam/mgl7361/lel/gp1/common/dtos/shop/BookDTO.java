@@ -1,4 +1,4 @@
-package ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.shop;
+package ca.uqam.mgl7361.lel.gp1.common.dtos.shop;
 
 import java.sql.Date;
 import java.util.ArrayList;

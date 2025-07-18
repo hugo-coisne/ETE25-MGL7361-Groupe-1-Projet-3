@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 import ca.uqam.mgl7361.lel.gp1.account.exception.DuplicateEmailException;
 import ca.uqam.mgl7361.lel.gp1.account.exception.InvalidCredentialsException;
 import ca.uqam.mgl7361.lel.gp1.account.model.Account;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.DBConnection;
+import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
 
 public class AccountDAO {
 

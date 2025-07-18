@@ -12,8 +12,8 @@ import ca.uqam.mgl7361.lel.gp1.account.exception.UnsufficientStockException;
 import ca.uqam.mgl7361.lel.gp1.account.external.BookAPIImpl;
 import ca.uqam.mgl7361.lel.gp1.account.model.Cart;
 import ca.uqam.mgl7361.lel.gp1.account.persistence.CartDAO;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.dtos.shop.BookDTO;
-import ca.uqam.mgl7361.lel.gp1.lel.gp1.common.interfaces.BookAPI;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
+import ca.uqam.mgl7361.lel.gp1.common.interfaces.BookAPI;
 
 @Service
 public class CartService {
