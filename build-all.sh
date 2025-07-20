@@ -10,5 +10,7 @@ cd ../payment
 mvn clean install package -DskipTests
 cd ../delivery
 mvn clean install package -DskipTests
+cd ../main
+mvn clean install package -DskipTests
 cd ../..
 docker compose build

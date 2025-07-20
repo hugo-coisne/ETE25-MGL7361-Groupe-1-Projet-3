@@ -25,6 +25,8 @@ services:
     volumes:
       - ./db_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb -h 127.0.0.1 -uroot -proot -e 'SELECT 1;'"]
   
   user:
     container_name: user
@@ -38,10 +40,11 @@ services:
       - "traefik.http.routers.user.rule=PathPrefix(`$USER_PATH`)"
       - "traefik.http.routers.user.entrypoints=web"
       - "traefik.http.services.user.loadbalancer.server.port=8080"
-    ports:
-      - "8081:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080${USER_PATH}/actuator/health"]
   
   shop:
     container_name: shop
@@ -55,10 +58,11 @@ services:
       - "traefik.http.routers.shop.rule=PathPrefix(`$SHOP_PATH`)"
       - "traefik.http.routers.shop.entrypoints=web"
       - "traefik.http.services.shop.loadbalancer.server.port=8080"
-    ports:
-      - "8082:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080${SHOP_PATH}/actuator/health"]
 
   order:
     container_name: order
@@ -72,10 +76,11 @@ services:
       - "traefik.http.routers.order.rule=PathPrefix(`$ORDER_PATH`)"
       - "traefik.http.routers.order.entrypoints=web"
       - "traefik.http.services.order.loadbalancer.server.port=8080"
-    ports:
-      - "8083:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080${ORDER_PATH}/actuator/health"]
   
   payment:
     container_name: payment
@@ -89,10 +94,11 @@ services:
       - "traefik.http.routers.payment.rule=PathPrefix(`$PAYMENT_PATH`)"
       - "traefik.http.routers.payment.entrypoints=web"
       - "traefik.http.services.payment.loadbalancer.server.port=8080"
-    ports:
-      - "8084:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080${PAYMENT_PATH}/actuator/health"]
     
   delivery:
     container_name: delivery
@@ -106,7 +112,28 @@ services:
       - "traefik.http.routers.delivery.rule=PathPrefix(`$DELIVERY_PATH`)"
       - "traefik.http.routers.delivery.entrypoints=web"
       - "traefik.http.services.delivery.loadbalancer.server.port=8080"
-    ports:
-      - "8085:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080${DELIVERY_PATH}/actuator/health"]
+  
+  main:
+    container_name: main
+    build:
+      context: src
+      dockerfile: main/dockerfile
+    volumes:
+      - .env:/app/.env
+    command: sh -c "sleep 5 && java -jar app.jar"
+    depends_on:
+      user:
+        condition: service_healthy
+      shop:
+        condition: service_healthy
+      delivery:
+        condition: service_healthy
+      payment:
+        condition: service_healthy
+      order:
+        condition: service_healthy
