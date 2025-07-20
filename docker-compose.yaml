@@ -40,9 +40,9 @@ services:
       - "traefik.http.routers.user.rule=PathPrefix(`$USER_PATH`)"
       - "traefik.http.routers.user.entrypoints=web"
       - "traefik.http.services.user.loadbalancer.server.port=8080"
-    depends_on:
-      db:
-        condition: service_healthy
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080${USER_PATH}/actuator/health"]
   
@@ -58,9 +58,9 @@ services:
       - "traefik.http.routers.shop.rule=PathPrefix(`$SHOP_PATH`)"
       - "traefik.http.routers.shop.entrypoints=web"
       - "traefik.http.services.shop.loadbalancer.server.port=8080"
-    depends_on:
-      db:
-        condition: service_healthy
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080${SHOP_PATH}/actuator/health"]
 
@@ -76,9 +76,9 @@ services:
       - "traefik.http.routers.order.rule=PathPrefix(`$ORDER_PATH`)"
       - "traefik.http.routers.order.entrypoints=web"
       - "traefik.http.services.order.loadbalancer.server.port=8080"
-    depends_on:
-      db:
-        condition: service_healthy
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080${ORDER_PATH}/actuator/health"]
   
@@ -94,9 +94,9 @@ services:
       - "traefik.http.routers.payment.rule=PathPrefix(`$PAYMENT_PATH`)"
       - "traefik.http.routers.payment.entrypoints=web"
       - "traefik.http.services.payment.loadbalancer.server.port=8080"
-    depends_on:
-      db:
-        condition: service_healthy
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080${PAYMENT_PATH}/actuator/health"]
     
@@ -112,9 +112,9 @@ services:
       - "traefik.http.routers.delivery.rule=PathPrefix(`$DELIVERY_PATH`)"
       - "traefik.http.routers.delivery.entrypoints=web"
       - "traefik.http.services.delivery.loadbalancer.server.port=8080"
-    depends_on:
-      db:
-        condition: service_healthy
+    # depends_on:
+    #   db:
+    #     condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080${DELIVERY_PATH}/actuator/health"]
   
@@ -136,4 +136,6 @@ services:
       payment:
         condition: service_healthy
       order:
+        condition: service_healthy
+      db:
         condition: service_healthy

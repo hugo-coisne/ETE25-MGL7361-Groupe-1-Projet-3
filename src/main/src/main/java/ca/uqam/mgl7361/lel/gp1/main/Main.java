@@ -1,8 +1,16 @@
 package ca.uqam.mgl7361.lel.gp1.main;
 
 import ca.uqam.mgl7361.lel.gp1.common.clients.AccountAPIClient;
+import ca.uqam.mgl7361.lel.gp1.common.clients.BookAPIClient;
+import ca.uqam.mgl7361.lel.gp1.common.clients.CartAPIClient;
+import ca.uqam.mgl7361.lel.gp1.common.clients.CartAPIClient.CartBookRequest;
 import ca.uqam.mgl7361.lel.gp1.common.clients.Clients;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.account.*;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookProperty;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Main {
@@ -90,101 +98,98 @@ public class Main {
         // System.out.println("");
     }
 
-    // public static void cart() {
-    //     AccountAPIClient accountClient = Clients.accountClient;
-    //     String firstName = "John";
-    //     String lastName = "Doe";
-    //     String phone = "1234567890";
-    //     String email = "john.doe@mail.com";
-    //     String password = "P@ssword123";
-        
-    //     // Create a new account
-    //     accountClient.signup(firstName, lastName, phone, email, password);
-    //     System.out.println("");
-    //     // Sign in with the correct password
-    //     AccountDTO account = accountClient.signin(email, password);
-    //     System.out.println("");
-        
-    //     // Get a CartAPI instance for the signed-in account
-    //     CartAPI cartAPI = new CartAPIImpl();
-        
-    //     // Retrieve the cart for the account, creating the cart if it
-    //     // doesn't exist
-        
-    //     System.out.println("successful getCart test case");
-    //     cartAPI.getCart(account);
-    //     List<BookDTO> books = new ArrayList<BookDTO>(); // TODO : PLEASE HANDLE
-    //     EXCEPTIONS CORRECTLY : IN API
-    //     // IMPLEMENTATIONS !
-    //     try {
-    //     books = bookAPI.getBooksBy(
-    //     Map.of(
-    //     BookProperty.TITLE, "%"));
-    //     } catch (Exception e) {
-    //     e.printStackTrace();
-    //     }
-        
-    //     BookDTO bookToRemoveLater = books.get(0); // Get the first book to remove
-    //     later
-        
-    //     System.out.println("successful add book to cart test cases");
-    //     books.forEach(book -> {
-    //     cartAPI.add(book, account);
-    //     });
-        
-    //     // Retrieve the cart again to see the added book
-    //     cartAPI.getCart(account);
-        
-    //     // Add a book to the cart
-    //     cartAPI.add(bookToRemoveLater, account);
-    //     cartAPI.getCart(account);
-        
-    //     // Remove a book from the cart
-        
-    //     System.out.println("successful remove book from cart test case");
-    //     cartAPI.remove(bookToRemoveLater, account);
-        
-    //     // Retrieve the cart again to see the added book
-    //     cartAPI.getCart(account);
-        
-    //     // clear the cart twice to test the clearCart method error handling
-    //     System.out.println("successful clear cart test case");
-    //     cartAPI.clearCart(account);
-    //     System.out.println("error second clear non-existent cart test case");
-    //     cartAPI.clearCart(account);
-        
-    //     // try to delete a book that is not in the cart
-    //     System.out.println("error remove book not in cart test case");
-    //     cartAPI.remove(bookToRemoveLater, account);
-        
-    //     // Retrieve the cart again to see that it is empty
-    //     System.out.println("successful getCart after clear test case");
-    //     cartAPI.getCart(account);
-        
-    //     // Add multiple books to the cart
-        
-    //     accountClient.delete(account);
-        
-    // }
+    public static void cart() {
+        AccountAPIClient accountClient = Clients.accountClient;
+        String firstName = "John";
+        String lastName = "Doe";
+        String phone = "1234567890";
+        String email = "john.doe@mail.com";
+        String password = "P@ssword123";
 
-    // public static void shop() throws Exception {
-    // BookAPIImpl bookAPI = new BookAPIImpl();
-    //
-    // BookDTO bookDTO = new BookDTO("My Book", "1234567890", 19.99);
-    // // bookAPI.createBook(bookDTO);
-    // List<BookDTO> books = bookAPI.getBooksBy(
-    // Map.of(
-    // BookProperty.TITLE, "%Les Misérables%",
-    // BookProperty.DESCRIPTION, "%Hugo%",
-    // BookProperty.ISBN, "%88",
-    // BookProperty.PUBLICATION_DATE, "%1862%",
-    // BookProperty.PRICE, "19.99",
-    // BookProperty.STOCK_QUANTITY, "10",
-    // BookProperty.PUBLISHER, "Gallimard",
-    // BookProperty.CATEGORY, "NOVEL",
-    // BookProperty.AUTHOR, "%Victor%"));
-    // System.out.println("Books found: " + books.size());
-    // }
+        AccountDTO account = new AccountDTO(firstName, lastName, phone, email, password);
+        Map<String, String> credentials = Map.of("email", email, "password", password);
+
+        // Create a new account
+        accountClient.signup(account);
+        System.out.println("");
+        // Sign in with the correct password
+        final AccountDTO signedInAccount = accountClient.signin(credentials);
+        System.out.println("");
+
+        // Get a CartAPI instance for the signed-in account
+        CartAPIClient cartAPI = Clients.cartClient;
+
+        // Retrieve the cart for the account, creating the cart if it
+        // doesn't exist
+
+        System.out.println("successful getCart test case");
+        cartAPI.getCart(signedInAccount);
+
+        BookAPIClient bookAPI = Clients.bookClient;
+
+        List<BookDTO> books = new ArrayList<BookDTO>();
+        books = bookAPI.getBooksBy(Map.of(BookProperty.TITLE, "%"));
+
+        BookDTO bookToRemoveLater = books.get(0); // Get the first book to remove later
+
+        System.out.println("successful add book to cart test cases");
+        books.forEach(book -> {
+            cartAPI.addBookToCart(new CartBookRequest(signedInAccount, book));
+        });
+
+        // Retrieve the cart again to see the added book
+        cartAPI.getCart(signedInAccount);
+
+        // Add a book to the cart
+        cartAPI.addBookToCart(new CartBookRequest(signedInAccount, bookToRemoveLater));
+        cartAPI.getCart(signedInAccount);
+
+        // Remove a book from the cart
+
+        System.out.println("successful remove book from cart test case");
+        cartAPI.removeBookFromCart(new CartBookRequest(signedInAccount, bookToRemoveLater));
+
+        // Retrieve the cart again to see the added book
+        cartAPI.getCart(signedInAccount);
+
+        // clear the cart twice to test the clearCart method error handling
+        System.out.println("successful clear cart test case");
+        cartAPI.clearCart(signedInAccount);
+        System.out.println("error second clear non-existent cart test case");
+        cartAPI.clearCart(signedInAccount);
+
+        // try to delete a book that is not in the cart
+        System.out.println("error remove book not in cart test case");
+        cartAPI.removeBookFromCart(new CartBookRequest(signedInAccount, bookToRemoveLater));
+
+        // Retrieve the cart again to see that it is empty
+        System.out.println("successful getCart after clear test case");
+        cartAPI.getCart(signedInAccount);
+
+        // Add multiple books to the cart
+
+        // accountClient.delete(account);
+
+    }
+
+    public static void shop() {
+        BookAPIClient bookAPI = Clients.bookClient;
+
+        BookDTO bookDTO = new BookDTO("My Book", "1234567890", 19.99);
+        bookAPI.createBook(bookDTO);
+        List<BookDTO> books = bookAPI.getBooksBy(
+                Map.of(
+                        BookProperty.TITLE, "%Les Misérables%",
+                        BookProperty.DESCRIPTION, "%Hugo%",
+                        BookProperty.ISBN, "%88",
+                        BookProperty.PUBLICATION_DATE, "%1862%",
+                        BookProperty.PRICE, "19.99",
+                        BookProperty.STOCK_QUANTITY, "10",
+                        BookProperty.PUBLISHER, "Gallimard",
+                        BookProperty.CATEGORY, "NOVEL",
+                        BookProperty.AUTHOR, "%Victor%"));
+        System.out.println("Books found: " + books.size());
+    }
 
     // public static void order() throws Exception {
     // OrderAPIImpl orderAPI = new OrderAPIImpl();
@@ -579,9 +584,9 @@ public class Main {
 
     public static void main(String[] args) {
         // GlobalSafeExecutor.run(() -> {
-        Main.account();
+        // Main.account();
         // Main.cart();
-        // Main.shop();
+        Main.shop();
         // Main.order();
         // Main.delivery();
         // Main.scenario();
