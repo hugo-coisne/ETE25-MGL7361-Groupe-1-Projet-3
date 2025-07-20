@@ -12,7 +12,7 @@ public class Clients {
     // static String orderServiceUrl = dotenv.get("ORDER_SERVICE_URL", "http://localhost:8082");
 
 
-    public static final AccountAPIClient userClient = Feign.builder()
+    public static final AccountAPIClient accountClient = Feign.builder()
             .encoder(new JacksonEncoder())
             .decoder(new JacksonDecoder())
             .target(AccountAPIClient.class, userServiceUrl);
