@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.uqam.mgl7361.lel.gp1.user.business.CartService;
-import ca.uqam.mgl7361.lel.gp1.user.dto.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.user.dto.CartDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCartException;
 import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCredentialsException;
 import ca.uqam.mgl7361.lel.gp1.user.exception.UnsufficientStockException;
@@ -92,7 +92,7 @@ public class CartController {
     public ResponseEntity<?> clearCart(@RequestBody AccountDTO accountDto) {
         try {
             cartService.clearCart(accountDto);
-            return ResponseEntity.ok().body("Cart emptied successfully !");
+            return ResponseEntity.ok().body("Cart emptied successfully ! (or was already empty)");
         } catch (InvalidCredentialsException e) {
             logger.error("Invalid credentials for account: " + accountDto.getEmail(), e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

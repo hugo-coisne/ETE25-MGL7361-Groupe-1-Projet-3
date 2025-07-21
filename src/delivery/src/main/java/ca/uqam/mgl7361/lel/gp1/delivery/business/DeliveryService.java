@@ -1,10 +1,10 @@
 package ca.uqam.mgl7361.lel.gp1.delivery.business;
 
-import ca.uqam.mgl7361.lel.gp1.common.dtos.account.AccountDTO;
 import ca.uqam.mgl7361.lel.gp1.delivery.dto.AddressDTO;
 import ca.uqam.mgl7361.lel.gp1.delivery.dto.DeliveryDTO;
 import ca.uqam.mgl7361.lel.gp1.delivery.persistence.DeliveryDAO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 
 import java.util.Date;
 import java.util.List;

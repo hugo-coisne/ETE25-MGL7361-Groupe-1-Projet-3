@@ -1,4 +1,4 @@
-package ca.uqam.mgl7361.lel.gp1.common.dtos.account;
+package ca.uqam.mgl7361.lel.gp1.common.dtos.user;
 
 public class AccountDTO {
     private String firstName;

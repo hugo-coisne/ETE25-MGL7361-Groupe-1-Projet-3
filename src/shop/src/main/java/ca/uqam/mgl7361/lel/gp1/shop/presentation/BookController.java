@@ -101,7 +101,7 @@ public class BookController {
     }
 
     @Operation(summary = "Check if a book is in stock")
-    @PostMapping("/in-stock")
+    @PostMapping("/is-in-stock")
     public ResponseEntity<Boolean> isInStock(@RequestBody BookDTO bookDTO) {
         boolean inStock = bookService.isInStock(bookDTO);
         logger.info("Book '{}' in stock: {}", bookDTO.getTitle(), inStock);
@@ -109,10 +109,11 @@ public class BookController {
     }
 
     @Operation(summary = "Check if a book is in stock with given quantity")
-    @PostMapping("/in-stock/{quantity}")
+    @PostMapping("/quantity-in-stock")
     public ResponseEntity<Boolean> isSufficientlyInStock(
-            @RequestBody BookDTO bookDTO,
-            @PathVariable int quantity) {
+            @RequestBody BookQuantityRequest bookQuantityRequest) {
+        BookDTO bookDTO = bookQuantityRequest.book;
+        int quantity = bookQuantityRequest.quantity;
         boolean sufficient = bookService.isSufficientlyInStock(bookDTO, quantity);
         logger.info("Book '{}' in stock with quantity {}: {}", bookDTO.getTitle(), quantity, sufficient);
         return ResponseEntity.ok(sufficient);
@@ -123,4 +124,6 @@ public class BookController {
             BookDTO book,
             Map<BookProperty, List<String>> properties) {
     }
+
+    public record BookQuantityRequest(BookDTO book, int quantity){}
 }

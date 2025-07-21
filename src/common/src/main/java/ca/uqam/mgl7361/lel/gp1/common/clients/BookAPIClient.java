@@ -3,7 +3,6 @@ package ca.uqam.mgl7361.lel.gp1.common.clients;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookProperty;
 import feign.Headers;
-import feign.Param;
 import feign.RequestLine;
 
 import java.util.List;
@@ -35,16 +34,18 @@ public interface BookAPIClient {
     @Headers("Content-Type: application/json")
     void removePropertiesFrom(BookPropertiesRequest request);
 
-    @RequestLine("POST /books/in-stock")
+    @RequestLine("POST /books/is-in-stock")
     @Headers("Content-Type: application/json")
     Boolean isInStock(BookDTO book);
 
-    @RequestLine("POST /books/in-stock/{quantity}")
+    @RequestLine("POST /books/quantity-in-stock")
     @Headers("Content-Type: application/json")
-    Boolean isSufficientlyInStock(BookDTO book, @Param("quantity") int quantity);
+    Boolean isSufficientlyInStock(BookQuantityRequest bookQuantityRequest);
 
     record BookPropertiesRequest(
             BookDTO book,
             Map<BookProperty, List<String>> properties) {
     }
+
+    public record BookQuantityRequest(BookDTO book, int quantity){}
 }

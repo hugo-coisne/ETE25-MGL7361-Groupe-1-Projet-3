@@ -1,7 +1,5 @@
 package ca.uqam.mgl7361.lel.gp1.payment.business;
 
-import ca.uqam.mgl7361.lel.gp1.common.dtos.account.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.account.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 import ca.uqam.mgl7361.lel.gp1.payment.external.BookAPIImpl;
 import ca.uqam.mgl7361.lel.gp1.payment.external.OrderAPIImpl;
@@ -13,10 +11,11 @@ import ca.uqam.mgl7361.lel.gp1.payment.model.Invoice;
 import ca.uqam.mgl7361.lel.gp1.payment.dto.InvoiceDTO;
 import ca.uqam.mgl7361.lel.gp1.payment.persistence.InvoiceDAO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartItemDTO;
 import ca.uqam.mgl7361.lel.gp1.common.interfaces.AccountAPI;
 import ca.uqam.mgl7361.lel.gp1.common.interfaces.CartAPI;
-
-import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -33,9 +32,9 @@ public class InvoiceService {
             return false;
         }
         BookAPIImpl bookAPI = new BookAPIImpl();
-        for (Map.Entry<BookDTO, Integer> entry : cart.getBooksDto().entrySet()) {
-            BookDTO book = entry.getKey();
-            Integer quantity = entry.getValue();
+        for (CartItemDTO entry : cart.getBooksDto()) {
+            BookDTO book = entry.book();
+            Integer quantity = entry.quantity();
             if (!bookAPI.isSufficientlyInStock(book, quantity)) {
                 return false;
             }

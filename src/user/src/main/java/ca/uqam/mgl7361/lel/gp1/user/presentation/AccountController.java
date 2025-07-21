@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.uqam.mgl7361.lel.gp1.user.business.AccountService;
-import ca.uqam.mgl7361.lel.gp1.user.dto.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 import ca.uqam.mgl7361.lel.gp1.user.exception.DuplicateEmailException;
 import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidArgumentException;
 import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCredentialsException;

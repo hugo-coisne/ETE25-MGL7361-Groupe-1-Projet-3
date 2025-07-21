@@ -7,13 +7,14 @@ import java.util.logging.Logger;
 
 import org.springframework.stereotype.Service;
 
-import ca.uqam.mgl7361.lel.gp1.user.dto.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 import ca.uqam.mgl7361.lel.gp1.user.exception.DuplicateEmailException;
 import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidArgumentException;
 import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCartException;
 import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCredentialsException;
 import ca.uqam.mgl7361.lel.gp1.user.model.Account;
 import ca.uqam.mgl7361.lel.gp1.user.persistence.AccountDAO;
+import ca.uqam.mgl7361.lel.gp1.user.mapper.AccountMapper;
 
 @Service
 public class AccountService {
@@ -34,7 +35,7 @@ public class AccountService {
 
     public void create(AccountDTO accountDto) throws DuplicateEmailException, IllegalArgumentException {
 
-        Account account = accountDto.toAccount();
+        Account account = AccountMapper.toModel(accountDto);
         logger.info("Checking values for " + account.toString());
 
         ArgumentValidator.checkAccountSignupArguments(account);
@@ -46,19 +47,19 @@ public class AccountService {
 
     public AccountDTO signin(String email, String password) throws InvalidCredentialsException {
         logger.info("Signing in with email: " + email);
-        AccountDTO accountDto = accountDao.findByEmailAndPassword(email, password).toDto();
+        AccountDTO accountDto = AccountMapper.toDTO(accountDao.findByEmailAndPassword(email, password));
         return accountDto;
     }
 
     public void delete(AccountDTO accountDto) throws InvalidCredentialsException {
         // Logic to delete an account
-        Account account = accountDto.toAccount();
+        Account account = AccountMapper.toModel(accountDto);
         logger.info("Deleting account with email: " + account.getEmail());
         logger.info("First signing in with email: " + account.getEmail());
-        Account authenticatedAccount = signin(account.getEmail(), account.getPassword()).toAccount();
+        Account authenticatedAccount = AccountMapper.toModel(signin(account.getEmail(), account.getPassword()));
         logger.info("Deleting cart for account with email: " + authenticatedAccount.getEmail());
         try {
-            cartService.clearCart(authenticatedAccount.toDto());
+            cartService.clearCart(AccountMapper.toDTO(authenticatedAccount));
         } catch (InvalidCartException e) {
             logger.warning("No cart to delete for account: " + authenticatedAccount.getEmail());
         }
@@ -70,10 +71,10 @@ public class AccountService {
     public void update(AccountDTO accountDto, String parameterToBeUpdated, String newValue)
             throws InvalidCredentialsException, IllegalArgumentException, DuplicateEmailException {
         // Logic to update an existing account
-        Account account = accountDto.toAccount();
+        Account account = AccountMapper.toModel(accountDto);
         logger.info("Updating account with email: " + account.getEmail() + ", parameter: " + parameterToBeUpdated
                 + ", new value: " + newValue);
-        Account authenticatedAccount = signin(account.getEmail(), account.getPassword()).toAccount();
+        Account authenticatedAccount = AccountMapper.toModel(signin(account.getEmail(), account.getPassword()));
         logger.info("Authenticated account: " + authenticatedAccount.toString());
         List<String> problems = new ArrayList<>();
         switch (parameterToBeUpdated.toLowerCase()) {

@@ -3,7 +3,6 @@ package ca.uqam.mgl7361.lel.gp1.user.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import ca.uqam.mgl7361.lel.gp1.user.dto.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 
 public class Cart {
@@ -40,14 +39,6 @@ public class Cart {
 
     public int getQuantity(BookDTO bookDto) {
         return booksDto.getOrDefault(bookDto, 0);
-    }
-
-    public CartDTO toDTO() {
-        CartDTO cartDTO = new CartDTO();
-        cartDTO.setBooks(this.booksDto);
-        cartDTO.setId(this.id);
-        cartDTO.setTotalPrice(this.totalPrice);
-        return cartDTO;
     }
 
     public void setBooksDto(Map<BookDTO, Integer> booksDto) {

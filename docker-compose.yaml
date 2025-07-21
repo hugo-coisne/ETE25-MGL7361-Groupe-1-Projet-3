@@ -43,6 +43,8 @@ services:
     # depends_on:
     #   db:
     #     condition: service_healthy
+    volumes:
+      - .env:/app/.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080${USER_PATH}/actuator/health"]
   
@@ -61,6 +63,8 @@ services:
     # depends_on:
     #   db:
     #     condition: service_healthy
+    volumes:
+      - .env:/app/.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080${SHOP_PATH}/actuator/health"]
 
@@ -79,6 +83,8 @@ services:
     # depends_on:
     #   db:
     #     condition: service_healthy
+    volumes:
+      - .env:/app/.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080${ORDER_PATH}/actuator/health"]
   
@@ -97,6 +103,8 @@ services:
     # depends_on:
     #   db:
     #     condition: service_healthy
+    volumes:
+      - .env:/app/.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080${PAYMENT_PATH}/actuator/health"]
     
@@ -107,6 +115,8 @@ services:
       dockerfile: delivery/dockerfile
     environment:
     - CONTEXT_PATH=${DELIVERY_PATH}
+    volumes:
+      - .env:/app/.env
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.delivery.rule=PathPrefix(`$DELIVERY_PATH`)"

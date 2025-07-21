@@ -1,8 +1,8 @@
 package ca.uqam.mgl7361.lel.gp1.common.interfaces;
 
-import ca.uqam.mgl7361.lel.gp1.common.dtos.account.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.account.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartDTO;
 
 public interface CartAPI {
 

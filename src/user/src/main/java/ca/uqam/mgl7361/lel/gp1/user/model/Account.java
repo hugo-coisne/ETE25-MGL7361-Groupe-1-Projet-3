@@ -1,7 +1,5 @@
 package ca.uqam.mgl7361.lel.gp1.user.model;
 
-import ca.uqam.mgl7361.lel.gp1.user.dto.AccountDTO;
-
 public class Account {
     private String firstName;
     private String lastName;
@@ -26,17 +24,19 @@ public class Account {
         this.email = email;
     }
 
-    public AccountDTO toDto() {
-        String firstName = this.getFirstName();
-        String lastName = this.getLastName();
-        String phone = this.getPhone();
-        String email = this.getEmail();
-        String password = this.getPassword();
-        int id = this.getId();
-        AccountDTO accountDto = new AccountDTO(firstName, lastName, phone, email, password);
-        accountDto.setId(id);
-        return accountDto;
-    }
+    public Account(){}
+
+    // public AccountDTO toDto() {
+    //     String firstName = this.getFirstName();
+    //     String lastName = this.getLastName();
+    //     String phone = this.getPhone();
+    //     String email = this.getEmail();
+    //     String password = this.getPassword();
+    //     int id = this.getId();
+    //     AccountDTO accountDto = new AccountDTO(firstName, lastName, phone, email, password);
+    //     accountDto.setId(id);
+    //     return accountDto;
+    // }
 
     public String toString() {
         String result = "Account(";

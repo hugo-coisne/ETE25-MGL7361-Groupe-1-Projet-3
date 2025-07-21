@@ -1,6 +1,8 @@
-package ca.uqam.mgl7361.lel.gp1.common.dtos.account;
+package ca.uqam.mgl7361.lel.gp1.common.dtos.user;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
@@ -8,18 +10,18 @@ import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 public class CartDTO {
     private Map<String, Integer> booksIsbn;
     private int userId;
-    private Map<BookDTO, Integer> bookDtos;
+    private List<CartItemDTO> bookDtos;
     private double totalPrice;
     private int id;
 
     public CartDTO(int User) {
         this.userId = User;
         this.booksIsbn = new HashMap<>();
-        this.bookDtos = new HashMap<BookDTO, Integer>();
+        this.bookDtos = new ArrayList<CartItemDTO>();
     }
 
     public CartDTO() {
-        this.bookDtos = new HashMap<BookDTO, Integer>();
+        this.bookDtos = new ArrayList<CartItemDTO>();
     }
 
     public void add(BookDTO bookDto, int quantity) {
@@ -29,14 +31,14 @@ public class CartDTO {
         }
     }
 
-    public void setBooks(Map<BookDTO, Integer> books) {
+    public void setBooks(List<CartItemDTO> books) {
         this.bookDtos = books;
         // update the booksIsbn list
         this.booksIsbn = new HashMap<>();
         if (books != null) {
-            for (Map.Entry<BookDTO, Integer> entry : books.entrySet()) {
-                BookDTO book = entry.getKey();
-                Integer quantity = entry.getValue();
+            for (CartItemDTO entry : books) {
+                BookDTO book = entry.book();
+                Integer quantity = entry.quantity();
                 if (book != null && book.getIsbn() != null && quantity != null && quantity > 0) {
                     this.booksIsbn.merge(book.getIsbn(), quantity, Integer::sum);
                 }
@@ -94,10 +96,11 @@ public class CartDTO {
     public String toString() {
         String s = "CartDTO(id=" + id + ", totalPrice=" + totalPrice + ", bookDtos=[";
         if (this.bookDtos.size() > 0) {
-            for (Map.Entry<BookDTO, Integer> entry : bookDtos.entrySet()) {
-                BookDTO bookDto = entry.getKey();
-                int quantity = entry.getValue();
-                s = s + "\nBookDTO(title=" + bookDto.getTitle() + ", isbn=" + bookDto.getIsbn() + ", quantity=" + quantity + ")";
+            for (CartItemDTO entry : bookDtos) {
+                BookDTO bookDto = entry.book();
+                int quantity = entry.quantity();
+                s = s + "\nBookDTO(title=" + bookDto.getTitle() + ", isbn=" + bookDto.getIsbn() + ", quantity="
+                        + quantity + ")";
             }
         }
         s = s + "])";
@@ -112,7 +115,7 @@ public class CartDTO {
         this.totalPrice = totalPrice;
     }
 
-    public Map<BookDTO, Integer>  getBooksDto() {
+    public List<CartItemDTO> getBooksDto() {
         return this.bookDtos;
     }
 }

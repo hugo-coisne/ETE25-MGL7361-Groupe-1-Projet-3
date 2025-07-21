@@ -1,10 +1,11 @@
 package ca.uqam.mgl7361.lel.gp1.common.clients;
 
-import ca.uqam.mgl7361.lel.gp1.common.dtos.account.AccountDTO;
 import feign.Headers;
 import feign.RequestLine;
 
 import java.util.Map;
+
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 
 public interface AccountAPIClient {
 

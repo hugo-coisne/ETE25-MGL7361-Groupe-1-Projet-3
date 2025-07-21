@@ -1,6 +1,6 @@
 package ca.uqam.mgl7361.lel.gp1.common.interfaces;
 
-import ca.uqam.mgl7361.lel.gp1.common.dtos.account.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 
 public interface AccountAPI {
     AccountDTO signin(String email, String password);

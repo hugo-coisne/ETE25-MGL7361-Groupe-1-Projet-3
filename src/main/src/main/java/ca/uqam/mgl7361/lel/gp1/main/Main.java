@@ -5,9 +5,9 @@ import ca.uqam.mgl7361.lel.gp1.common.clients.BookAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.CartAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.CartAPIClient.CartBookRequest;
 import ca.uqam.mgl7361.lel.gp1.common.clients.Clients;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.account.*;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookProperty;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,6 @@ public class Main {
         String phone = "1234567890";
         String email = "john.doe@mail.com";
         String password = "P@ssword123";
-        String wrongPassword = "Password123";
 
         Map<String, String> credentials = Map.of("email", email, "password", password);
 
@@ -113,7 +112,7 @@ public class Main {
         accountClient.signup(account);
         System.out.println("");
         // Sign in with the correct password
-        final AccountDTO signedInAccount = accountClient.signin(credentials);
+        accountClient.signin(credentials);
         System.out.println("");
 
         // Get a CartAPI instance for the signed-in account
@@ -123,48 +122,53 @@ public class Main {
         // doesn't exist
 
         System.out.println("successful getCart test case");
-        cartAPI.getCart(signedInAccount);
+        cartAPI.getCart(account);
 
         BookAPIClient bookAPI = Clients.bookClient;
 
         List<BookDTO> books = new ArrayList<BookDTO>();
-        books = bookAPI.getBooksBy(Map.of(BookProperty.TITLE, "%"));
+        books = bookAPI.getBooksBy(Map.of(BookProperty.TITLE, "%Les Misérables%"));
 
         BookDTO bookToRemoveLater = books.get(0); // Get the first book to remove later
 
         System.out.println("successful add book to cart test cases");
         books.forEach(book -> {
-            cartAPI.addBookToCart(new CartBookRequest(signedInAccount, book));
+            cartAPI.addBookToCart(new CartBookRequest(account, book));
         });
 
         // Retrieve the cart again to see the added book
-        cartAPI.getCart(signedInAccount);
+        System.out.println("Getting cart");
+        cartAPI.getCart(account);
 
         // Add a book to the cart
-        cartAPI.addBookToCart(new CartBookRequest(signedInAccount, bookToRemoveLater));
-        cartAPI.getCart(signedInAccount);
+        System.out.println("adding book to cart that will be removed later");
+        cartAPI.addBookToCart(new CartBookRequest(account, bookToRemoveLater));
+        System.out.println("getting cart");
+        cartAPI.getCart(account);
 
         // Remove a book from the cart
 
         System.out.println("successful remove book from cart test case");
-        cartAPI.removeBookFromCart(new CartBookRequest(signedInAccount, bookToRemoveLater));
+        cartAPI.removeBookFromCart(new CartBookRequest(account, bookToRemoveLater));
 
         // Retrieve the cart again to see the added book
-        cartAPI.getCart(signedInAccount);
+        cartAPI.getCart(account);
 
         // clear the cart twice to test the clearCart method error handling
         System.out.println("successful clear cart test case");
-        cartAPI.clearCart(signedInAccount);
+        cartAPI.clearCart(account);
         System.out.println("error second clear non-existent cart test case");
-        cartAPI.clearCart(signedInAccount);
+        cartAPI.clearCart(account);
+
+        // These things are not required for the scenario to work, leaving them for now
 
         // try to delete a book that is not in the cart
-        System.out.println("error remove book not in cart test case");
-        cartAPI.removeBookFromCart(new CartBookRequest(signedInAccount, bookToRemoveLater));
+        // System.out.println("error remove book not in cart test case");
+        // cartAPI.removeBookFromCart(new CartBookRequest(account, bookToRemoveLater));
 
-        // Retrieve the cart again to see that it is empty
-        System.out.println("successful getCart after clear test case");
-        cartAPI.getCart(signedInAccount);
+        // // Retrieve the cart again to see that it is empty
+        // System.out.println("successful getCart after clear test case");
+        // cartAPI.getCart(account);
 
         // Add multiple books to the cart
 
@@ -585,8 +589,8 @@ public class Main {
     public static void main(String[] args) {
         // GlobalSafeExecutor.run(() -> {
         // Main.account();
-        // Main.cart();
-        Main.shop();
+        Main.cart();
+        // Main.shop();
         // Main.order();
         // Main.delivery();
         // Main.scenario();
