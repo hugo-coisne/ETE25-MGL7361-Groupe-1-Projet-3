@@ -1,7 +1,8 @@
 package ca.uqam.mgl7361.lel.gp1.order.business;
 
-import ca.uqam.mgl7361.lel.gp1.order.dto.OrderDTO;
-import ca.uqam.mgl7361.lel.gp1.order.external.BookAPIImpl;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
+import ca.uqam.mgl7361.lel.gp1.common.clients.BookAPIClient;
+import ca.uqam.mgl7361.lel.gp1.common.clients.Clients;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookProperty;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
@@ -23,11 +24,11 @@ public class OrderService {
     private static final Logger logger = LogManager.getLogger(OrderService.class);
 
     private final OrderDAO orderDAO;
-    private final BookAPIImpl bookAPI;
+    private final BookAPIClient bookAPI;
 
     public OrderService() {
         this.orderDAO = new OrderDAO();
-        this.bookAPI = new BookAPIImpl();
+        this.bookAPI = Clients.bookClient;
     }
 
     private Map<BookDTO, Integer> getBooksFromCart(CartDTO cart) throws Exception {

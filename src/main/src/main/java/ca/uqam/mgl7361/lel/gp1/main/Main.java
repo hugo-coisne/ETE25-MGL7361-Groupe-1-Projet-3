@@ -5,6 +5,9 @@ import ca.uqam.mgl7361.lel.gp1.common.clients.BookAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.CartAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.CartAPIClient.CartBookRequest;
 import ca.uqam.mgl7361.lel.gp1.common.clients.Clients;
+import ca.uqam.mgl7361.lel.gp1.common.clients.OrderAPIClient;
+import ca.uqam.mgl7361.lel.gp1.common.clients.OrderAPIClient.OrderRequest;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookProperty;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.*;
@@ -195,22 +198,24 @@ public class Main {
         System.out.println("Books found: " + books.size());
     }
 
-    // public static void order() throws Exception {
-    // OrderAPIImpl orderAPI = new OrderAPIImpl();
-    // AccountDTO accountDTO = new AccountDTO(
-    // "John",
-    // "Doe",
-    // "1234567890",
-    // "my@email.com");
-    // accountDTO.setId(1); // Assuming the account with ID 1 exists
-    // CartDTO cartDTO = new CartDTO(1);
-    // cartDTO.addBookIsbn(
-    // Map.of(
-    // "9782070409188t", 2, // Les Misérables
-    // "9782070360021", 1 // The Stranger
-    // ));
-    // orderAPI.createOrder(accountDTO, cartDTO);
-    // }
+    public static void order() {
+        OrderAPIClient orderAPIClient = Clients.orderClient;
+        AccountDTO accountDTO = new AccountDTO(
+                "John",
+                "Doe",
+                "1234567890",
+                "my@email.com");
+        accountDTO.setId(1); // Assuming the account with ID 1 exists
+        CartDTO cartDTO = new CartDTO(1);
+        cartDTO.addBookIsbn(
+                Map.of(
+                        "9782070409188t", 2, // Les Misérables
+                        "9782070360021", 1 // The Stranger
+                ));
+        System.out.println("creating order");
+        OrderDTO orderDTO = orderAPIClient.createOrder(new OrderRequest(accountDTO, cartDTO));
+        System.out.println("order " + orderDTO);
+    }
 
     // public static void delivery() throws Exception {
     // DeliveryAPIImpl deliveryAPI = new DeliveryAPIImpl();
@@ -589,9 +594,9 @@ public class Main {
     public static void main(String[] args) {
         // GlobalSafeExecutor.run(() -> {
         // Main.account();
-        Main.cart();
+        // Main.cart();
         // Main.shop();
-        // Main.order();
+        Main.order();
         // Main.delivery();
         // Main.scenario();
         // });

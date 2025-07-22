@@ -10,6 +10,7 @@ public class Clients {
     static Dotenv dotenv = Dotenv.load();
     static String userServiceUrl = dotenv.get("USER_SERVICE_URL", "http://localhost:8081");
     static String shopServiceUrl = dotenv.get("SHOP_SERVICE_URL", "http://localhost:8082");
+    static String orderServiceUrl = dotenv.get("ORDER_SERVICE_URL","http://localhost:8083");
 
 
     public static final AccountAPIClient accountClient = Feign.builder()
@@ -27,8 +28,8 @@ public class Clients {
             .decoder(new JacksonDecoder())
             .target(BookAPIClient.class, shopServiceUrl);
 
-    // public static final OrderServiceClient orderClient = Feign.builder()
-    //         .encoder(new JacksonEncoder())
-    //         .decoder(new JacksonDecoder())
-    //         .target(OrderServiceClient.class, orderServiceUrl);
+    public static final OrderAPIClient orderClient = Feign.builder()
+            .encoder(new JacksonEncoder())
+            .decoder(new JacksonDecoder())
+            .target(OrderAPIClient.class, orderServiceUrl);
 }

@@ -3,7 +3,8 @@ package ca.uqam.mgl7361.lel.gp1.order.persistence;
 import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.order.dto.OrderDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderItemDTO;
 import ca.uqam.mgl7361.lel.gp1.order.model.Order;
 
 import java.sql.Connection;
@@ -13,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -147,7 +149,7 @@ public class OrderDAO {
                     String orderNumber = rs.getString("order_number");
                     java.sql.Date orderDate = rs.getDate("order_date");
                     float orderPrice = (float) rs.getDouble("total_price");
-                    Map<BookDTO, Integer> items = Map.of(); // Assuming items are fetched separately TODO
+                    List<OrderItemDTO> items = List.of(); // Assuming items are fetched separately TODO
                     return new OrderDTO(orderNumber, orderDate, orderPrice, items);
                 } else {
                     logger.info("No order found with id: " + orderId);

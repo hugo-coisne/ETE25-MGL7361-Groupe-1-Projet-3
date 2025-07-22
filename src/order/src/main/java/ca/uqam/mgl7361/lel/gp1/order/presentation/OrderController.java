@@ -3,7 +3,7 @@ package ca.uqam.mgl7361.lel.gp1.order.presentation;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.order.business.OrderService;
-import ca.uqam.mgl7361.lel.gp1.order.dto.OrderDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.*;
