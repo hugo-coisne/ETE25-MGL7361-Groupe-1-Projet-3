@@ -1,7 +1,7 @@
 package ca.uqam.mgl7361.lel.gp1.delivery.business;
 
-import ca.uqam.mgl7361.lel.gp1.delivery.dto.AddressDTO;
-import ca.uqam.mgl7361.lel.gp1.delivery.dto.DeliveryDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.AddressDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.DeliveryDTO;
 import ca.uqam.mgl7361.lel.gp1.delivery.persistence.DeliveryDAO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
@@ -29,19 +29,20 @@ public class DeliveryService {
     }
 
     // public void updateDeliveryOrder(DeliveryDTO delivery, OrderDTO order) {
-    //     delivery.setOrder(order);
+    // delivery.setOrder(order);
     // }
 
     // public void updateDeliveryStatus(DeliveryDTO delivery, String newStatus) {
-    //     delivery.setDeliveryStatus(newStatus);
+    // delivery.setDeliveryStatus(newStatus);
     // }
 
-    // public void updateDeliveryAddress(DeliveryDTO delivery, AddressDTO newAddress) {
-    //     delivery.setAddress(newAddress);
+    // public void updateDeliveryAddress(DeliveryDTO delivery, AddressDTO
+    // newAddress) {
+    // delivery.setAddress(newAddress);
     // }
 
     // public void updateDeliveryDate(DeliveryDTO delivery, Date newDate) {
-    //     delivery.setDeliveryDate(newDate);
+    // delivery.setDeliveryDate(newDate);
     // }
 
     public List<DeliveryDTO> getAllOrdersInTransit() throws Exception {
@@ -57,15 +58,15 @@ public class DeliveryService {
     }
 
     // public List<DeliveryDTO> getAllOrdersNotDelivered() throws Exception {
-    //     return deliveryDAO.findByStatusNot("Delivered");
+    // return deliveryDAO.findByStatusNot("Delivered");
     // }
 
     // public void updateStatusToInProgress(DeliveryDTO delivery) {
-    //     delivery.setDeliveryStatus("In Progress");
+    // delivery.setDeliveryStatus("In Progress");
     // }
 
     // public void updateStatusToInTransit(DeliveryDTO delivery) {
-    //     delivery.setDeliveryStatus("In Transit");
+    // delivery.setDeliveryStatus("In Transit");
     // }
 
     public void updateStatusToDelivered(DeliveryDTO delivery) throws Exception {
@@ -74,7 +75,7 @@ public class DeliveryService {
     }
 
     // public void updateStatusToCanceled(DeliveryDTO delivery) {
-    //     delivery.setDeliveryStatus("Canceled");
+    // delivery.setDeliveryStatus("Canceled");
     // }
 
 }

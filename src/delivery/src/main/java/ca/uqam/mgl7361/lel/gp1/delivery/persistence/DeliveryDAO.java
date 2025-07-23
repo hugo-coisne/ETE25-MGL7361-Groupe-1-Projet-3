@@ -1,15 +1,20 @@
 package ca.uqam.mgl7361.lel.gp1.delivery.persistence;
 
 import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
-import ca.uqam.mgl7361.lel.gp1.delivery.dto.AddressDTO;
-import ca.uqam.mgl7361.lel.gp1.delivery.dto.DeliveryDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.AddressDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.DeliveryDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class DeliveryDAO {
+
+    Logger logger = LogManager.getLogger(DeliveryDAO.class);
 
     public DeliveryDAO() {
     }
@@ -20,18 +25,20 @@ public class DeliveryDAO {
         String sql = "INSERT INTO deliveries (order_id, address_id, delivery_date, status) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = DBConnection.getConnection();
-            PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, order.getId());
             stmt.setInt(2, addressId);
             stmt.setDate(3, new Date(delivery.getDeliveryDate().getTime()));
             stmt.setString(4, delivery.getDeliveryStatus());
-
+            logger.info(stmt.toString());
             int affectedRows = stmt.executeUpdate();
             if (affectedRows == 0) {
+                logger.error("Creating delivery failed, no rows affected.");
                 throw new SQLException("Creating delivery failed, no rows affected.");
             }
             return delivery;
         } catch (SQLException e) {
+            logger.error(e);
             throw new Exception("Error creating delivery: " + e.getMessage(), e);
         }
     }
@@ -56,7 +63,7 @@ public class DeliveryDAO {
         DeliveryDTO delivery = new DeliveryDTO();
         delivery.setOrder(orderDTO);
         delivery.setAddress(addressDTO);
-        delivery.setDeliveryDate(new Date(delivery.getDeliveryDate().getTime()));
+        delivery.setDeliveryDate(new Date(orderDTO.getOrderDate().getTime()));
         delivery.setDeliveryStatus(status);
 
         return delivery;
@@ -91,7 +98,7 @@ public class DeliveryDAO {
 
         String sql = "UPDATE deliveries SET address_id = ?, delivery_date = ?, status = ? WHERE order_id = ?";
         try (Connection connection = DBConnection.getConnection();
-            PreparedStatement stmt = connection.prepareStatement(sql)) {
+                PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, delivery.getAddress().getId());
             stmt.setDate(2, new Date(delivery.getDeliveryDate().getTime()));
             stmt.setString(3, delivery.getDeliveryStatus());
@@ -109,7 +116,7 @@ public class DeliveryDAO {
     public void delete(int id) throws Exception {
         String sql = "DELETE FROM deliveries WHERE id = ?";
         try (Connection connection = DBConnection.getConnection();
-            PreparedStatement stmt = connection.prepareStatement(sql)) {
+                PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {

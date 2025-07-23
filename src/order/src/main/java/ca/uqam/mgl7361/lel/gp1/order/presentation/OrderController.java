@@ -56,11 +56,12 @@ public class OrderController {
             content = @Content)
     })
     @GetMapping("/{orderId}")
-    public ResponseEntity<?> getOrderById(@PathVariable String orderId) {
+    public ResponseEntity<?> getOrderById(@PathVariable(name="orderId") String orderId) {
         logger.info("Received request to retrieve order with ID: {}", orderId);
         try {
             OrderDTO order = orderService.findOrderByOrderNumber(orderId);
             logger.info("Order retrieved successfully: {}", orderId);
+            logger.info("Found order : " + order);
             return ResponseEntity.ok(order);
         } catch (Exception e) {
             logger.error("Order not found: {}", orderId, e);

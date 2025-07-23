@@ -2,8 +2,8 @@ package ca.uqam.mgl7361.lel.gp1.delivery.presentation;
 
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 import ca.uqam.mgl7361.lel.gp1.delivery.business.DeliveryService;
-import ca.uqam.mgl7361.lel.gp1.delivery.dto.AddressDTO;
-import ca.uqam.mgl7361.lel.gp1.delivery.dto.DeliveryDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.AddressDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.DeliveryDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -46,8 +46,9 @@ public class DeliveryAPIImpl implements DeliveryAPI {
         }
     }
 
-    // public List<DeliveryDTO> getAllOrdersInTransit(AccountDTO account) throws Exception {
-    //     return deliveryService.getAllOrdersInTransit(account);
+    // public List<DeliveryDTO> getAllOrdersInTransit(AccountDTO account) throws
+    // Exception {
+    // return deliveryService.getAllOrdersInTransit(account);
     // }
 
     public List<DeliveryDTO> getAllOrdersDelivered() {
@@ -59,5 +60,5 @@ public class DeliveryAPIImpl implements DeliveryAPI {
             return null; // or handle the exception as needed
         }
     }
-	
+
 }

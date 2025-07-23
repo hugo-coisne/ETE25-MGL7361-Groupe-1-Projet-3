@@ -58,10 +58,10 @@ public class DeliveryDTO {
     }
 
     public String toString() {
-        return "DeliveryDTO{" +
+        return "DeliveryDTO(" +
                 "address=" + address +
                 ", deliveryDate=" + deliveryDate +
                 ", deliveryStatus='" + deliveryStatus + '\'' +
-                '}';
+                ", order=" + order + ')';
     }
 }

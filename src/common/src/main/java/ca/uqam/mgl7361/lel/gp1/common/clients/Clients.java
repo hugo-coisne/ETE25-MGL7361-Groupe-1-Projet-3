@@ -11,6 +11,7 @@ public class Clients {
     static String userServiceUrl = dotenv.get("USER_SERVICE_URL", "http://localhost:8081");
     static String shopServiceUrl = dotenv.get("SHOP_SERVICE_URL", "http://localhost:8082");
     static String orderServiceUrl = dotenv.get("ORDER_SERVICE_URL","http://localhost:8083");
+    static String deliveryServiceUrl = dotenv.get("DELIVERY_SERVICE_URL","http://localhost:8084");
 
 
     public static final AccountAPIClient accountClient = Feign.builder()
@@ -32,4 +33,9 @@ public class Clients {
             .encoder(new JacksonEncoder())
             .decoder(new JacksonDecoder())
             .target(OrderAPIClient.class, orderServiceUrl);
+
+public static final DeliveryAPIClient deliveryClient = Feign.builder()
+            .encoder(new JacksonEncoder())
+            .decoder(new JacksonDecoder())
+            .target(DeliveryAPIClient.class, deliveryServiceUrl);
 }

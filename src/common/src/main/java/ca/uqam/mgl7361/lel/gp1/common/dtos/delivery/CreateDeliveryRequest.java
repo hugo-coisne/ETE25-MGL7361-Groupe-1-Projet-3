@@ -11,6 +11,26 @@ public class CreateDeliveryRequest {
     private String inProgress;
     private OrderDTO order;
 
+    public CreateDeliveryRequest(AddressDTO address, Date date, String status, OrderDTO order) {
+        this.address = address;
+        this.date = date;
+        this.inProgress = status;
+        this.order = order;
+    }
+
+    public CreateDeliveryRequest() {
+    }
+
+    @Override
+    public String toString() {
+        return "CreateDeliveryRequest(" +
+                "address=" + address +
+                ", date=" + date +
+                ", inProgress='" + inProgress + '\'' +
+                ", order=" + order +
+                ')';
+    }
+
     // Getters and Setters
     public AddressDTO getAddress() {
         return address;

@@ -1,8 +1,8 @@
 package ca.uqam.mgl7361.lel.gp1.delivery.presentation;
 
 import ca.uqam.mgl7361.lel.gp1.delivery.business.DeliveryService;
-import ca.uqam.mgl7361.lel.gp1.delivery.dto.CreateDeliveryRequest;
-import ca.uqam.mgl7361.lel.gp1.delivery.dto.DeliveryDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.CreateDeliveryRequest;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.DeliveryDTO;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,19 +29,18 @@ public class DeliveryController {
 
     @Operation(summary = "Create a delivery")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Delivery created successfully"),
-        @ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Delivery created successfully"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<DeliveryDTO> createDelivery(@RequestBody CreateDeliveryRequest request) {
         try {
-            logger.info("Creating delivery for order: {}", request.getOrder().getOrderNumber());
+            logger.info("Creating delivery for :" + request);
             DeliveryDTO delivery = deliveryService.createDelivery(
-                request.getAddress(),
-                request.getDate(),
-                request.getInProgress(),
-                request.getOrder()
-            );
+                    request.getAddress(),
+                    request.getDate(),
+                    request.getInProgress(),
+                    request.getOrder());
             return ResponseEntity.ok(delivery);
         } catch (Exception e) {
             logger.error("Error creating delivery", e);
@@ -51,8 +50,8 @@ public class DeliveryController {
 
     @Operation(summary = "Update delivery status to delivered")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Delivery status updated"),
-        @ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Delivery status updated"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PutMapping("/delivered")
     public ResponseEntity<Void> updateStatusToDelivered(@RequestBody DeliveryDTO delivery) {

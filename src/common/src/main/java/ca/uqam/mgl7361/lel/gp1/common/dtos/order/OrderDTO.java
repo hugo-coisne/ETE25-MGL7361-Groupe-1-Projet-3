@@ -29,6 +29,12 @@ public class OrderDTO {
         this.orderItemDTOs = null;
     }
 
+    @Override
+    public String toString() {
+        return "OrderDTO(id=" + id + ", orderNumber=" + orderNumber + ", orderDate=" + orderDate + ", orderPrice="
+                + orderPrice + ", orderItemsDTOs=" + orderItemDTOs + ")";
+    }
+
     // GETTERS ----------------------------------------------------------------
     public String getOrderNumber() {
         return orderNumber;

@@ -5,13 +5,19 @@ import ca.uqam.mgl7361.lel.gp1.common.clients.BookAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.CartAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.CartAPIClient.CartBookRequest;
 import ca.uqam.mgl7361.lel.gp1.common.clients.Clients;
+import ca.uqam.mgl7361.lel.gp1.common.clients.DeliveryAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.OrderAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.OrderAPIClient.OrderRequest;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.AddressDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.CreateDeliveryRequest;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.DeliveryDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookProperty;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.*;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -217,73 +223,72 @@ public class Main {
         System.out.println("order " + orderDTO);
     }
 
-    // public static void delivery() throws Exception {
-    // DeliveryAPIImpl deliveryAPI = new DeliveryAPIImpl();
-    // OrderAPIImpl orderAPI = new OrderAPIImpl();
-    //
-    // OrderDTO order = orderAPI.findOrderByOrderNumber("20250623-AAAABBBB");
-    // AddressDTO address = new AddressDTO();
-    // address.setId(1);
-    //
-    // // Étape 8 : Le système se charge de la livraison de la commande aux dates de
-    // livraison prévues
-    // // pour chaque livre;
-    // DeliveryDTO delivery = deliveryAPI.createDelivery(
-    // address,
-    // Date.valueOf(LocalDate.now().plusDays(3)),
-    // "In Transit",
-    // order
-    // );
-    //
-    // // Affiche les détails de la livraison
-    // System.out.println("Created Delivery: ");
-    // System.out.println("Status: " + delivery.getDeliveryStatus());
-    // System.out.println("Delivery Date: " + delivery.getDeliveryDate());
-    // System.out.println("Order: " + delivery.getOrder().getOrderNumber());
-    //
-    // // Étape 9 : Voir la liste des commandes en attente de livraison ainsi que
-    // l'historique des
-    // // commandes livrées
-    // List<DeliveryDTO> pendingDeliveries = deliveryAPI.getAllOrdersInTransit();
-    // System.out.println("Pending Deliveries (" + pendingDeliveries.size() + ")
-    // :");
-    // for (DeliveryDTO pendingDelivery : pendingDeliveries) {
-    // System.out.println("Order: " + pendingDelivery.getOrder().getOrderNumber() +
-    // ", Status: " + pendingDelivery.getDeliveryStatus());
-    // }
-    //
-    // List<DeliveryDTO> deliveredDeliveries = deliveryAPI.getAllOrdersDelivered();
-    // System.out.println("Delivered Deliveries (" + deliveredDeliveries.size() + ")
-    // :");
-    // for (DeliveryDTO deliveredDelivery : deliveredDeliveries) {
-    // System.out.println("Order: " + deliveredDelivery.getOrder().getOrderNumber()
-    // +
-    // ", Status: " + deliveredDelivery.getDeliveryStatus());
-    // }
-    //
-    // // Étape 10 : Une fois un livre est livré, sa date de livraison dans la
-    // commande est mise à jour et
-    // // son status passe de "En attente de livraison" à "Livré"
-    // deliveryAPI.updateStatusToDelivered(delivery);
-    // System.out.println("Updated Status: " + delivery.getDeliveryStatus());
-    //
-    // pendingDeliveries = deliveryAPI.getAllOrdersInTransit();
-    // System.out.println("Pending Deliveries (" + pendingDeliveries.size() + ")
-    // :");
-    // for (DeliveryDTO pendingDelivery : pendingDeliveries) {
-    // System.out.println("Order: " + pendingDelivery.getOrder().getOrderNumber() +
-    // ", Status: " + pendingDelivery.getDeliveryStatus());
-    // }
-    //
-    // deliveredDeliveries = deliveryAPI.getAllOrdersDelivered();
-    // System.out.println("Delivered Deliveries (" + deliveredDeliveries.size() + ")
-    // :");
-    // for (DeliveryDTO deliveredDelivery : deliveredDeliveries) {
-    // System.out.println("Order: " + deliveredDelivery.getOrder().getOrderNumber()
-    // +
-    // ", Status: " + deliveredDelivery.getDeliveryStatus());
-    // }
-    // }
+    public static void delivery() {
+        DeliveryAPIClient deliveryAPIClient = Clients.deliveryClient;
+        OrderAPIClient orderAPIClient = Clients.orderClient;
+
+        System.out.println("Getting order by id");
+        OrderDTO order = orderAPIClient.getOrderById("20250623-AAAABBBB");
+        System.out.println(order);
+        AddressDTO address = new AddressDTO(1, "55 Rue du Faubourg Saint-Honoré", "Paris", "75008");
+
+        // Étape 8 : Le système se charge de la livraison de la commande aux dates de
+        // livraison prévues pour chaque livre;
+        System.out.println("creating delivery");
+        DeliveryDTO delivery = deliveryAPIClient.createDelivery(
+                new CreateDeliveryRequest(
+                        address,
+                        Date.valueOf(LocalDate.now().plusDays(3)),
+                        "In Transit",
+                        order));
+
+        // Affiche les détails de la livraison
+        System.out.println("Created Delivery: ");
+        System.out.println("Status: " + delivery.getDeliveryStatus());
+        System.out.println("Delivery Date: " + delivery.getDeliveryDate());
+        System.out.println("Address : " + delivery.getAddress());
+        System.out.println("Order: " + delivery.getOrder().getOrderNumber());
+
+        // Étape 9 : Voir la liste des commandes en attente de livraison ainsi que
+        // l'historique des commandes livrées
+        System.out.println("Getting all orders in transit");
+        List<DeliveryDTO> pendingDeliveries = deliveryAPIClient.getAllOrdersInTransit();
+        System.out.println("Pending Deliveries (" + pendingDeliveries.size() + "):");
+        for (DeliveryDTO pendingDelivery : pendingDeliveries) {
+            System.out.println("Order: " + pendingDelivery.getOrder().getOrderNumber() +
+                    ", Status: " + pendingDelivery.getDeliveryStatus());
+        }
+
+        List<DeliveryDTO> deliveredDeliveries = deliveryAPIClient.getAllOrdersDelivered();
+        System.out.println("Delivered Deliveries (" + deliveredDeliveries.size() + "):");
+        for (DeliveryDTO deliveredDelivery : deliveredDeliveries) {
+            System.out.println("Order: " + deliveredDelivery.getOrder().getOrderNumber()
+                    +
+                    ", Status: " + deliveredDelivery.getDeliveryStatus());
+        }
+
+        // Étape 10 : Une fois un livre est livré, sa date de livraison dans la
+        // commande est mise à jour et
+        // son status passe de "En attente de livraison" à "Livré"
+        System.out.println("updating status for " + delivery);
+        deliveryAPIClient.updateStatusToDelivered(delivery);
+        System.out.println("Updated Status: " + delivery.getDeliveryStatus());
+
+        pendingDeliveries = deliveryAPIClient.getAllOrdersInTransit();
+        System.out.println("Pending Deliveries (" + pendingDeliveries.size() + "):");
+        for (DeliveryDTO pendingDelivery : pendingDeliveries) {
+            System.out.println("Order: " + pendingDelivery.getOrder().getOrderNumber() +
+                    ", Status: " + pendingDelivery.getDeliveryStatus());
+        }
+
+        deliveredDeliveries = deliveryAPIClient.getAllOrdersDelivered();
+        System.out.println("Delivered Deliveries (" + deliveredDeliveries.size() + "):");
+        for (DeliveryDTO deliveredDelivery : deliveredDeliveries) {
+            System.out.println("Order: " + deliveredDelivery.getOrder().getOrderNumber()
+                    +
+                    ", Status: " + deliveredDelivery.getDeliveryStatus());
+        }
+    }
 
     // public static void disableLogging() {
     // Logger rootLogger = Logger.getLogger("");
@@ -525,7 +530,7 @@ public class Main {
     // InvoiceDTO invoice = invoiceAPI.createInvoice(account, PaymentMethod.CARD);
     // Main.scenarioDetailsStep("Facture créée : " + invoice);
     //
-    // DeliveryAPIImpl deliveryAPI = new DeliveryAPIImpl();
+    // DeliveryAPIImpl deliveryAPIClient = new DeliveryAPIImpl();
     // OrderAPIImpl orderAPI = new OrderAPIImpl();
     //
     // OrderDTO order = orderAPI.findOrderByOrderNumber(invoice.getOrderNumber());
@@ -534,7 +539,7 @@ public class Main {
     //
     // Main.scenarioStep("8 : Le système se charge de la livraison de la commande
     // aux dates de livraison prévues");
-    // DeliveryDTO delivery = deliveryAPI.createDelivery(
+    // DeliveryDTO delivery = deliveryAPIClient.createDelivery(
     // address,
     // Date.valueOf(LocalDate.now().plusDays(3)),
     // "In Transit",
@@ -548,7 +553,8 @@ public class Main {
     //
     // Main.scenarioStep("9 : Voir la liste des commandes en attente de livraison
     // ainsi que l'historique des commandes livrées");
-    // List<DeliveryDTO> pendingDeliveries = deliveryAPI.getAllOrdersInTransit();
+    // List<DeliveryDTO> pendingDeliveries =
+    // deliveryAPIClient.getAllOrdersInTransit();
     // Main.scenarioDetailsStep("Pending Deliveries (" + pendingDeliveries.size() +
     // ") :");
     // for (DeliveryDTO pendingDelivery : pendingDeliveries) {
@@ -557,7 +563,8 @@ public class Main {
     // ", Status: " + pendingDelivery.getDeliveryStatus());
     // }
     //
-    // List<DeliveryDTO> deliveredDeliveries = deliveryAPI.getAllOrdersDelivered();
+    // List<DeliveryDTO> deliveredDeliveries =
+    // deliveryAPIClient.getAllOrdersDelivered();
     // Main.scenarioDetailsStep("Delivered Deliveries (" +
     // deliveredDeliveries.size() + ") :");
     // for (DeliveryDTO deliveredDelivery : deliveredDeliveries) {
@@ -569,10 +576,10 @@ public class Main {
     // Main.scenarioStep("10 : Une fois un livre est livré, sa date de livraison
     // dans la commande est mise à jour et le statut passe de \"En attente de
     // livraison\" à \"Livré\"");
-    // deliveryAPI.updateStatusToDelivered(delivery);
+    // deliveryAPIClient.updateStatusToDelivered(delivery);
     // Main.scenarioDetailsStep("Updated Status: " + delivery.getDeliveryStatus());
     //
-    // pendingDeliveries = deliveryAPI.getAllOrdersInTransit();
+    // pendingDeliveries = deliveryAPIClient.getAllOrdersInTransit();
     // Main.scenarioDetailsStep("Pending Deliveries (" + pendingDeliveries.size() +
     // ") :");
     // for (DeliveryDTO pendingDelivery : pendingDeliveries) {
@@ -581,7 +588,7 @@ public class Main {
     // ", Status: " + pendingDelivery.getDeliveryStatus());
     // }
     //
-    // deliveredDeliveries = deliveryAPI.getAllOrdersDelivered();
+    // deliveredDeliveries = deliveryAPIClient.getAllOrdersDelivered();
     // Main.scenarioDetailsStep("Delivered Deliveries (" +
     // deliveredDeliveries.size() + ") :");
     // for (DeliveryDTO deliveredDelivery : deliveredDeliveries) {
@@ -596,8 +603,8 @@ public class Main {
         // Main.account();
         // Main.cart();
         // Main.shop();
-        Main.order();
-        // Main.delivery();
+        // Main.order();
+        Main.delivery();
         // Main.scenario();
         // });
     }

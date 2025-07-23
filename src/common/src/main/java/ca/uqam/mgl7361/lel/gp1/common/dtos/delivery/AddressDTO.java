@@ -48,11 +48,11 @@ public class AddressDTO {
     }
 
     public String toString() {
-        return "AdressDTO{" +
+        return "AdressDTO(" +
                 "street='" + street + '\'' +
                 ", city='" + city + '\'' +
                 ", postalCode='" + postalCode + '\'' +
-                '}';
+                ')';
     }
 
 }

@@ -100,16 +100,17 @@ public class OrderService {
         }
 
         int id = orderDAO.findIdByOrderNumber(orderNumber);
-        logger.debug("Order ID resolved to: {}", id);
+        logger.info("Order ID resolved to: {}", id);
 
         OrderDTO order = this.orderDAO.findById(id);
-
+        
         if (order == null) {
             logger.warn("Order not found for number: {}", orderNumber);
         } else {
+            order.setId(id);
             logger.info("Order retrieved successfully for number: {}", orderNumber);
         }
-
+        
         return order;
     }
 }
