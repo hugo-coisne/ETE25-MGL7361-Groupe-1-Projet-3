@@ -1,6 +1,8 @@
 package ca.uqam.mgl7361.lel.gp1.common.dtos.user;
 
-public class AccountDTO {
+import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
+
+public class AccountDTO extends DTO {
     private String firstName;
     private String lastName;
     private String phone;
@@ -25,20 +27,6 @@ public class AccountDTO {
     }
 
     public AccountDTO() {
-    }
-
-    public String toString() {
-        String result = "AccountDTO(";
-        if (id > 0) {
-            result += "id=" + id + ", ";
-        }
-        result += "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ')';
-
-        return result;
     }
 
     public String getFirstName() {

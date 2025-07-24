@@ -5,9 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 
-public class CartDTO {
+public class CartDTO extends DTO {
     private Map<String, Integer> booksIsbn;
     private int userId;
     private List<CartItemDTO> bookDtos;
@@ -92,21 +93,7 @@ public class CartDTO {
     public int getId() {
         return this.id;
     }
-
-    public String toString() {
-        String s = "CartDTO(id=" + id + ", totalPrice=" + totalPrice + ", bookDtos=[";
-        if (this.bookDtos.size() > 0) {
-            for (CartItemDTO entry : bookDtos) {
-                BookDTO bookDto = entry.book();
-                int quantity = entry.quantity();
-                s = s + "\nBookDTO(title=" + bookDto.getTitle() + ", isbn=" + bookDto.getIsbn() + ", quantity="
-                        + quantity + ")";
-            }
-        }
-        s = s + "])";
-        return s;
-    }
-
+    
     public void setId(int id) {
         this.id = id;
     }

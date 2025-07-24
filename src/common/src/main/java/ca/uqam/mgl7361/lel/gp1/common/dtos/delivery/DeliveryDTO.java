@@ -1,10 +1,11 @@
 package ca.uqam.mgl7361.lel.gp1.common.dtos.delivery;
 
+import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 
 import java.util.Date;
 
-public class DeliveryDTO {
+public class DeliveryDTO extends DTO {
 
     private AddressDTO address;
 
@@ -55,13 +56,5 @@ public class DeliveryDTO {
 
     public void setOrder(OrderDTO order) {
         this.order = order;
-    }
-
-    public String toString() {
-        return "DeliveryDTO(" +
-                "address=" + address +
-                ", deliveryDate=" + deliveryDate +
-                ", deliveryStatus='" + deliveryStatus + '\'' +
-                ", order=" + order + ')';
     }
 }

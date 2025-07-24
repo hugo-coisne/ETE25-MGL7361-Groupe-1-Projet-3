@@ -1,8 +1,9 @@
 package ca.uqam.mgl7361.lel.gp1.common.dtos.order;
 
+import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 
-public class OrderItemDTO {
+public class OrderItemDTO extends DTO {
     private BookDTO bookDTO;
     private int quantity;
 

@@ -2,14 +2,17 @@ package ca.uqam.mgl7361.lel.gp1.common.dtos.payment;
 
 import java.sql.Date;
 
-public class InvoiceDTO {
+import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
+
+public class InvoiceDTO extends DTO {
     private String invoiceNumber;
     private Date invoiceDate;
     private float totalPrice;
-    private PaymentMethodDTO paymentMethod;
+    private PaymentMethod paymentMethod;
     private String orderNumber;
 
-    public InvoiceDTO(String invoiceNumber, String orderNumber, Date invoiceDate, float totalPrice, PaymentMethodDTO paymentMethod) {
+    public InvoiceDTO(String invoiceNumber, String orderNumber, Date invoiceDate, float totalPrice,
+            PaymentMethod paymentMethod) {
         this.invoiceNumber = invoiceNumber;
         this.invoiceDate = invoiceDate;
         this.totalPrice = totalPrice;
@@ -17,7 +20,8 @@ public class InvoiceDTO {
         this.orderNumber = orderNumber;
     }
 
-    public InvoiceDTO(){}
+    public InvoiceDTO() {
+    }
 
     // SETTERS ----------------------------------------------------------------
 
@@ -33,7 +37,7 @@ public class InvoiceDTO {
         this.totalPrice = totalPrice;
     }
 
-    public void setPaymentMethod(PaymentMethodDTO paymentMethod) {
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 
@@ -55,7 +59,7 @@ public class InvoiceDTO {
         return totalPrice;
     }
 
-    public PaymentMethodDTO getPaymentMethod() {
+    public PaymentMethod getPaymentMethod() {
         return paymentMethod;
     }
 
@@ -65,13 +69,4 @@ public class InvoiceDTO {
 
     // OTHERS -----------------------------------------------------------------
 
-    public String toString() {
-        return "InvoiceDTO{" +
-                "invoiceNumber='" + invoiceNumber + '\'' +
-                ", invoiceDate=" + invoiceDate +
-                ", totalPrice=" + totalPrice +
-                ", paymentMethod=" + paymentMethod +
-                ", orderNumber='" + orderNumber + '\'' +
-                '}';
-    }
 }

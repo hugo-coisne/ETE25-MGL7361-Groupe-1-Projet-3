@@ -4,7 +4,9 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookDTO {
+import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
+
+public class BookDTO extends DTO {
     private String title;
     private String description;
     private String isbn;

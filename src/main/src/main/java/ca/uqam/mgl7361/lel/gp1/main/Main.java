@@ -17,7 +17,6 @@ import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.InvoiceDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.InvoiceRequest;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.PaymentMethod;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.PaymentMethodDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.AuthorDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookProperty;
@@ -326,7 +325,6 @@ public class Main {
         }
 
         public static void scenario() { // scenario described in the provided specifications
-                // Main.disableLogging();
 
                 // signup
                 // create an account with first name, last name, phone, email and password
@@ -378,45 +376,45 @@ public class Main {
                 // Authors
                 List<AuthorDTO> authors = bookAttributeAPI.getAuthors();
                 Main.scenarioDetailsStep("Auteurs disponibles :");
-                authors.forEach(author -> Main.scenarioDetailsStep(author.getName()));
+                authors.forEach(author -> System.out.println(author.getName()));
 
                 // Categories
                 List<CategoryDTO> categories = bookAttributeAPI.getCategories();
                 Main.scenarioDetailsStep("Catégories disponibles :");
-                categories.forEach(category -> Main.scenarioDetailsStep(category.getName()));
+                categories.forEach(category -> System.out.println(category.getName()));
 
                 // Editeurs
                 List<PublisherDTO> publishers = bookAttributeAPI.getPublishers();
                 Main.scenarioDetailsStep("Publishers disponibles :");
-                publishers.forEach(publisher -> Main.scenarioDetailsStep(publisher.getName()));
+                publishers.forEach(publisher -> System.out.println(publisher.getName()));
 
                 // Livres
                 Main.scenarioStep("2.2.1 Rechercher tous les livres");
                 List<BookDTO> booksByTitle = new ArrayList<BookDTO>();
                 booksByTitle = bookAPIClient.getBooksBy(Map.of(
                                 BookProperty.TITLE, "%"));
-                booksByTitle.forEach(book -> Main.scenarioDetailsStep(book.getTitle()));
+                booksByTitle.forEach(book -> Main.scenarioDetailsStep(book.toString()));
 
                 Main.scenarioStep("2.2.2 Rechercher les livres à partir d'un titre ('Les Misérables')");
                 booksByTitle = bookAPIClient.getBooksBy(Map.of(
                                 BookProperty.TITLE, "Les Misérables"));
-                booksByTitle.forEach(book -> Main.scenarioDetailsStep(book.getTitle()));
+                booksByTitle.forEach(book -> Main.scenarioDetailsStep(book.toString()));
 
                 Main.scenarioStep("2.2.3 Rechercher les livres à partir d'un titre partiel ('The')");
                 booksByTitle = bookAPIClient.getBooksBy(Map.of(
                                 BookProperty.TITLE, "The"));
-                booksByTitle.forEach(book -> Main.scenarioDetailsStep(book.getTitle()));
+                booksByTitle.forEach(book -> Main.scenarioDetailsStep(book.toString()));
 
                 Main.scenarioStep("2.2.4 Rechercher les livres à partir d'un auteur ('Camus')");
                 booksByTitle = bookAPIClient.getBooksBy(Map.of(
                                 BookProperty.AUTHOR, "Camus"));
-                booksByTitle.forEach(book -> Main.scenarioDetailsStep(book.getTitle()));
+                booksByTitle.forEach(book -> Main.scenarioDetailsStep(book.toString()));
 
                 Main.scenarioStep("2.2.5 Rechercher les livres à partir d'un editeur ('Gal')");
                 booksByTitle = bookAPIClient.getBooksBy(Map.of(
                                 BookProperty.PUBLISHER, "Gal"));
                 booksByTitle.forEach(
-                                book -> Main.scenarioDetailsStep(book.getTitle() + " - Editor : " +
+                                book -> Main.scenarioDetailsStep(book.toString() + " - Editor : " +
                                                 book.getPublisher().getName()));
 
                 Main.scenarioStep("2.2.6 Rechercher les livres à partir d'un mélange de caractéristiques"
@@ -530,7 +528,7 @@ public class Main {
                 OrderAPIClient orderAPI = Clients.orderClient;
 
                 OrderDTO order = orderAPI.getOrderById(invoice.getOrderNumber());
-                AddressDTO address = new AddressDTO(1, "80 Rue du Faubourg Saint-Honoré","Paris","75008");
+                AddressDTO address = new AddressDTO(1, "80 Rue du Faubourg Saint-Honoré", "Paris", "75008");
                 address.setId(1);
 
                 Main.scenarioStep(

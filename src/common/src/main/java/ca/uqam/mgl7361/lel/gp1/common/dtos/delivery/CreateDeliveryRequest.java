@@ -1,10 +1,11 @@
 package ca.uqam.mgl7361.lel.gp1.common.dtos.delivery;
 
+import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 
 import java.util.Date;
 
-public class CreateDeliveryRequest {
+public class CreateDeliveryRequest extends DTO {
 
     private AddressDTO address;
     private Date date;
@@ -19,16 +20,6 @@ public class CreateDeliveryRequest {
     }
 
     public CreateDeliveryRequest() {
-    }
-
-    @Override
-    public String toString() {
-        return "CreateDeliveryRequest(" +
-                "address=" + address +
-                ", date=" + date +
-                ", inProgress='" + inProgress + '\'' +
-                ", order=" + order +
-                ')';
     }
 
     // Getters and Setters

@@ -1,6 +1,8 @@
 package ca.uqam.mgl7361.lel.gp1.common.dtos.shop;
 
-public class BookAttributeDTO {
+import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
+
+public class BookAttributeDTO extends DTO {
     private String name;
     private BookProperty type;
     private int id;

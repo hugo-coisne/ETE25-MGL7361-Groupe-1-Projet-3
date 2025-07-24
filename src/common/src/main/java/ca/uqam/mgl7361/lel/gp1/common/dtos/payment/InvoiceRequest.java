@@ -1,8 +1,9 @@
 package ca.uqam.mgl7361.lel.gp1.common.dtos.payment;
 
+import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 
-public class InvoiceRequest {
+public class InvoiceRequest extends DTO {
     private AccountDTO accountDTO;
     private PaymentMethod paymentMethod;
 
@@ -28,11 +29,5 @@ public class InvoiceRequest {
 
     public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
-    }
-
-    @Override
-    public String toString() {
-        return "InvoiceRequest(" + accountDTO.getClass() + "=" + accountDTO + ", " + paymentMethod.getClass() + "="
-                + paymentMethod + ")";
     }
 }

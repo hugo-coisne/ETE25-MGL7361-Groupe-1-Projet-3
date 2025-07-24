@@ -3,7 +3,9 @@ package ca.uqam.mgl7361.lel.gp1.common.dtos.order;
 import java.sql.Date;
 import java.util.List;
 
-public class OrderDTO {
+import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
+
+public class OrderDTO extends DTO {
     private String orderNumber;
     private Date orderDate;
     private float orderPrice;
@@ -27,12 +29,6 @@ public class OrderDTO {
         this.orderDate = null;
         this.orderPrice = 0.0f;
         this.orderItemDTOs = null;
-    }
-
-    @Override
-    public String toString() {
-        return "OrderDTO(id=" + id + ", orderNumber=" + orderNumber + ", orderDate=" + orderDate + ", orderPrice="
-                + orderPrice + ", orderItemsDTOs=" + orderItemDTOs + ")";
     }
 
     // GETTERS ----------------------------------------------------------------

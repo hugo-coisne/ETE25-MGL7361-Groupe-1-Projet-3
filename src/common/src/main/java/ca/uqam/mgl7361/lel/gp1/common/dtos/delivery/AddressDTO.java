@@ -1,6 +1,8 @@
 package ca.uqam.mgl7361.lel.gp1.common.dtos.delivery;
 
-public class AddressDTO {
+import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
+
+public class AddressDTO extends DTO {
     private int id;
     private String street;
     private String city;
@@ -45,14 +47,6 @@ public class AddressDTO {
 
     public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
-    }
-
-    public String toString() {
-        return "AdressDTO(" +
-                "street='" + street + '\'' +
-                ", city='" + city + '\'' +
-                ", postalCode='" + postalCode + '\'' +
-                ')';
     }
 
 }
