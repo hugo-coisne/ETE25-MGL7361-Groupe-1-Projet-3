@@ -54,8 +54,8 @@ public class AccountController {
         String email = credentials.get("email");
         String password = credentials.get("password");
         try {
-            accountService.signin(email, password);
-            return ResponseEntity.noContent().build();
+            AccountDTO account = accountService.signin(email, password);
+            return ResponseEntity.status(200).body(account);
         } catch (InvalidCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid credentials"));
         }
