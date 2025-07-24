@@ -1,7 +1,9 @@
 package ca.uqam.mgl7361.lel.gp1.payment.business.mapper;
 
 import ca.uqam.mgl7361.lel.gp1.payment.model.Invoice;
-import ca.uqam.mgl7361.lel.gp1.payment.dto.InvoiceDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.InvoiceDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.PaymentMethod;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.PaymentMethodDTO;
 
 public class InvoiceMapper {
     public static Invoice toModel(InvoiceDTO invoiceDTO) {
@@ -11,8 +13,7 @@ public class InvoiceMapper {
                 invoiceDTO.getOrderNumber(),
                 invoiceDTO.getInvoiceDate(),
                 invoiceDTO.getTotalPrice(),
-                invoiceDTO.getPaymentMethod()
-        );
+                PaymentMethod.valueOf(invoiceDTO.getPaymentMethod().getPaymentMethod()));
     }
 
     public static InvoiceDTO toDTO(Invoice invoice) {
@@ -21,7 +22,6 @@ public class InvoiceMapper {
                 invoice.getOrderNumber(),
                 invoice.getInvoiceDate(),
                 invoice.getTotalPrice(),
-                invoice.getPaymentMethod()
-        );
+                new PaymentMethodDTO(invoice.getPaymentMethod().toString()));
     }
 }

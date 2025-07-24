@@ -1,8 +1,8 @@
 package ca.uqam.mgl7361.lel.gp1.payment.model;
 
-import ca.uqam.mgl7361.lel.gp1.payment.dto.PaymentMethod;
-
 import java.sql.Date;
+
+import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.PaymentMethod;
 
 public class Invoice {
     private int id;
@@ -12,7 +12,8 @@ public class Invoice {
     private PaymentMethod paymentMethod;
     private String orderNumber;
 
-    public Invoice(int id, String invoiceNumber, String orderNumber, Date invoiceDate, float totalPrice, PaymentMethod paymentMethod) {
+    public Invoice(int id, String invoiceNumber, String orderNumber, Date invoiceDate, float totalPrice,
+            PaymentMethod paymentMethod) {
         this.id = id;
         this.invoiceNumber = invoiceNumber;
         this.invoiceDate = invoiceDate;

@@ -15,8 +15,9 @@ import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.CreateDeliveryRequest;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.DeliveryDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.InvoiceDTO;
-import ca.uqam.mgl7361.lel.gp1.common.clients.InvoiceAPIClient.InvoiceRequest;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.InvoiceRequest;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.PaymentMethod;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.PaymentMethodDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.AuthorDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookProperty;
@@ -438,7 +439,8 @@ public class Main {
 
                 // Livre pas en stock
                 // Main.scenarioDetailsStep(
-                //                 "Le livre The Lover n'est pas en stock donc l'ajout au panier n'est pas possible");
+                // "Le livre The Lover n'est pas en stock donc l'ajout au panier n'est pas
+                // possible");
                 BookDTO book = booksByTitle.getFirst();
                 // cartAPIClient.addBookToCart(new CartBookRequest(account, book));
                 Main.scenarioDetailsStep("Contenu du panier : " + cartAPIClient.getCart(account));
@@ -482,12 +484,12 @@ public class Main {
                 phone = "1234567892";
                 email = "JohnDoe@mail.com";
                 password = "P@ssword1234";
-                account = new AccountDTO(firstName, lastName, phone, email, password);
-                accountClient.signup(account);
+                AccountDTO accountDto = new AccountDTO(firstName, lastName, phone, email, password);
+                accountClient.signup(accountDto);
 
                 Main.scenarioStep("5.1.2 Connexion à au deuxième compte crée");
-                account = accountClient.signin(credentials);
-                Main.scenarioDetailsStep("Connecté avec le compte - " + account);
+                accountDto = accountClient.signin(credentials);
+                Main.scenarioDetailsStep("Connecté avec le compte - " + accountDto);
 
                 Main.scenarioStep("5.2 Recherche de livre (titre: 'The')");
                 booksByTitle = bookAPIClient.getBooksBy(Map.of(
@@ -495,22 +497,22 @@ public class Main {
                 booksByTitle.forEach(bookFor -> Main.scenarioDetailsStep(bookFor.getTitle()));
 
                 Main.scenarioStep("5.3 Mettre les livres sélectionnés dans le panier");
-                Main.scenarioDetailsStep("Contenu du panier : " + cartAPIClient.getCart(account));
+                Main.scenarioDetailsStep("Contenu du panier : " + cartAPIClient.getCart(accountDto));
 
                 Main.scenarioDetailsStep("Ajout d'un livre 'The Stranger'");
                 book = bookAPIClient.getBooksBy(Map.of(BookProperty.TITLE, "Stranger")).getFirst();
-                cartAPIClient.addBookToCart(new CartBookRequest(account, book));
-                Main.scenarioDetailsStep("Contenu du panier : " + cartAPIClient.getCart(account));
+                cartAPIClient.addBookToCart(new CartBookRequest(accountDto, book));
+                Main.scenarioDetailsStep("Contenu du panier : " + cartAPIClient.getCart(accountDto));
 
                 Main.scenarioStep("5.4 Supprimer, du panier, un ou des livres qu'on ne désire plus acheter;");
                 Main.scenarioDetailsStep("Suppression du dernier livre ajouté ('The Stranger')");
-                cartAPIClient.removeBookFromCart(new CartBookRequest(account, book));
-                Main.scenarioDetailsStep("Contenu du panier : " + cartAPIClient.getCart(account));
+                cartAPIClient.removeBookFromCart(new CartBookRequest(accountDto, book));
+                Main.scenarioDetailsStep("Contenu du panier : " + cartAPIClient.getCart(accountDto));
 
                 Main.scenarioDetailsStep("5.3 Ajout d'un deuxième livre 'The Stranger'");
                 book = bookAPIClient.getBooksBy(Map.of(BookProperty.TITLE, "Stranger")).getFirst();
-                cartAPIClient.addBookToCart(new CartBookRequest(account, book));
-                Main.scenarioDetailsStep("Contenu du panier : " + cartAPIClient.getCart(account));
+                cartAPIClient.addBookToCart(new CartBookRequest(accountDto, book));
+                Main.scenarioDetailsStep("Contenu du panier : " + cartAPIClient.getCart(accountDto));
 
                 Main.scenarioStep("À partir du panier, passer au paiement et régler la facture; les livres du panier\n"
                                 + "constituent alors une nouvelle commande où chaque livre de la commande a un status \"En\n"
@@ -519,7 +521,7 @@ public class Main {
                 InvoiceAPIClient invoiceAPI = Clients.invoiceClient;
                 Main.scenarioStep(
                                 "6.1 Simulation de paiement réussi (par carte), génération de la facture et de la commande");
-                InvoiceRequest request = new InvoiceRequest(account, PaymentMethod.CARD);
+                InvoiceRequest request = new InvoiceRequest(accountDto, PaymentMethod.CARD);
                 Main.scenarioStep(request.toString());
                 InvoiceDTO invoice = invoiceAPI.createInvoice(request);
                 Main.scenarioDetailsStep("Facture créée : " + invoice);
@@ -528,7 +530,7 @@ public class Main {
                 OrderAPIClient orderAPI = Clients.orderClient;
 
                 OrderDTO order = orderAPI.getOrderById(invoice.getOrderNumber());
-                AddressDTO address = new AddressDTO();
+                AddressDTO address = new AddressDTO(1, "80 Rue du Faubourg Saint-Honoré","Paris","75008");
                 address.setId(1);
 
                 Main.scenarioStep(

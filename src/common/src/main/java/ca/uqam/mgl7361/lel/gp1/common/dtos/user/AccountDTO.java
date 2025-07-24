@@ -25,16 +25,10 @@ public class AccountDTO {
     }
 
     public AccountDTO() {
-        // Default constructor for serialization/deserialization
-        this.firstName = null;
-        this.lastName = null;
-        this.phone = null;
-        this.email = null;
-        this.password = null;
     }
 
     public String toString() {
-        String result = "Account(";
+        String result = "AccountDTO(";
         if (id > 0) {
             result += "id=" + id + ", ";
         }

@@ -72,6 +72,7 @@ public class CartController {
     @PostMapping("/remove")
     public ResponseEntity<?> removeBookFromCart(@RequestBody CartBookRequest request) {
         try {
+            logger.info("Received remove " + request);
             cartService.removeBookFromCart(request.account(), request.book());
             return ResponseEntity.ok().body("Book deleted from cart successfully.");
         } catch (InvalidCartException e) {
@@ -111,5 +112,8 @@ public class CartController {
      * Simple DTO to wrap book and account together.
      */
     public record CartBookRequest(AccountDTO account, BookDTO book) {
+        public String toString() {
+            return "CartBookRequest(AccountDTO=" + account + ", BookDTO=" + book + ")";
+        }
     }
 }

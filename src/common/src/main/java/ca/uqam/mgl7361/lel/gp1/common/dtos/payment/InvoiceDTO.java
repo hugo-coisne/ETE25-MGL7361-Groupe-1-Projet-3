@@ -6,16 +6,18 @@ public class InvoiceDTO {
     private String invoiceNumber;
     private Date invoiceDate;
     private float totalPrice;
-    private PaymentMethod paymentMethod;
+    private PaymentMethodDTO paymentMethod;
     private String orderNumber;
 
-    public InvoiceDTO(String invoiceNumber, String orderNumber, Date invoiceDate, float totalPrice, PaymentMethod paymentMethod) {
+    public InvoiceDTO(String invoiceNumber, String orderNumber, Date invoiceDate, float totalPrice, PaymentMethodDTO paymentMethod) {
         this.invoiceNumber = invoiceNumber;
         this.invoiceDate = invoiceDate;
         this.totalPrice = totalPrice;
         this.paymentMethod = paymentMethod;
         this.orderNumber = orderNumber;
     }
+
+    public InvoiceDTO(){}
 
     // SETTERS ----------------------------------------------------------------
 
@@ -31,7 +33,7 @@ public class InvoiceDTO {
         this.totalPrice = totalPrice;
     }
 
-    public void setPaymentMethod(PaymentMethod paymentMethod) {
+    public void setPaymentMethod(PaymentMethodDTO paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 
@@ -53,7 +55,7 @@ public class InvoiceDTO {
         return totalPrice;
     }
 
-    public PaymentMethod getPaymentMethod() {
+    public PaymentMethodDTO getPaymentMethod() {
         return paymentMethod;
     }
 

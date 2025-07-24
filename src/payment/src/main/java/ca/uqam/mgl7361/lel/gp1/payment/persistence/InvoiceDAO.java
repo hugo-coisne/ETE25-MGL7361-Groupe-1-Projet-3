@@ -1,7 +1,7 @@
 package ca.uqam.mgl7361.lel.gp1.payment.persistence;
 
 import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
-import ca.uqam.mgl7361.lel.gp1.payment.dto.PaymentMethod;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.PaymentMethod;
 import ca.uqam.mgl7361.lel.gp1.payment.model.Invoice;
 
 import java.sql.Connection;
@@ -14,8 +14,7 @@ public class InvoiceDAO {
             String orderNumber,
             Date invoiceDate,
             float price,
-            PaymentMethod paymentMethod
-    ) throws Exception {
+            PaymentMethod paymentMethod) throws Exception {
         String invoiceNumber = "INV-" + orderNumber + "-001";
         Invoice invoice;
         try (
@@ -28,9 +27,7 @@ public class InvoiceDAO {
                                 "total_price, " +
                                 "payment_method) " +
                                 "VALUES (?, ?, ?, ?, ?)",
-                        PreparedStatement.RETURN_GENERATED_KEYS
-                )
-        ) {
+                        PreparedStatement.RETURN_GENERATED_KEYS)) {
             insertInvoice.setString(1, orderNumber);
             insertInvoice.setString(2, invoiceNumber);
             insertInvoice.setDate(3, invoiceDate);
@@ -49,8 +46,7 @@ public class InvoiceDAO {
                         orderNumber,
                         invoiceDate,
                         price,
-                        paymentMethod
-                );
+                        paymentMethod);
                 return invoice;
             } else {
                 throw new Exception("Failed to insert invoice");

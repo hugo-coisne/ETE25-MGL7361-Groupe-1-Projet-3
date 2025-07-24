@@ -25,5 +25,8 @@ public interface CartAPIClient {
     void clearCart(AccountDTO account);
 
     record CartBookRequest(AccountDTO account, BookDTO book) {
+        public String toString() {
+            return "CartBookRequest(AccountDTO=" + account + ", BookDTO=" + book + ")";
+        }
     }
 }

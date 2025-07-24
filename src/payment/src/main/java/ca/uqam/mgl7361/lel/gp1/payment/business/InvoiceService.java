@@ -1,21 +1,23 @@
 package ca.uqam.mgl7361.lel.gp1.payment.business;
 
+import ca.uqam.mgl7361.lel.gp1.common.clients.AccountAPIClient;
+import ca.uqam.mgl7361.lel.gp1.common.clients.BookAPIClient;
+import ca.uqam.mgl7361.lel.gp1.common.clients.CartAPIClient;
+import ca.uqam.mgl7361.lel.gp1.common.clients.BookAPIClient.BookQuantityRequest;
+import ca.uqam.mgl7361.lel.gp1.common.clients.Clients;
+import ca.uqam.mgl7361.lel.gp1.common.clients.OrderAPIClient;
+import ca.uqam.mgl7361.lel.gp1.common.clients.OrderAPIClient.OrderRequest;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
-import ca.uqam.mgl7361.lel.gp1.payment.external.BookAPIImpl;
-import ca.uqam.mgl7361.lel.gp1.payment.external.OrderAPIImpl;
-import ca.uqam.mgl7361.lel.gp1.payment.dto.PaymentMethod;
-import ca.uqam.mgl7361.lel.gp1.payment.external.AccountAPIImpl;
-import ca.uqam.mgl7361.lel.gp1.payment.external.CartAPIImpl;
 import ca.uqam.mgl7361.lel.gp1.payment.business.mapper.InvoiceMapper;
 import ca.uqam.mgl7361.lel.gp1.payment.model.Invoice;
-import ca.uqam.mgl7361.lel.gp1.payment.dto.InvoiceDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.InvoiceDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.PaymentMethod;
 import ca.uqam.mgl7361.lel.gp1.payment.persistence.InvoiceDAO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartItemDTO;
-import ca.uqam.mgl7361.lel.gp1.common.interfaces.AccountAPI;
-import ca.uqam.mgl7361.lel.gp1.common.interfaces.CartAPI;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -31,11 +33,11 @@ public class InvoiceService {
         if (cart == null || cart.getBooksDto() == null) {
             return false;
         }
-        BookAPIImpl bookAPI = new BookAPIImpl();
+        BookAPIClient bookAPI = Clients.bookClient;
         for (CartItemDTO entry : cart.getBooksDto()) {
             BookDTO book = entry.book();
             Integer quantity = entry.quantity();
-            if (!bookAPI.isSufficientlyInStock(book, quantity)) {
+            if (!bookAPI.isSufficientlyInStock(new BookQuantityRequest(book, quantity))) {
                 return false;
             }
         }
@@ -54,27 +56,27 @@ public class InvoiceService {
             throw new IllegalArgumentException("Payment method cannot be null");
         }
 
-        AccountAPI accountAPI = new AccountAPIImpl();
+        AccountAPIClient accountAPI = Clients.accountClient;
 
         if (account == null) {
             throw new IllegalArgumentException("Account or cart cannot be null");
         }
-        account = accountAPI.signin(account.getEmail(), account.getPassword());
+        Map<String, String> credentials = Map.of("email", account.getEmail(), "password", account.getPassword());
+        account = accountAPI.signin(credentials);
 
-        CartAPI cartAPI = new CartAPIImpl();
+        CartAPIClient cartAPI = Clients.cartClient;
         CartDTO cart = cartAPI.getCart(account);
         if (!isValidCart(cart)) {
             throw new IllegalArgumentException("Cart is invalid or contains insufficient stock");
         }
-        OrderAPIImpl orderAPI = new OrderAPIImpl();
-        OrderDTO order = orderAPI.createOrder(account, cart);
+        OrderAPIClient orderAPI = Clients.orderClient;
+        OrderDTO order = orderAPI.createOrder(new OrderRequest(account, cart));
 
         Invoice invoice = invoiceDAO.createInvoice(
                 order.getOrderNumber(),
                 order.getOrderDate(),
                 order.getOrderPrice(),
-                paymentMethod
-        );
+                paymentMethod);
 
         this.sendEmail(
                 account.getEmail(),
@@ -83,8 +85,7 @@ public class InvoiceService {
                         "Invoice Number: " + invoice.getInvoiceNumber() + "\n" +
                         "Order Number: " + order.getOrderNumber() + "\n" +
                         "Total Price: " + invoice.getTotalPrice() + "\n" +
-                        "Payment Method: " + paymentMethod.name()
-        );
+                        "Payment Method: " + paymentMethod.name());
         return InvoiceMapper.toDTO(invoice);
     }
 }
