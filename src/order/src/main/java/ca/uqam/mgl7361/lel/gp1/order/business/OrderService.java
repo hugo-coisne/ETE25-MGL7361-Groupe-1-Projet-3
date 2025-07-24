@@ -54,7 +54,7 @@ public class OrderService {
     }
 
     public OrderDTO createOrder(AccountDTO account, CartDTO cart) throws Exception {
-        logger.info("Creating order for account: {}", account != null ? account.getEmail() : "null");
+        logger.debug("Creating order for account: {}", account != null ? account.getEmail() : "null");
 
         if (account == null || cart == null) {
             logger.error("Account or cart is null");
@@ -84,15 +84,15 @@ public class OrderService {
             totalPrice += linePrice;
         }
 
-        logger.info("Total price for order: {}", totalPrice);
+        logger.debug("Total price for order: {}", totalPrice);
         Order order = this.orderDAO.createOrder(account, bookDTO, totalPrice);
-        logger.info("Order created with order number: {}", order.getOrderNumber());
+        logger.debug("Order created with order number: {}", order.getOrderNumber());
 
         return OrderMapper.toDTO(order);
     }
 
     public OrderDTO findOrderByOrderNumber(String orderNumber) throws Exception {
-        logger.info("Looking for order with number: {}", orderNumber);
+        logger.debug("Looking for order with number: {}", orderNumber);
 
         if (orderNumber == null || orderNumber.isEmpty()) {
             logger.error("Invalid order number: null or empty");
@@ -100,7 +100,7 @@ public class OrderService {
         }
 
         int id = orderDAO.findIdByOrderNumber(orderNumber);
-        logger.info("Order ID resolved to: {}", id);
+        logger.debug("Order ID resolved to: {}", id);
 
         OrderDTO order = this.orderDAO.findById(id);
         
@@ -108,7 +108,7 @@ public class OrderService {
             logger.warn("Order not found for number: {}", orderNumber);
         } else {
             order.setId(id);
-            logger.info("Order retrieved successfully for number: {}", orderNumber);
+            logger.debug("Order retrieved successfully for number: {}", orderNumber);
         }
         
         return order;

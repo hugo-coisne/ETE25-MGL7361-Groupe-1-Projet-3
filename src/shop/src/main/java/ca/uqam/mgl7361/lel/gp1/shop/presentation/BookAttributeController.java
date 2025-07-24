@@ -30,8 +30,8 @@ public class BookAttributeController {
 
     @GetMapping("/authors")
     public ResponseEntity<?> getAuthors() {
+        logger.info("Received request");
         try {
-            logger.info("Retrieving all authors...");
             return ResponseEntity.ok(bookAttributeService.getAuthors());
         } catch (DTOException e) {
             logger.error("Failed to retrieve authors", e);
@@ -44,8 +44,8 @@ public class BookAttributeController {
 
     @GetMapping("/categories")
     public ResponseEntity<?> getCategories() {
+        logger.info("Received request");
         try {
-            logger.info("Retrieving all categories...");
             return ResponseEntity.ok(bookAttributeService.getCategories());
         } catch (DTOException e) {
             logger.error("Failed to retrieve categories", e);
@@ -58,8 +58,8 @@ public class BookAttributeController {
 
     @GetMapping("/publishers")
     public ResponseEntity<?> getPublishers() {
+        logger.info("Received request");
         try {
-            logger.info("Retrieving all publishers...");
             return ResponseEntity.ok(bookAttributeService.getPublishers());
         } catch (DTOException e) {
             logger.error("Failed to retrieve publishers", e);
@@ -72,8 +72,8 @@ public class BookAttributeController {
 
     @PostMapping
     public ResponseEntity<?> addAttributes(@RequestBody List<BookAttributeDTO> attributes) {
+        logger.info("Received request with attributes : {}", attributes);
         try {
-            logger.info("Adding attributes: {}", attributes);
             bookAttributeService.addAttributes(attributes);
             return ResponseEntity.ok().build();
         } catch (DTOException e) {
@@ -87,8 +87,8 @@ public class BookAttributeController {
 
     @DeleteMapping
     public ResponseEntity<?> removeAttribute(@RequestBody BookAttributeDTO attribute) {
+        logger.info("Received request with attribute : {}", attribute);
         try {
-            logger.info("Removing attribute: {}", attribute);
             bookAttributeService.removeAttribute(attribute);
             return ResponseEntity.ok().build();
         } catch (DTOException e) {

@@ -22,7 +22,7 @@ public class BookAttributeDAO {
     private static final Logger logger = LogManager.getLogger(BookAttributeDAO.class);
 
     public List<Author> getAuthors() throws AuthorsException {
-        logger.info("Fetching authors from database...");
+        logger.debug("Fetching authors from database...");
         List<Author> authors = new ArrayList<>();
         String query = "SELECT id, name FROM authors";
 
@@ -33,7 +33,7 @@ public class BookAttributeDAO {
             while (rs.next()) {
                 authors.add(new Author(rs.getInt("id"), rs.getString("name")));
             }
-            logger.info("Successfully retrieved {} authors", authors.size());
+            logger.debug("Successfully retrieved {} authors", authors.size());
 
         } catch (SQLException e) {
             logger.error("SQL error while fetching authors", e);
@@ -44,7 +44,7 @@ public class BookAttributeDAO {
     }
 
     public List<Category> getCategories() throws CategoriesException {
-        logger.info("Fetching categories from database...");
+        logger.debug("Fetching categories from database...");
         List<Category> categories = new ArrayList<>();
         String query = "SELECT id, name FROM categories";
 
@@ -55,7 +55,7 @@ public class BookAttributeDAO {
             while (rs.next()) {
                 categories.add(new Category(rs.getInt("id"), rs.getString("name")));
             }
-            logger.info("Successfully retrieved {} categories", categories.size());
+            logger.debug("Successfully retrieved {} categories", categories.size());
 
         } catch (SQLException e) {
             logger.error("SQL error while fetching categories", e);
@@ -66,7 +66,7 @@ public class BookAttributeDAO {
     }
 
     public List<Publisher> getPublishers() throws PublishersException {
-        logger.info("Fetching publishers from database...");
+        logger.debug("Fetching publishers from database...");
         List<Publisher> publishers = new ArrayList<>();
         String query = "SELECT id, name FROM publishers";
 
@@ -77,7 +77,7 @@ public class BookAttributeDAO {
             while (rs.next()) {
                 publishers.add(new Publisher(rs.getInt("id"), rs.getString("name")));
             }
-            logger.info("Successfully retrieved {} publishers", publishers.size());
+            logger.debug("Successfully retrieved {} publishers", publishers.size());
 
         } catch (SQLException e) {
             logger.error("SQL error while fetching publishers", e);
@@ -88,7 +88,7 @@ public class BookAttributeDAO {
     }
 
     public void addAttributes(List<BookAttribute> bookAttributes) throws AttributesException {
-        logger.info("Adding {} attributes to database", bookAttributes.size());
+        logger.debug("Adding {} attributes to database", bookAttributes.size());
         try (Connection conn = DBConnection.getConnection()) {
             for (BookAttribute attr : bookAttributes) {
                 String table = getTableName(attr);
@@ -98,7 +98,7 @@ public class BookAttributeDAO {
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
                     stmt.setString(1, attr.getName());
                     stmt.executeUpdate();
-                    logger.info("Inserted '{}' into {}", attr.getName(), table);
+                    logger.debug("Inserted '{}' into {}", attr.getName(), table);
                 }
             }
         } catch (SQLException e) {
@@ -110,14 +110,14 @@ public class BookAttributeDAO {
     public void removeAttribute(BookAttribute bookAttribute) throws AttributesException {
         String table = getTableName(bookAttribute);
         String query = "DELETE FROM " + table + " WHERE name = ?";
-        logger.info("Removing attribute '{}' from table '{}'", bookAttribute.getName(), table);
+        logger.debug("Removing attribute '{}' from table '{}'", bookAttribute.getName(), table);
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setString(1, bookAttribute.getName());
             int rowsAffected = stmt.executeUpdate();
-            logger.info("Removed {} row(s) from {}", rowsAffected, table);
+            logger.debug("Removed {} row(s) from {}", rowsAffected, table);
 
         } catch (SQLException e) {
             logger.error("SQL error while removing attribute", e);

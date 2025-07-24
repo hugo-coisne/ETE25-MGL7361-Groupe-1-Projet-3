@@ -34,8 +34,9 @@ public class DeliveryController {
     })
     @PostMapping("/create")
     public ResponseEntity<DeliveryDTO> createDelivery(@RequestBody CreateDeliveryRequest request) {
+        logger.info("Received request " + request);
         try {
-            logger.info("Creating delivery for :" + request);
+            logger.debug("Creating delivery for :" + request);
             DeliveryDTO delivery = deliveryService.createDelivery(
                     request.getAddress(),
                     request.getDate(),
@@ -55,8 +56,9 @@ public class DeliveryController {
     })
     @PutMapping("/delivered")
     public ResponseEntity<Void> updateStatusToDelivered(@RequestBody DeliveryDTO delivery) {
+        logger.info("Received request " + delivery);
         try {
-            logger.info("Marking delivery as delivered: {}", delivery);
+            logger.debug("Marking delivery as delivered: {}", delivery);
             deliveryService.updateStatusToDelivered(delivery);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
@@ -69,8 +71,9 @@ public class DeliveryController {
     @ApiResponse(responseCode = "200", description = "List of in-transit deliveries")
     @GetMapping("/in-transit")
     public ResponseEntity<List<DeliveryDTO>> getAllOrdersInTransit() {
+        logger.info("Received request");
         try {
-            logger.info("Retrieving all orders in transit");
+            logger.debug("Retrieving all orders in transit");
             List<DeliveryDTO> deliveries = deliveryService.getAllOrdersInTransit();
             return ResponseEntity.ok(deliveries);
         } catch (Exception e) {
@@ -83,8 +86,9 @@ public class DeliveryController {
     @ApiResponse(responseCode = "200", description = "List of delivered orders")
     @GetMapping("/delivered")
     public ResponseEntity<List<DeliveryDTO>> getAllOrdersDelivered() {
+        logger.info("Received request");
         try {
-            logger.info("Retrieving all delivered orders");
+            logger.debug("Retrieving all delivered orders");
             List<DeliveryDTO> deliveries = deliveryService.getAllOrdersDelivered();
             return ResponseEntity.ok(deliveries);
         } catch (Exception e) {

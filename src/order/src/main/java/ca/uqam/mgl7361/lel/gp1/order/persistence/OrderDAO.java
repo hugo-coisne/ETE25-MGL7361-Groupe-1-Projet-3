@@ -17,11 +17,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class OrderDAO {
-    private final Logger logger = Logger.getLogger(OrderDAO.class.getName());
+    private final Logger logger = LogManager.getLogger(OrderDAO.class.getName());
 
     private String generateOrderNumber() {
         LocalDate today = LocalDate.now();
@@ -31,7 +32,7 @@ public class OrderDAO {
     }
 
     public Order createOrder(AccountDTO accountDTO, Map<BookDTO, Integer> books, double total_price) throws Exception {
-        logger.log(Level.INFO, String.format("Creating order for account %s", accountDTO));
+        logger.debug(String.format("Creating order for account %s", accountDTO));
 
         String orderNumber = generateOrderNumber();
         Date date = new Date(System.currentTimeMillis());
@@ -104,10 +105,10 @@ public class OrderDAO {
 
             order = new Order(orderNumber, date, books);
             order.setOrderPrice((float) total_price);
-            logger.info("Order and order contents inserted successfully.");
+            logger.debug("Order and order contents inserted successfully.");
             return order;
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error creating order", e);
+            logger.error( "Error creating order", e);
             throw new Exception("Error creating order: " + e.getMessage(), e);
         }
 
@@ -127,7 +128,7 @@ public class OrderDAO {
                 if (rs.next()) {
                     return rs.getInt("id");
                 } else {
-                    logger.warning("No order found with order number: " + orderNumber);
+                    logger.warn("No order found with order number: " + orderNumber);
                     return 0;
                 }
             }
@@ -152,7 +153,7 @@ public class OrderDAO {
                     List<OrderItemDTO> items = List.of(); // Assuming items are fetched separately TODO
                     return new OrderDTO(orderNumber, orderDate, orderPrice, items);
                 } else {
-                    logger.info("No order found with id: " + orderId);
+                    logger.debug("No order found with id: " + orderId);
                     return null;
                 }
             }

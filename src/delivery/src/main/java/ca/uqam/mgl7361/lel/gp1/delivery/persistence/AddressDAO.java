@@ -45,7 +45,7 @@ public class AddressDAO {
                 if (keys.next()) {
                     int generatedId = keys.getInt(1);
                     address.setId(generatedId);
-                    logger.info("Address inserted successfully with ID {}", generatedId);
+                    logger.debug("Address inserted successfully with ID {}", generatedId);
                 }
             }
         } catch (SQLException e) {
@@ -63,7 +63,7 @@ public class AddressDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     Address address = map(rs);
-                    logger.info("Address found: {}", address);
+                    logger.debug("Address found: {}", address);
                     return address;
                 }
             }
@@ -71,7 +71,7 @@ public class AddressDAO {
             logger.error("Error finding address by ID: {}", id, e);
             throw new Exception("Failed to find address by ID", e);
         }
-        logger.info("No address found with ID {}", id);
+        logger.debug("No address found with ID {}", id);
         return null;
     }
 
@@ -87,7 +87,7 @@ public class AddressDAO {
                     addresses.add(map(rs));
                 }
             }
-            logger.info("Found {} address(es) for account ID {}", addresses.size(), accountId);
+            logger.debug("Found {} address(es) for account ID {}", addresses.size(), accountId);
         } catch (SQLException e) {
             logger.error("Error finding addresses by account ID: {}", accountId, e);
             throw new Exception("Failed to find addresses by account ID", e);
@@ -110,7 +110,7 @@ public class AddressDAO {
 
             int rows = stmt.executeUpdate();
             if (rows > 0) {
-                logger.info("Address with ID {} updated successfully", address.getId());
+                logger.debug("Address with ID {} updated successfully", address.getId());
             } else {
                 logger.warn("No address updated for ID {}", address.getId());
             }
@@ -128,7 +128,7 @@ public class AddressDAO {
             stmt.setInt(1, id);
             int rows = stmt.executeUpdate();
             if (rows > 0) {
-                logger.info("Address with ID {} deleted successfully", id);
+                logger.debug("Address with ID {} deleted successfully", id);
                 return true;
             } else {
                 logger.warn("No address found to delete with ID {}", id);

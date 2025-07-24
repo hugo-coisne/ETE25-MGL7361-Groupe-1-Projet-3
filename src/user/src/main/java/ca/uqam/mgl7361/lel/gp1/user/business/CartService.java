@@ -38,19 +38,19 @@ public class CartService {
     }
 
     public CartDTO getCart(AccountDTO accountDto) throws InvalidCredentialsException {
-        logger.info("Retrieving cart for account: " + accountDto.getEmail());
+        logger.debug("Retrieving cart for account: " + accountDto.getEmail());
         accountDto = accountService.signin(accountDto.getEmail(), accountDto.getPassword());
 
         Cart cart = cartDAO.getCart(accountDto);
 
         if (cart.getId() < 0 || cart.getTotalPrice() < 0) {
-            logger.info("No cart found for account: " + accountDto.getEmail() + ", creating a new cart.");
+            logger.debug("No cart found for account: " + accountDto.getEmail() + ", creating a new cart.");
             return CartMapper.toDTO(cartDAO.createCartFor(accountDto));
         }
-        logger.info(cart.toString());
+        logger.debug(cart.toString());
         CartDTO cartDto = CartMapper.toDTO(cart);
-        logger.info(cartDto.toString());
-        logger.info("Returning " + cartDto);
+        logger.debug(cartDto.toString());
+        logger.debug("Returning " + cartDto);
         return cartDto;
     }
 
@@ -59,7 +59,7 @@ public class CartService {
         accountDto = accountService.signin(accountDto.getEmail(), accountDto.getPassword());
 
         CartDTO cart = this.getCart(accountDto);
-        logger.info("Calling bookAPIClient to check if "+bookDto+" is in stock then sufficiently in stock");
+        logger.debug("Calling bookAPIClient to check if "+bookDto+" is in stock then sufficiently in stock");
         if (!bookAPIClient.isInStock(bookDto)) {
             logger.error("Book is not in stock: " + bookDto.getTitle());
             throw new UnsufficientStockException("Book is not in stock: " + bookDto.getTitle());
@@ -68,7 +68,7 @@ public class CartService {
             logger.error("Book " + bookDto.getTitle() + "is not in sufficient stock: " + bookDto.getTitle());
             throw new UnsufficientStockException("Book is not in sufficient stock: " + bookDto.getTitle());
         }
-        logger.info("Adding book to cart for account: " + accountDto.getEmail() + ", Book: " + bookDto.getTitle());
+        logger.debug("Adding book to cart for account: " + accountDto.getEmail() + ", Book: " + bookDto.getTitle());
         cartDAO.addBookToCart(accountDto, bookDto);
     }
 
@@ -83,7 +83,7 @@ public class CartService {
         try {
             cartDAO.clearCart(AccountMapper.toModel(accountDto));
         } catch (InvalidCartException e) {
-            logger.info("No cart found for account id, considered clear");
+            logger.debug("No cart found for account id, considered clear");
         }
     }
 

@@ -6,7 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import ca.uqam.mgl7361.lel.gp1.user.exception.DuplicateEmailException;
 import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCredentialsException;
@@ -15,7 +16,7 @@ import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
 
 public class AccountDAO {
 
-    Logger logger = Logger.getLogger(AccountDAO.class.getName());
+    Logger logger = LogManager.getLogger(AccountDAO.class);
 
     static AccountDAO instance;
 
@@ -27,7 +28,7 @@ public class AccountDAO {
     }
 
     public void insert(Account account) throws DuplicateEmailException {
-        logger.info("Creating account in database for: " + account.toString());
+        logger.debug("Creating account in database for: " + account.toString());
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement statement = conn.prepareStatement(
@@ -47,17 +48,17 @@ public class AccountDAO {
                     if (generatedKeys.next()) {
                         int generatedId = generatedKeys.getInt(1);
                         account.setId(generatedId);
-                        logger.info("Account created successfully with ID " + account.getId());
+                        logger.debug("Account created successfully with ID " + account.getId());
                     } else {
-                        logger.info("No generated ID found.");
+                        logger.debug("No generated ID found.");
                     }
                 }
             } else {
-                logger.info("Database insertion failed, no rows affected.");
+                logger.debug("Database insertion failed, no rows affected.");
             }
 
         } catch (SQLIntegrityConstraintViolationException e) {
-            logger.severe("SQL Integrity Constraint Violation: " + e.getMessage());
+            logger.error("SQL Integrity Constraint Violation: " + e.getMessage());
 
             String errorMessage = e.getMessage();
             // Check if the error is due to a duplicate email
@@ -72,7 +73,7 @@ public class AccountDAO {
     }
 
     public Account findByEmailAndPassword(String email, String password) throws InvalidCredentialsException {
-        logger.info("Finding account by email: " + email);
+        logger.debug("Finding account by email: " + email);
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement statement = conn.prepareStatement(
@@ -92,7 +93,7 @@ public class AccountDAO {
                 Account account = new Account(firstName, lastName, phone, email, password);
                 account.setId(id);
 
-                logger.info("Account found: " + account.toString());
+                logger.debug("Account found: " + account.toString());
                 return account;
             }
             throw new InvalidCredentialsException(email);
@@ -103,7 +104,7 @@ public class AccountDAO {
     }
 
     public void deleteAccountWithId(int id) {
-        logger.info("Deleting account with ID: " + id);
+        logger.debug("Deleting account with ID: " + id);
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement statement = conn.prepareStatement("DELETE FROM accounts WHERE id = ?")) {
@@ -112,9 +113,9 @@ public class AccountDAO {
             int rowsAffected = statement.executeUpdate();
 
             if (rowsAffected > 0) {
-                logger.info("Account with ID " + id + " deleted successfully.");
+                logger.debug("Account with ID " + id + " deleted successfully.");
             } else {
-                logger.warning("No account found with ID " + id);
+                logger.warn("No account found with ID " + id);
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors de la suppression du compte dans la base de données", e);
@@ -122,7 +123,7 @@ public class AccountDAO {
     }
 
     public void update(Account authenticatedAccount) throws DuplicateEmailException {
-        logger.info("Updating account in database for: " + authenticatedAccount.toString());
+        logger.debug("Updating account in database for: " + authenticatedAccount.toString());
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement statement = conn.prepareStatement(
@@ -138,12 +139,12 @@ public class AccountDAO {
             int rowsUpdated = statement.executeUpdate();
 
             if (rowsUpdated > 0) {
-                logger.info("Account updated successfully.");
+                logger.debug("Account updated successfully.");
             } else {
-                logger.warning("No account found with ID " + authenticatedAccount.getId());
+                logger.warn("No account found with ID " + authenticatedAccount.getId());
             }
         } catch (SQLIntegrityConstraintViolationException e) {
-            logger.severe("SQL Integrity Constraint Violation: " + e.getMessage());
+            logger.error("SQL Integrity Constraint Violation: " + e.getMessage());
 
             String errorMessage = e.getMessage();
             // Check if the error is due to a duplicate email

@@ -52,6 +52,7 @@ public class AccountController {
     @PostMapping("/signin")
     public ResponseEntity<?> signin(@RequestBody Map<String, String> credentials) {
         String email = credentials.get("email");
+        logger.info("Signin request for " + email);
         String password = credentials.get("password");
         try {
             AccountDTO account = accountService.signin(email, password);
@@ -65,11 +66,11 @@ public class AccountController {
     public ResponseEntity<?> changeProperty(
             @PathVariable(name = "property") String property,
             @RequestBody Map<String, String> request) {
+        logger.info("Received request " + request);
         AccountDTO account = new AccountDTO();
         account.setEmail(request.get("email"));
         account.setPassword(request.get("password"));
         String newValue = request.get("newValue");
-        logger.info("property :" + property);
         try {
             accountService.update(account, property, newValue);
             return ResponseEntity.ok(Map.of("status", "success", "message", "Property updated successfully"));
@@ -86,7 +87,7 @@ public class AccountController {
 
     @DeleteMapping
     public ResponseEntity<?> deleteAccount(@RequestBody AccountDTO accountDto) {
-        logger.info("Deleting account for: {}", accountDto.getEmail());
+        logger.info("Received request for: {}", accountDto.getEmail());
 
         try {
             accountService.delete(accountDto);

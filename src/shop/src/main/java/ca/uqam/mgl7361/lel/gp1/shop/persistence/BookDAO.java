@@ -11,15 +11,16 @@ import ca.uqam.mgl7361.lel.gp1.shop.dto.BookProperty;
 
 import java.sql.*;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class BookDAO {
-    Logger logger = Logger.getLogger(BookDAO.class.getName());
+    Logger logger = LogManager.getLogger(BookDAO.class.getName());
 
     public void save(Book book) throws DuplicationBookException, Exception {
         // Logic to save the book to a database or any storage
-        logger.log(Level.INFO, String.format("Saving book: %s:%s", book.getTitle(), book.getIsbn()));
+        logger.debug(String.format("Saving book: %s:%s", book.getTitle(), book.getIsbn()));
         try (
                 Connection conn = DBConnection.getConnection();
                 PreparedStatement statement = conn.prepareStatement(
@@ -37,7 +38,7 @@ public class BookDAO {
             int rowsInserted = statement.executeUpdate();
 
             if (rowsInserted > 0) {
-                logger.info("Book inserted successfully.");
+                logger.debug("Book inserted successfully.");
             } else {
                 throw new DTOException("Error inserting book.");
             }
@@ -83,7 +84,7 @@ public class BookDAO {
             baseQuery.append(whereClause);
         }
 
-        logger.log(Level.INFO, baseQuery.toString());
+        logger.debug(baseQuery.toString());
 
         PreparedStatement statement;
         try {
@@ -92,10 +93,10 @@ public class BookDAO {
             for (BookProperty key : keys) {
                 statement.setString(index++, "%" + criteria.get(key) + "%");
             }
-    
+
             return statement;
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error building query for books", e);
+            logger.debug("Error building query for books", e);
             throw new Exception("Error building query for books: " + e.getMessage(), e);
         }
 
@@ -103,7 +104,7 @@ public class BookDAO {
 
     public List<Book> getBooksBy(Map<BookProperty, String> criteria) throws Exception {
         List<Book> books = new ArrayList<>();
-        logger.log(Level.INFO, String.format("Retrieving books: %s", books));
+        logger.debug(String.format("Retrieving books: %s", books));
         try (
                 Connection conn = DBConnection.getConnection();
                 PreparedStatement statement = buildGetBooksQuery(conn, criteria);
@@ -126,13 +127,13 @@ public class BookDAO {
             }
             return books;
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error retrieving books", e);
+            logger.debug("Error retrieving books", e);
         }
         return Collections.emptyList(); // Return an empty list in case of error
     }
 
     public void deleteBook(Book book) throws DTOException, Exception {
-        logger.log(Level.INFO, "Deleting book: " + book.getTitle() + " (ISBN: " + book.getIsbn() + ")");
+        logger.debug("Deleting book: " + book.getTitle() + " (ISBN: " + book.getIsbn() + ")");
 
         try (Connection conn = DBConnection.getConnection()) {
             conn.setAutoCommit(false); // début de transaction
@@ -181,7 +182,7 @@ public class BookDAO {
             }
 
             conn.commit();
-            logger.info("Book and its associations deleted successfully.");
+            logger.debug("Book and its associations deleted successfully.");
 
         } catch (SQLException e) {
             throw new Exception("Error deleting book: " + e.getMessage());
@@ -189,7 +190,6 @@ public class BookDAO {
     }
 
     public void setPropertiesFor(Book book, Map<BookProperty, List<String>> properties) throws DTOException {
-        Logger logger = Logger.getLogger(BookDAO.class.getName());
 
         try (Connection conn = DBConnection.getConnection()) {
             for (Map.Entry<BookProperty, List<String>> entry : properties.entrySet()) {
@@ -303,13 +303,12 @@ public class BookDAO {
             }
             conn.commit();
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error while setting properties for book " + book.getIsbn(), e);
+            logger.debug("Error while setting properties for book " + book.getIsbn(), e);
             throw new DTOException("Unable to set properties for book: " + book.getIsbn());
         }
     }
 
     public void removePropertiesFrom(Book book, Map<BookProperty, List<String>> properties) throws DTOException {
-        Logger logger = Logger.getLogger(BookDAO.class.getName());
 
         try (Connection conn = DBConnection.getConnection()) {
             for (Map.Entry<BookProperty, List<String>> entry : properties.entrySet()) {
@@ -376,7 +375,7 @@ public class BookDAO {
             }
 
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error while removing properties from book " + book.getIsbn(), e);
+            logger.debug("Error while removing properties from book " + book.getIsbn(), e);
             throw new DTOException("Unable to remove properties from book: " + book.getIsbn());
         }
     }
@@ -392,7 +391,7 @@ public class BookDAO {
                 return rs.getInt("stock_quantity") > 0;
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error checking stock for book: " + book.getIsbn(), e);
+            logger.debug("Error checking stock for book: " + book.getIsbn(), e);
         }
         return false;
     }
@@ -408,7 +407,7 @@ public class BookDAO {
                 return rs.getInt("stock_quantity") >= quantity;
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error checking stock for book: " + book.getIsbn(), e);
+            logger.debug("Error checking stock for book: " + book.getIsbn(), e);
         }
         return false;
     }
@@ -430,7 +429,7 @@ public class BookDAO {
             }
             return authors;
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error retrieving authors for book: " + isbn, e);
+            logger.debug("Error retrieving authors for book: " + isbn, e);
             return Collections.emptyList(); // Return an empty list in case of error
         }
     }
@@ -452,7 +451,7 @@ public class BookDAO {
             }
             return categories;
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error retrieving categories for book: " + isbn, e);
+            logger.debug("Error retrieving categories for book: " + isbn, e);
             return Collections.emptyList(); // Return an empty list in case of error
         }
     }
@@ -471,7 +470,7 @@ public class BookDAO {
                 return new Publisher(rs.getInt("id"), rs.getString("name"));
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error retrieving publisher for book: " + isbn, e);
+            logger.debug("Error retrieving publisher for book: " + isbn, e);
         }
         return null;
     }

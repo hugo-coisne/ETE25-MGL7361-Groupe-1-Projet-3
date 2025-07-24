@@ -32,11 +32,11 @@ public class CartController {
 
     @PostMapping("/view")
     public ResponseEntity<?> getCart(@RequestBody AccountDTO accountDto) {
-        logger.info("Retrieving cart for account: " + accountDto.getEmail());
+        logger.info("Received request for : " + accountDto);
         CartDTO cartDto;
         try {
             cartDto = cartService.getCart(accountDto);
-            logger.info("Cart retrieved for account: {}, Cart ID: {}, Total Price: {}",
+            logger.debug("Cart retrieved for account: {}, Cart ID: {}, Total Price: {}",
                     accountDto.getEmail(), cartDto.getId(), cartDto.getTotalPrice());
             return ResponseEntity.ok(cartDto);
         } catch (InvalidCredentialsException e) {
@@ -48,8 +48,7 @@ public class CartController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addBookToCart(@RequestBody CartBookRequest request) {
-        logger.info("Adding book to cart for account: " + request.account().getEmail() + ", Book: "
-                + request.book().getTitle());
+        logger.info("Received request " + request);
         try {
             cartService.addBookToCart(request.account(), request.book());
             return ResponseEntity.ok().body("Book added to cart successfully.");
@@ -72,7 +71,7 @@ public class CartController {
     @PostMapping("/remove")
     public ResponseEntity<?> removeBookFromCart(@RequestBody CartBookRequest request) {
         try {
-            logger.info("Received remove " + request);
+            logger.info("Received request " + request);
             cartService.removeBookFromCart(request.account(), request.book());
             return ResponseEntity.ok().body("Book deleted from cart successfully.");
         } catch (InvalidCartException e) {
@@ -91,6 +90,7 @@ public class CartController {
 
     @PostMapping("/clear")
     public ResponseEntity<?> clearCart(@RequestBody AccountDTO accountDto) {
+        logger.info("Received request for " + accountDto);
         try {
             cartService.clearCart(accountDto);
             return ResponseEntity.ok().body("Cart emptied successfully ! (or was already empty)");

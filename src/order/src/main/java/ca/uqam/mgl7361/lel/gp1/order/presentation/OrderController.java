@@ -30,17 +30,15 @@ public class OrderController {
 
     @Operation(summary = "Create a new order from account and cart")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Order successfully created",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDTO.class))),
-        @ApiResponse(responseCode = "500", description = "Order creation failed",
-            content = @Content(mediaType = "application/json"))
+            @ApiResponse(responseCode = "200", description = "Order successfully created", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Order creation failed", content = @Content(mediaType = "application/json"))
     })
     @PostMapping
     public ResponseEntity<?> createOrder(@RequestBody OrderRequest request) {
-        logger.info("Received request to create order for account: {}", request.account().getEmail());
+        logger.info("Received request " + request);
         try {
             OrderDTO order = orderService.createOrder(request.account(), request.cart());
-            logger.info("Order successfully created: {}", order.getOrderNumber());
+            logger.debug("Order successfully created: {}", order.getOrderNumber());
             return ResponseEntity.ok(order);
         } catch (Exception e) {
             logger.error("Order creation failed for account: {}", request.account().getEmail(), e);
@@ -50,18 +48,16 @@ public class OrderController {
 
     @Operation(summary = "Retrieve an order by its order number")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Order successfully retrieved",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDTO.class))),
-        @ApiResponse(responseCode = "404", description = "Order not found",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "Order successfully retrieved", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Order not found", content = @Content)
     })
     @GetMapping("/{orderId}")
-    public ResponseEntity<?> getOrderById(@PathVariable(name="orderId") String orderId) {
-        logger.info("Received request to retrieve order with ID: {}", orderId);
+    public ResponseEntity<?> getOrderById(@PathVariable(name = "orderId") String orderId) {
+        logger.info("Received request with orderId " + orderId);
         try {
             OrderDTO order = orderService.findOrderByOrderNumber(orderId);
-            logger.info("Order retrieved successfully: {}", orderId);
-            logger.info("Found order : " + order);
+            logger.debug("Order retrieved successfully: {}", orderId);
+            logger.debug("Found order : " + order);
             return ResponseEntity.ok(order);
         } catch (Exception e) {
             logger.error("Order not found: {}", orderId, e);
@@ -74,10 +70,13 @@ public class OrderController {
      */
     @Schema(name = "OrderRequest", description = "Payload to create an order")
     public record OrderRequest(
-        @Schema(description = "Account information", required = true)
-        AccountDTO account,
+            @Schema(description = "Account information", required = true) AccountDTO account,
 
-        @Schema(description = "Cart information", required = true)
-        CartDTO cart
-    ) {}
+            @Schema(description = "Cart information", required = true) CartDTO cart) {
+
+        public String toString() {
+            return "OrderRequest(account=" + account + ", cart=" + cart + ")";
+        }
+
+    }
 }

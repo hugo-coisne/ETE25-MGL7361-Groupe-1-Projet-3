@@ -28,11 +28,11 @@ public class BookController {
     @Operation(summary = "Get books by criteria")
     @PostMapping("/search")
     public ResponseEntity<List<BookDTO>> getBooksBy(@RequestBody Map<BookProperty, String> criteria) {
-        logger.info("Searching books with criteria: {}", criteria);
+        logger.info("Received request with criteria: {}", criteria);
         List<BookDTO> books;
         try {
             books = bookService.getBooksBy(criteria);
-            logger.info("Found {} books matching criteria", books.size());
+            logger.debug("Found {} books matching criteria", books.size());
             return ResponseEntity.ok(books);
         } catch (Exception e) {
             logger.error("Error retrieving books by criteria: {}", criteria, e);
@@ -43,10 +43,10 @@ public class BookController {
     @Operation(summary = "Create a new book")
     @PostMapping
     public ResponseEntity<?> createBook(@RequestBody BookDTO bookDTO) {
-        logger.info("Creating new book: {}", bookDTO.getTitle());
+        logger.info("Received request with {}", bookDTO);
         try {
             BookDTO createdBook = bookService.createBook(bookDTO);
-            logger.info("Book created successfully with title: {}", createdBook.getTitle());
+            logger.debug("Book created successfully with title: {}", createdBook.getTitle());
             return ResponseEntity.ok(createdBook);
         } catch (Exception e) {
             logger.error("Error creating book: {}", bookDTO.getTitle(), e);
@@ -60,7 +60,7 @@ public class BookController {
         logger.info("Adding book to catalog: {}", bookDTO.getTitle());
         try {
             bookService.addBook(bookDTO);
-            logger.info("Book added to catalog successfully: {}", bookDTO.getTitle());
+            logger.debug("Book added to catalog successfully: {}", bookDTO.getTitle());
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             logger.error("Error adding book: {}", bookDTO.getTitle(), e);
@@ -71,10 +71,10 @@ public class BookController {
     @Operation(summary = "Delete a book")
     @DeleteMapping
     public ResponseEntity<?> deleteBook(@RequestBody BookDTO bookDTO) {
-        logger.info("Deleting book: {}", bookDTO.getTitle());
+        logger.info("Received request for {}", bookDTO);
         try {
             bookService.deleteBook(bookDTO);
-            logger.info("Book deleted successfully: {}", bookDTO.getTitle());
+            logger.debug("Book deleted successfully: {}", bookDTO.getTitle());
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             logger.error("Error deleting book: {}", e);
@@ -85,26 +85,29 @@ public class BookController {
     @Operation(summary = "Set properties for a book")
     @PostMapping("/properties/set")
     public ResponseEntity<Void> setPropertiesFor(@RequestBody BookPropertiesRequest request) {
-        logger.info("Setting properties {} for book: {}", request.properties(), request.book().getTitle());
+        logger.info("Received request for " + request);
+        logger.debug("Setting properties {} for book: {}", request.properties(), request.book().getTitle());
         bookService.setPropertiesFor(request.book(), request.properties());
-        logger.info("Properties set successfully for book: {}", request.book().getTitle());
+        logger.debug("Properties set successfully for book: {}", request.book().getTitle());
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Remove properties from a book")
     @PostMapping("/properties/remove")
     public ResponseEntity<Void> removePropertiesFrom(@RequestBody BookPropertiesRequest request) {
-        logger.info("Removing properties {} from book: {}", request.properties(), request.book().getTitle());
+        logger.info("Received request " + request);
+        logger.debug("Removing properties {} from book: {}", request.properties(), request.book().getTitle());
         bookService.removePropertiesFrom(request.book(), request.properties());
-        logger.info("Properties removed successfully from book: {}", request.book().getTitle());
+        logger.debug("Properties removed successfully from book: {}", request.book().getTitle());
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Check if a book is in stock")
     @PostMapping("/is-in-stock")
     public ResponseEntity<Boolean> isInStock(@RequestBody BookDTO bookDTO) {
+        logger.info("Received request for " + bookDTO);
         boolean inStock = bookService.isInStock(bookDTO);
-        logger.info("Book '{}' in stock: {}", bookDTO.getTitle(), inStock);
+        logger.debug("Book '{}' in stock: {}", bookDTO.getTitle(), inStock);
         return ResponseEntity.ok(inStock);
     }
 
@@ -112,10 +115,11 @@ public class BookController {
     @PostMapping("/quantity-in-stock")
     public ResponseEntity<Boolean> isSufficientlyInStock(
             @RequestBody BookQuantityRequest bookQuantityRequest) {
+        logger.info("Received request for " + bookQuantityRequest);
         BookDTO bookDTO = bookQuantityRequest.book;
         int quantity = bookQuantityRequest.quantity;
         boolean sufficient = bookService.isSufficientlyInStock(bookDTO, quantity);
-        logger.info("Book '{}' in stock with quantity {}: {}", bookDTO.getTitle(), quantity, sufficient);
+        logger.debug("Book '{}' in stock with quantity {}: {}", bookDTO.getTitle(), quantity, sufficient);
         return ResponseEntity.ok(sufficient);
     }
 
@@ -125,5 +129,9 @@ public class BookController {
             Map<BookProperty, List<String>> properties) {
     }
 
-    public record BookQuantityRequest(BookDTO book, int quantity){}
+    public record BookQuantityRequest(BookDTO book, int quantity) {
+        public String toString() {
+            return "BookQuanityRequest(book=" + book + ", quantity" + quantity + ")";
+        }
+    }
 }

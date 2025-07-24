@@ -30,7 +30,7 @@ public class DeliveryDAO {
             stmt.setInt(2, addressId);
             stmt.setDate(3, new Date(delivery.getDeliveryDate().getTime()));
             stmt.setString(4, delivery.getDeliveryStatus());
-            logger.info(stmt.toString());
+            logger.debug(stmt.toString());
             int affectedRows = stmt.executeUpdate();
             if (affectedRows == 0) {
                 logger.error("Creating delivery failed, no rows affected.");

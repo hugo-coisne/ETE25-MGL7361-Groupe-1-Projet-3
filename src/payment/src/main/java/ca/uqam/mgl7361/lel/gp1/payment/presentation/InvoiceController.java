@@ -24,10 +24,10 @@ public class InvoiceController {
 
     @PostMapping
     public ResponseEntity<InvoiceDTO> createInvoice(@RequestBody InvoiceRequest request) {
+        logger.info("Received request for : {}", request);
         try {
-            logger.info("Received request to create invoice for : {}",request);
             InvoiceDTO invoice = invoiceService.createInvoice(request.getAccountDTO(), request.getPaymentMethod());
-            logger.info("Invoice created : {}", invoice.toString());
+            logger.debug("Invoice created : {}", invoice.toString());
             return ResponseEntity.ok(invoice);
         } catch (Exception e) {
             logger.error("Error while creating invoice", e);
