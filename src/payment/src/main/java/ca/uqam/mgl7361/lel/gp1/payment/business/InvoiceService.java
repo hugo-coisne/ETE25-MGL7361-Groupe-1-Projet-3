@@ -30,11 +30,11 @@ public class InvoiceService {
     }
 
     public boolean isValidCart(CartDTO cart) {
-        if (cart == null || cart.getBooksDto() == null) {
+        if (cart == null || cart.getCartItemDtos() == null) {
             return false;
         }
         BookAPIClient bookAPI = Clients.bookClient;
-        for (CartItemDTO entry : cart.getBooksDto()) {
+        for (CartItemDTO entry : cart.getCartItemDtos()) {
             BookDTO book = entry.book();
             Integer quantity = entry.quantity();
             if (!bookAPI.isSufficientlyInStock(new BookQuantityRequest(book, quantity))) {

@@ -11,18 +11,18 @@ import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 public class CartDTO extends DTO {
     private Map<String, Integer> booksIsbn;
     private int userId;
-    private List<CartItemDTO> bookDtos;
+    private List<CartItemDTO> cartItemDtos;
     private double totalPrice;
     private int id;
 
     public CartDTO(int User) {
         this.userId = User;
         this.booksIsbn = new HashMap<>();
-        this.bookDtos = new ArrayList<CartItemDTO>();
+        this.cartItemDtos = new ArrayList<CartItemDTO>();
     }
 
     public CartDTO() {
-        this.bookDtos = new ArrayList<CartItemDTO>();
+        this.cartItemDtos = new ArrayList<CartItemDTO>();
     }
 
     public void add(BookDTO bookDto, int quantity) {
@@ -32,8 +32,8 @@ public class CartDTO extends DTO {
         }
     }
 
-    public void setBooks(List<CartItemDTO> books) {
-        this.bookDtos = books;
+    public void setCartItemDtos(List<CartItemDTO> books) {
+        this.cartItemDtos = books;
         // update the booksIsbn list
         this.booksIsbn = new HashMap<>();
         if (books != null) {
@@ -102,7 +102,7 @@ public class CartDTO extends DTO {
         this.totalPrice = totalPrice;
     }
 
-    public List<CartItemDTO> getBooksDto() {
-        return this.bookDtos;
+    public List<CartItemDTO> getCartItemDtos() {
+        return this.cartItemDtos;
     }
 }

@@ -324,6 +324,29 @@ public class Main {
 
         }
 
+        private static void showCartFor(AccountDTO accountDTO) {
+                CartAPIClient cartAPIClient = Clients.cartClient;
+                List<CartItemDTO> cartItemDTOs = cartAPIClient.getCart(accountDTO).getCartItemDtos();
+                Main.scenarioDetailsStep("Contenu du panier (Items : " + cartItemDTOs.size() + ")"
+                                + (cartItemDTOs.size() > 0 ? " :" : ""));
+                if (cartItemDTOs.size() > 0) {
+                        cartItemDTOs.forEach(cartItemDto -> System.out.println(" - " + cartItemDto.book()));
+                }
+        }
+
+        private static void show(List<BookDTO> bookDtos) {
+                bookDtos.forEach(book -> System.out.println(" - " + book.toString()));
+        }
+
+        private static void showAllBooks() {
+                BookAPIClient bookAPIClient = Clients.bookClient;
+                Main.scenarioDetailsStep("Tous les livres :");
+                List<BookDTO> bookDtos = new ArrayList<BookDTO>();
+                bookDtos = bookAPIClient.getBooksBy(Map.of(
+                                BookProperty.TITLE, "%"));
+                show(bookDtos);
+        }
+
         public static void scenario() { // scenario described in the provided specifications
 
                 // signup
@@ -339,6 +362,7 @@ public class Main {
                 AccountAPIClient accountClient = Clients.accountClient;
                 Main.scenarioStep("1.1 Création d'un compte");
                 AccountDTO account = new AccountDTO(firstName, lastName, phone, email, password);
+                System.out.println(account);
                 accountClient.signup(account);
 
                 // Main.scenarioStep("1.2 Tentative de création du même compte");
@@ -362,7 +386,7 @@ public class Main {
                 // get the cart for the account
                 // if the cart does not exist, it should be created
                 CartAPIClient cartAPIClient = Clients.cartClient;
-                cartAPIClient.getCart(account);
+                showCartFor(account);
                 /* Should show that the cart was retrieved successfully */
 
                 Main.scenarioStep("2. Sélectionner un ou plusieurs livres");
@@ -390,58 +414,53 @@ public class Main {
 
                 // Livres
                 Main.scenarioStep("2.2.1 Rechercher tous les livres");
-                List<BookDTO> booksByTitle = new ArrayList<BookDTO>();
-                booksByTitle = bookAPIClient.getBooksBy(Map.of(
-                                BookProperty.TITLE, "%"));
-                booksByTitle.forEach(book -> Main.scenarioDetailsStep(book.toString()));
+                showAllBooks();
 
+                List<BookDTO> bookDtos = new ArrayList<>();
                 Main.scenarioStep("2.2.2 Rechercher les livres à partir d'un titre ('Les Misérables')");
-                booksByTitle = bookAPIClient.getBooksBy(Map.of(
+                bookDtos = bookAPIClient.getBooksBy(Map.of(
                                 BookProperty.TITLE, "Les Misérables"));
-                booksByTitle.forEach(book -> Main.scenarioDetailsStep(book.toString()));
+                bookDtos.forEach(book -> System.out.println(" - " + book.getTitle()));
 
                 Main.scenarioStep("2.2.3 Rechercher les livres à partir d'un titre partiel ('The')");
-                booksByTitle = bookAPIClient.getBooksBy(Map.of(
+                bookDtos = bookAPIClient.getBooksBy(Map.of(
                                 BookProperty.TITLE, "The"));
-                booksByTitle.forEach(book -> Main.scenarioDetailsStep(book.toString()));
+                bookDtos.forEach(book -> System.out.println(" - " + book.getTitle()));
 
                 Main.scenarioStep("2.2.4 Rechercher les livres à partir d'un auteur ('Camus')");
-                booksByTitle = bookAPIClient.getBooksBy(Map.of(
+                bookDtos = bookAPIClient.getBooksBy(Map.of(
                                 BookProperty.AUTHOR, "Camus"));
-                booksByTitle.forEach(book -> Main.scenarioDetailsStep(book.toString()));
+                bookDtos.forEach(
+                                book -> System.out.println(" - " +
+                                                book.getTitle() + " écrit par " + book.getAuthors().getFirst()));
 
                 Main.scenarioStep("2.2.5 Rechercher les livres à partir d'un editeur ('Gal')");
-                booksByTitle = bookAPIClient.getBooksBy(Map.of(
+                bookDtos = bookAPIClient.getBooksBy(Map.of(
                                 BookProperty.PUBLISHER, "Gal"));
-                booksByTitle.forEach(
-                                book -> Main.scenarioDetailsStep(book.toString() + " - Editor : " +
-                                                book.getPublisher().getName()));
+                bookDtos.forEach(book -> System.out.println(book.getTitle() + " edité par " + book.getPublisher()));
 
                 Main.scenarioStep("2.2.6 Rechercher les livres à partir d'un mélange de caractéristiques"
                                 + " - titre(partiel) : 'Lover', " + "ISBN(partiel): '06951', " + "Editeur: 'Seuil', "
                                 + "Auteur: 'Duras'");
                 // Exemple de mélange d'une partie des caractéristiques
-                booksByTitle = bookAPIClient.getBooksBy(Map.of(
+                bookDtos = bookAPIClient.getBooksBy(Map.of(
                                 BookProperty.TITLE, "Lover",
                                 BookProperty.ISBN, "06951",
                                 BookProperty.PUBLISHER, "Seuil",
                                 BookProperty.AUTHOR, "Duras"));
-                booksByTitle.forEach(
-                                book -> Main.scenarioDetailsStep(book.getTitle() +
-                                                "\n - ISBN : " + book.getIsbn() +
-                                                "\n - Editor : " + book.getPublisher().getName() +
-                                                "\n - Author : " + book.getAuthors().getFirst().getName()));
+                show(bookDtos);
 
                 Main.scenarioStep("3. Mettre les livres sélectionnés dans le panier");
-                Main.scenarioDetailsStep("Contenu du panier : " + cartAPIClient.getCart(account));
+                showCartFor(account);
 
                 // Livre pas en stock
                 // Main.scenarioDetailsStep(
                 // "Le livre The Lover n'est pas en stock donc l'ajout au panier n'est pas
                 // possible");
-                BookDTO book = booksByTitle.getFirst();
+                BookDTO book = bookDtos.getFirst();
                 // cartAPIClient.addBookToCart(new CartBookRequest(account, book));
-                Main.scenarioDetailsStep("Contenu du panier : " + cartAPIClient.getCart(account));
+                // Main.scenarioDetailsStep("Contenu du panier : " +
+                // cartAPIClient.getCart(account).getCartItemDtos());
 
                 // Livre devrait être en stock (first run ie il n'y a pas trop de livre dans le
                 // panier et ça ne dépasse pas le stock)
@@ -449,30 +468,31 @@ public class Main {
                                 "Le livre Les Misérables est en stock et dois bien s'ajouter au panier (s'il n'y en a pas trop dans le panier)");
                 book = bookAPIClient.getBooksBy(Map.of(BookProperty.TITLE, "Les Misérables")).getFirst();
                 cartAPIClient.addBookToCart(new CartBookRequest(account, book));
-                Main.scenarioDetailsStep("Contenu du panier : " + cartAPIClient.getCart(account));
+                showCartFor(account);
 
                 Main.scenarioDetailsStep("Ajout une deuxième fois du même livre");
                 book = bookAPIClient.getBooksBy(Map.of(BookProperty.TITLE, "Les Misérables")).getFirst();
                 cartAPIClient.addBookToCart(new CartBookRequest(account, book));
-                Main.scenarioDetailsStep("Contenu du panier : " + cartAPIClient.getCart(account));
+                showCartFor(account);
 
                 Main.scenarioDetailsStep("Ajout d'un autre livre");
                 book = bookAPIClient.getBooksBy(Map.of(BookProperty.TITLE, "Stranger")).getFirst();
                 cartAPIClient.addBookToCart(new CartBookRequest(account, book));
-                Main.scenarioDetailsStep("Contenu du panier : " + cartAPIClient.getCart(account));
+                showCartFor(account);
 
                 Main.scenarioStep("4. Supprimer, du panier, un ou des livres qu'on ne désire plus acheter;");
                 Main.scenarioStep("4.1 Suppression du dernier livre ajouté ('The Stranger')");
                 cartAPIClient.removeBookFromCart(new CartBookRequest(account, book));
-                Main.scenarioDetailsStep("Contenu du panier : " + cartAPIClient.getCart(account));
+                showCartFor(account);
 
                 Main.scenarioStep("4.2 Suppression de l'un des livres ('Les Misérables')");
-                @SuppressWarnings("unused")
+
                 CartDTO cart = cartAPIClient.getCart(account);
+                cart.getCartItemDtos().forEach(bookDTO -> System.out.println(" - " + bookDTO));
                 BookDTO lesMiserables = bookAPIClient.getBooksBy(Map.of(BookProperty.TITLE, "Les Misérables"))
                                 .getFirst();
                 cartAPIClient.removeBookFromCart(new CartBookRequest(account, lesMiserables));
-                Main.scenarioDetailsStep("Contenu du panier : " + cartAPIClient.getCart(account));
+                showCartFor(account);
 
                 Main.scenarioStep("5. Refaire les étapes 1 à 4 autant de fois qu'on veut;");
 
@@ -483,38 +503,41 @@ public class Main {
                 email = "JohnDoe@mail.com";
                 password = "P@ssword1234";
                 AccountDTO accountDto = new AccountDTO(firstName, lastName, phone, email, password);
+                System.out.println(accountDto);
                 accountClient.signup(accountDto);
 
-                Main.scenarioStep("5.1.2 Connexion à au deuxième compte crée");
+                Main.scenarioStep("5.1.2 Connexion au deuxième compte créé");
                 accountDto = accountClient.signin(credentials);
                 Main.scenarioDetailsStep("Connecté avec le compte - " + accountDto);
 
                 Main.scenarioStep("5.2 Recherche de livre (titre: 'The')");
-                booksByTitle = bookAPIClient.getBooksBy(Map.of(
+                bookDtos = bookAPIClient.getBooksBy(Map.of(
                                 BookProperty.TITLE, "The"));
-                booksByTitle.forEach(bookFor -> Main.scenarioDetailsStep(bookFor.getTitle()));
+                bookDtos.forEach(bookFor -> Main.scenarioDetailsStep(bookFor.getTitle()));
 
                 Main.scenarioStep("5.3 Mettre les livres sélectionnés dans le panier");
-                Main.scenarioDetailsStep("Contenu du panier : " + cartAPIClient.getCart(accountDto));
-
+                showCartFor(accountDto);
                 Main.scenarioDetailsStep("Ajout d'un livre 'The Stranger'");
                 book = bookAPIClient.getBooksBy(Map.of(BookProperty.TITLE, "Stranger")).getFirst();
                 cartAPIClient.addBookToCart(new CartBookRequest(accountDto, book));
-                Main.scenarioDetailsStep("Contenu du panier : " + cartAPIClient.getCart(accountDto));
+                showCartFor(accountDto);
 
                 Main.scenarioStep("5.4 Supprimer, du panier, un ou des livres qu'on ne désire plus acheter;");
                 Main.scenarioDetailsStep("Suppression du dernier livre ajouté ('The Stranger')");
                 cartAPIClient.removeBookFromCart(new CartBookRequest(accountDto, book));
-                Main.scenarioDetailsStep("Contenu du panier : " + cartAPIClient.getCart(accountDto));
+                showCartFor(accountDto);
 
                 Main.scenarioDetailsStep("5.3 Ajout d'un deuxième livre 'The Stranger'");
                 book = bookAPIClient.getBooksBy(Map.of(BookProperty.TITLE, "Stranger")).getFirst();
                 cartAPIClient.addBookToCart(new CartBookRequest(accountDto, book));
-                Main.scenarioDetailsStep("Contenu du panier : " + cartAPIClient.getCart(accountDto));
+                showCartFor(accountDto);
 
-                Main.scenarioStep("À partir du panier, passer au paiement et régler la facture; les livres du panier\n"
-                                + "constituent alors une nouvelle commande où chaque livre de la commande a un status \"En\n"
-                                + "attente de livraison\"");
+                String details = """
+                                À partir du panier, passer au paiement et régler la facture \nles livres du panier constituent alors une nouvelle commande \n où chaque livre de la commande a un status \"En attente de livraison\"
+                                """;
+                Main.scenarioStep(details);
+                showCartFor(accountDto);
+                showAllBooks();
 
                 InvoiceAPIClient invoiceAPI = Clients.invoiceClient;
                 Main.scenarioStep(
@@ -529,7 +552,6 @@ public class Main {
 
                 OrderDTO order = orderAPI.getOrderById(invoice.getOrderNumber());
                 AddressDTO address = new AddressDTO(1, "80 Rue du Faubourg Saint-Honoré", "Paris", "75008");
-                address.setId(1);
 
                 Main.scenarioStep(
                                 "8 : Le système se charge de la livraison de la commande aux dates de livraison prévues");
@@ -543,6 +565,11 @@ public class Main {
                 Main.scenarioDetailsStep("Status: " + delivery.getDeliveryStatus());
                 Main.scenarioDetailsStep("Delivery Date: " + delivery.getDeliveryDate());
                 Main.scenarioDetailsStep("Order: " + delivery.getOrder().getOrderNumber());
+
+                Main.scenarioDetailsStep(
+                                "Le panier est vidé et le stock des livres commandés est diminué suite à l'expédition de la commande.");
+                showCartFor(accountDto);
+                showAllBooks();
 
                 Main.scenarioStep(
                                 "9 : Voir la liste des commandes en attente de livraison ainsi que l'historique des commandes livrées");

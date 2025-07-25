@@ -15,7 +15,7 @@ public class CartMapper {
         CartDTO cartDTO = new CartDTO();
         cartDTO.setId(cart.getId());
         cartDTO.setTotalPrice(cart.getTotalPrice());
-        cartDTO.setBooks(cart.getBooks().entrySet().stream()
+        cartDTO.setCartItemDtos(cart.getBooks().entrySet().stream()
                 .map(entry -> new CartItemDTO(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList()));
         return cartDTO;
@@ -27,7 +27,7 @@ public class CartMapper {
         }
         Cart cart = new Cart();
         cart.setId(cartDTO.getId());
-        cart.setBooksDto(cartDTO.getBooksDto().stream()
+        cart.setBooksDto(cartDTO.getCartItemDtos().stream()
                 .collect(Collectors.toMap(
                         item -> item.book(), // Convert BookDTO to Book
                         CartItemDTO::quantity)));

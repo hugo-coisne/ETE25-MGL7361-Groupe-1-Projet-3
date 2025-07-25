@@ -15,7 +15,8 @@ public class AddressDTO extends DTO {
         this.postalCode = postalCode;
     }
 
-    public AddressDTO() {}
+    public AddressDTO() {
+    }
 
     public int getId() {
         return id;
@@ -50,5 +51,3 @@ public class AddressDTO extends DTO {
     }
 
 }
-
-
