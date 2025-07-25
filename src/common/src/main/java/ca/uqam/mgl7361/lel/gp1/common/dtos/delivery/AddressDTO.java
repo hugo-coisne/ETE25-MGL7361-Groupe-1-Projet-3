@@ -15,6 +15,12 @@ public class AddressDTO extends DTO {
         this.postalCode = postalCode;
     }
 
+    public AddressDTO(String street, String city, String postalCode) {
+        this.street = street;
+        this.city = city;
+        this.postalCode = postalCode;
+    }
+
     public AddressDTO() {
     }
 

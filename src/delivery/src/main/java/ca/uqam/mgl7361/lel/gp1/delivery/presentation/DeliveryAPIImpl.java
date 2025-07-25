@@ -51,9 +51,9 @@ public class DeliveryAPIImpl implements DeliveryAPI {
     // return deliveryService.getAllOrdersInTransit(account);
     // }
 
-    public List<DeliveryDTO> getAllOrdersDelivered() {
+    public List<DeliveryDTO> getAllDeliveredOrders() {
         try {
-            return deliveryService.getAllOrdersDelivered();
+            return deliveryService.getAllDeliveredOrders();
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

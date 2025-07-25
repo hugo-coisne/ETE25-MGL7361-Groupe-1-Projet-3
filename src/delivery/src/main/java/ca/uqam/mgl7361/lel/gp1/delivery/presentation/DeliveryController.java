@@ -85,11 +85,11 @@ public class DeliveryController {
     @Operation(summary = "Get all delivered orders")
     @ApiResponse(responseCode = "200", description = "List of delivered orders")
     @GetMapping("/delivered")
-    public ResponseEntity<List<DeliveryDTO>> getAllOrdersDelivered() {
+    public ResponseEntity<List<DeliveryDTO>> getAllDeliveredOrders() {
         logger.info("Received request");
         try {
             logger.debug("Retrieving all delivered orders");
-            List<DeliveryDTO> deliveries = deliveryService.getAllOrdersDelivered();
+            List<DeliveryDTO> deliveries = deliveryService.getAllDeliveredOrders();
             return ResponseEntity.ok(deliveries);
         } catch (Exception e) {
             logger.error("Error fetching delivered orders", e);

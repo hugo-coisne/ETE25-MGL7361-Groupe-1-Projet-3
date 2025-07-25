@@ -28,8 +28,8 @@ public class DeliveryDAO {
                 PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, order.getId());
             stmt.setInt(2, addressId);
-            stmt.setDate(3, new Date(delivery.getDeliveryDate().getTime()));
-            stmt.setString(4, delivery.getDeliveryStatus());
+            stmt.setDate(3, new Date(delivery.getDate().getTime()));
+            stmt.setString(4, delivery.getStatus());
             logger.debug(stmt.toString());
             int affectedRows = stmt.executeUpdate();
             if (affectedRows == 0) {
@@ -63,8 +63,8 @@ public class DeliveryDAO {
         DeliveryDTO delivery = new DeliveryDTO();
         delivery.setOrder(orderDTO);
         delivery.setAddress(addressDTO);
-        delivery.setDeliveryDate(new Date(orderDTO.getOrderDate().getTime()));
-        delivery.setDeliveryStatus(status);
+        delivery.setDate(new Date(orderDTO.getOrderDate().getTime()));
+        delivery.setStatus(status);
 
         return delivery;
     }
@@ -79,12 +79,12 @@ public class DeliveryDAO {
     // if (rs.next()) {
     // int orderId = rs.getInt("order_id");
     // int addressId = rs.getInt("address_id");
-    // Date deliveryDate = rs.getDate("delivery_date");
+    // Date date = rs.getDate("delivery_date");
     // String status = rs.getString("status");
 
     // AddressDTO address = toDTO(addressDAO.findById(addressId));
 
-    // return new Delivery(id, address, deliveryDate, status, order);
+    // return new Delivery(id, address, date, status, order);
     // } else {
     // return null;
     // }
@@ -100,8 +100,8 @@ public class DeliveryDAO {
         try (Connection connection = DBConnection.getConnection();
                 PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, delivery.getAddress().getId());
-            stmt.setDate(2, new Date(delivery.getDeliveryDate().getTime()));
-            stmt.setString(3, delivery.getDeliveryStatus());
+            stmt.setDate(2, new Date(delivery.getDate().getTime()));
+            stmt.setString(3, delivery.getStatus());
             stmt.setInt(4, orderId);
 
             int affectedRows = stmt.executeUpdate();
@@ -215,7 +215,7 @@ public class DeliveryDAO {
     // ResultSet rs = stmt.executeQuery();
     // if (rs.next()) {
     // int deliveryId = rs.getInt("id");
-    // Date deliveryDate = rs.getDate("delivery_date");
+    // Date date = rs.getDate("delivery_date");
     // String status = rs.getString("status");
 
     // int addressId = rs.getInt("address_id");
@@ -224,7 +224,7 @@ public class DeliveryDAO {
     // AddressDTO addressDTO = toDTO(addressDAO.findById(addressId));
     // OrderDTO orderDTO = orderDAO.findById(orderId);
 
-    // return new Delivery(deliveryId, addressDTO, deliveryDate, status, orderDTO);
+    // return new Delivery(deliveryId, addressDTO, date, status, orderDTO);
     // } else {
     // return null;
     // }

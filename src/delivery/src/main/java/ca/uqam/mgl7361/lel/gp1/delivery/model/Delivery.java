@@ -10,17 +10,17 @@ public class Delivery {
     private int id;
     private AddressDTO address;
 
-    private Date deliveryDate;
+    private Date date;
 
-    private String deliveryStatus;
+    private String status;
 
     private OrderDTO order;
 
-    public Delivery(int id, AddressDTO address, Date deliveryDate, String deliveryStatus, OrderDTO order) {
+    public Delivery(int id, AddressDTO address, Date date, String status, OrderDTO order) {
         this.id = id;
         this.address = address;
-        this.deliveryDate = deliveryDate;
-        this.deliveryStatus = deliveryStatus;
+        this.date = date;
+        this.status = status;
         this.order = order;
     }
 
@@ -44,20 +44,20 @@ public class Delivery {
         this.address = address;
     }
 
-    public Date getDeliveryDate() {
-        return deliveryDate;
+    public Date getDate() {
+        return date;
     }
 
-    public void setDeliveryDate(Date deliveryDate) {
-        this.deliveryDate = deliveryDate;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
-    public String getDeliveryStatus() {
-        return deliveryStatus;
+    public String getStatus() {
+        return status;
     }
 
-    public void setDeliveryStatus(String deliveryStatus) {
-        this.deliveryStatus = deliveryStatus;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public OrderDTO getOrder() {
@@ -71,8 +71,8 @@ public class Delivery {
     public String toString() {
         return "Delivery{" +
                 "address=" + address +
-                ", deliveryDate=" + deliveryDate +
-                ", deliveryStatus='" + deliveryStatus + '\'' +
+                ", date=" + date +
+                ", status='" + status + '\'' +
                 '}';
     }
 }

@@ -228,7 +228,7 @@ package order {
                 - book
                 - quantity
                 - bookStatus
-                - deliveryDate
+                - date
             }
         }
 
@@ -264,7 +264,7 @@ package delivery {
     package delivery.business {
         package delivery.business.entities {
             class Delivery {
-                - deliveryDate
+                - date
             }
 
             class Address {

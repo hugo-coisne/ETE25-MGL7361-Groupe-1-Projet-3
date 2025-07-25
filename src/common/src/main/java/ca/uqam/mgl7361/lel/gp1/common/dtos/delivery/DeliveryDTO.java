@@ -9,16 +9,16 @@ public class DeliveryDTO extends DTO {
 
     private AddressDTO address;
 
-    private Date deliveryDate;
+    private Date date;
 
-    private String deliveryStatus;
+    private String status;
 
     private OrderDTO order;
 
-    public DeliveryDTO(AddressDTO address, Date deliveryDate, String deliveryStatus, OrderDTO order) {
+    public DeliveryDTO(AddressDTO address, Date date, String status, OrderDTO order) {
         this.address = address;
-        this.deliveryDate = deliveryDate;
-        this.deliveryStatus = deliveryStatus;
+        this.date = date;
+        this.status = status;
         this.order = order;
     }
 
@@ -34,20 +34,20 @@ public class DeliveryDTO extends DTO {
         this.address = address;
     }
 
-    public Date getDeliveryDate() {
-        return deliveryDate;
+    public Date getDate() {
+        return date;
     }
 
-    public void setDeliveryDate(Date deliveryDate) {
-        this.deliveryDate = deliveryDate;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
-    public String getDeliveryStatus() {
-        return deliveryStatus;
+    public String getStatus() {
+        return status;
     }
 
-    public void setDeliveryStatus(String deliveryStatus) {
-        this.deliveryStatus = deliveryStatus;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public OrderDTO getOrder() {

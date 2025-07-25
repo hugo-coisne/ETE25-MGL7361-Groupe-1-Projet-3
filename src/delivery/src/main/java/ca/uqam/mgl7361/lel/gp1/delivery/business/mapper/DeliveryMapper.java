@@ -7,9 +7,8 @@ public class DeliveryMapper {
     public static DeliveryDTO toDTO(Delivery delivery) {
         return new DeliveryDTO(
                 delivery.getAddress(),
-                delivery.getDeliveryDate(),
-                delivery.getDeliveryStatus(),
-                delivery.getOrder()
-        );
+                delivery.getDate(),
+                delivery.getStatus(),
+                delivery.getOrder());
     }
 }

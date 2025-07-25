@@ -2,9 +2,12 @@ package ca.uqam.mgl7361.lel.gp1.common.clients;
 
 import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.CreateDeliveryRequest;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.DeliveryDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 import feign.Headers;
 import feign.RequestLine;
 
+import java.sql.Time;
 import java.util.List;
 
 public interface DeliveryAPIClient {
@@ -23,5 +26,17 @@ public interface DeliveryAPIClient {
 
     @RequestLine("GET /deliveries/delivered")
     @Headers("Accept: application/json")
-    List<DeliveryDTO> getAllOrdersDelivered();
+    List<DeliveryDTO> getAllDeliveredOrders();
+
+    @RequestLine("GET /deliveries/status")
+    @Headers("Accept: application/json")
+    DeliveryDTO getOrderStatusFor(OrderDTO order);
+
+    @RequestLine("GET /deliveries/stati")
+    @Headers("Accept: application/json")
+    List<DeliveryDTO> getOrderStatiFor(AccountDTO accountDto);
+
+    @RequestLine("GET /deliveries/passTime")
+    @Headers("Accept: application/json")
+    void pass(Time time);
 }

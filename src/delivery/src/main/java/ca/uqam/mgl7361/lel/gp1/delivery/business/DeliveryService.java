@@ -21,9 +21,9 @@ public class DeliveryService {
         this.deliveryDAO = deliveryDAO;
     }
 
-    public DeliveryDTO createDelivery(AddressDTO address, Date deliveryDate, String deliveryStatus, OrderDTO order)
+    public DeliveryDTO createDelivery(AddressDTO address, Date date, String status, OrderDTO order)
             throws Exception {
-        DeliveryDTO deliveryDTO = new DeliveryDTO(address, deliveryDate, deliveryStatus, order);
+        DeliveryDTO deliveryDTO = new DeliveryDTO(address, date, status, order);
         deliveryDAO.createDelivery(deliveryDTO, order);
         return deliveryDTO;
     }
@@ -32,8 +32,8 @@ public class DeliveryService {
     // delivery.setOrder(order);
     // }
 
-    // public void updateDeliveryStatus(DeliveryDTO delivery, String newStatus) {
-    // delivery.setDeliveryStatus(newStatus);
+    // public void updateStatus(DeliveryDTO delivery, String newStatus) {
+    // delivery.setStatus(newStatus);
     // }
 
     // public void updateDeliveryAddress(DeliveryDTO delivery, AddressDTO
@@ -41,8 +41,8 @@ public class DeliveryService {
     // delivery.setAddress(newAddress);
     // }
 
-    // public void updateDeliveryDate(DeliveryDTO delivery, Date newDate) {
-    // delivery.setDeliveryDate(newDate);
+    // public void updateDate(DeliveryDTO delivery, Date newDate) {
+    // delivery.setDate(newDate);
     // }
 
     public List<DeliveryDTO> getAllOrdersInTransit() throws Exception {
@@ -53,7 +53,7 @@ public class DeliveryService {
         return deliveryDAO.findByStatusAndAccountId("In Transit", account.getId());
     }
 
-    public List<DeliveryDTO> getAllOrdersDelivered() throws Exception {
+    public List<DeliveryDTO> getAllDeliveredOrders() throws Exception {
         return deliveryDAO.findByStatus("Delivered");
     }
 
@@ -62,20 +62,20 @@ public class DeliveryService {
     // }
 
     // public void updateStatusToInProgress(DeliveryDTO delivery) {
-    // delivery.setDeliveryStatus("In Progress");
+    // delivery.setStatus("In Progress");
     // }
 
     // public void updateStatusToInTransit(DeliveryDTO delivery) {
-    // delivery.setDeliveryStatus("In Transit");
+    // delivery.setStatus("In Transit");
     // }
 
     public void updateStatusToDelivered(DeliveryDTO delivery) throws Exception {
-        delivery.setDeliveryStatus("Delivered");
+        delivery.setStatus("Delivered");
         deliveryDAO.update(delivery);
     }
 
     // public void updateStatusToCanceled(DeliveryDTO delivery) {
-    // delivery.setDeliveryStatus("Canceled");
+    // delivery.setStatus("Canceled");
     // }
 
 }
