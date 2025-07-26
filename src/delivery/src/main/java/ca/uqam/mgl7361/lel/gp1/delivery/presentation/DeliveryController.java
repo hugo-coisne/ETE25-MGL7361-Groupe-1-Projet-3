@@ -3,7 +3,7 @@ package ca.uqam.mgl7361.lel.gp1.delivery.presentation;
 import ca.uqam.mgl7361.lel.gp1.delivery.business.DeliveryService;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.CreateDeliveryRequest;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.DeliveryDTO;
-
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -64,6 +64,18 @@ public class DeliveryController {
         } catch (Exception e) {
             logger.error("Error updating delivery status", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/stati")
+    public ResponseEntity<?> getOrderStatiFor(@RequestBody AccountDTO accountDTO){
+        logger.info("Received request for " + accountDTO);
+        try {
+            List<DeliveryDTO> deliveries = deliveryService.getOrderStatiFor(accountDTO);
+            return ResponseEntity.ok().body(deliveries);
+        } catch (Exception e) {
+            logger.error("Error during search", e);
+            return ResponseEntity.internalServerError().build();
         }
     }
 

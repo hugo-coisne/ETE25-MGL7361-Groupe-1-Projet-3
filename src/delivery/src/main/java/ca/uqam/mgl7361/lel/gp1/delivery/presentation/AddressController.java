@@ -33,8 +33,8 @@ public class AddressController {
     public ResponseEntity<?> create(@RequestBody AddressDTO addressDTO){
         logger.info("Received request for " + addressDTO);
         try {
-            addressService.create(addressDTO);
-            return ResponseEntity.ok().build();
+            addressDTO = addressService.create(addressDTO);
+            return ResponseEntity.ok().body(addressDTO);
         } catch (Exception e){
             logger.error("Error during creation", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

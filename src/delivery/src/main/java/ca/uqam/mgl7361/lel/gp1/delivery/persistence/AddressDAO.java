@@ -28,15 +28,14 @@ public class AddressDAO {
             """;
     private static final String DELETE_SQL = "DELETE FROM addresses WHERE id = ?";
 
-
-    public static AddressDAO getInstance(){
-        if (instance == null){
+    public static AddressDAO getInstance() {
+        if (instance == null) {
             instance = new AddressDAO();
         }
         return instance;
     }
 
-    public void create(Address address) throws Exception {
+    public Address create(Address address) throws Exception {
         logger.debug("Attempting to insert address: {}", address);
         try (Connection connection = DBConnection.getConnection();
                 PreparedStatement stmt = connection.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS)) {
@@ -50,12 +49,14 @@ public class AddressDAO {
             stmt.setString(7, address.getPostalCode());
             stmt.executeUpdate();
 
-            try (ResultSet keys = stmt.getGeneratedKeys()) {
-                if (keys.next()) {
-                    int generatedId = keys.getInt(1);
-                    address.setId(generatedId);
-                    logger.debug("Address inserted successfully with ID {}", generatedId);
-                }
+            ResultSet keys = stmt.getGeneratedKeys();
+            if (keys.next()) {
+                int generatedId = keys.getInt(1);
+                address.setId(generatedId);
+                logger.debug("Address inserted successfully with ID {}", generatedId);
+                return address;
+            } else {
+                throw new SQLException("No id created for address");
             }
         } catch (SQLException e) {
             logger.error("Error inserting address: {}", address, e);

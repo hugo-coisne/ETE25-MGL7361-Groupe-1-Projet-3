@@ -1,7 +1,7 @@
 package ca.uqam.mgl7361.lel.gp1.payment.presentation;
 
 import ca.uqam.mgl7361.lel.gp1.payment.business.InvoiceService;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.InvoiceDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.CheckoutDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.CheckoutRequest;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -23,12 +23,12 @@ public class InvoiceController {
     }
 
     @PostMapping
-    public ResponseEntity<InvoiceDTO> checkout(@RequestBody CheckoutRequest request) {
+    public ResponseEntity<?> checkout(@RequestBody CheckoutRequest request) {
         logger.info("Received request for : {}", request);
         try {
-            InvoiceDTO invoice = invoiceService.checkout(request.accountDto(), request.paymentMethod(), request.address());
-            logger.debug("Invoice created : {}", invoice.toString());
-            return ResponseEntity.ok(invoice);
+            CheckoutDTO checkoutDTO = invoiceService.checkout(request.accountDto(), request.paymentMethod(), request.address());
+            logger.debug("Invoice created : {}", checkoutDTO.invoice().toString());
+            return ResponseEntity.ok(checkoutDTO);
         } catch (Exception e) {
             logger.error("Error while creating invoice", e);
             return ResponseEntity.internalServerError().build();

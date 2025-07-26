@@ -25,9 +25,10 @@ public class AddressService {
         return instance;
     }
 
-    public void create(AddressDTO addressDTO) throws Exception {
+    public AddressDTO create(AddressDTO addressDTO) throws Exception {
         Address address = AddressMapper.toModel(addressDTO);
-        addressDAO.create(address);
+        address = addressDAO.create(address);
+        return AddressMapper.toDTO(address);
     }
 
     public AddressDTO findById(int id) throws Exception {

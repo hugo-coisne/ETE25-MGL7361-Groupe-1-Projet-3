@@ -32,8 +32,8 @@ public interface DeliveryAPIClient {
     @Headers("Accept: application/json")
     DeliveryDTO getOrderStatusFor(OrderDTO order);
 
-    @RequestLine("GET /deliveries/stati")
-    @Headers("Accept: application/json")
+    @RequestLine("POST /deliveries/stati")
+    @Headers("Content-Type: application/json")
     List<DeliveryDTO> getOrderStatiFor(AccountDTO accountDto);
 
     @RequestLine("GET /deliveries/passTime")

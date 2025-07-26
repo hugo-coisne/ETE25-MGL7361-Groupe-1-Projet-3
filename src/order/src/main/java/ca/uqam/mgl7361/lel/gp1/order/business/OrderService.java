@@ -86,9 +86,10 @@ public class OrderService {
 
         logger.debug("Total price for order: {}", totalPrice);
         Order order = this.orderDAO.createOrder(account, bookDTO, totalPrice);
-        logger.debug("Order created with order number: {}", order.getOrderNumber());
-
-        return OrderMapper.toDTO(order);
+        logger.debug("Order created : {}", order);
+        OrderDTO orderDTO = OrderMapper.toDTO(order);
+        logger.debug("returning "+orderDTO); 
+        return orderDTO;
     }
 
     public OrderDTO findOrderByOrderNumber(String orderNumber) throws Exception {

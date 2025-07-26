@@ -58,6 +58,14 @@ public class OrderDAO {
             insertOrder.setDate(4, date);
             insertOrder.executeUpdate();
 
+            ResultSet keys = insertOrder.getGeneratedKeys();
+            int orderId = -1;
+            if (keys.next()) {
+                orderId = keys.getInt(1);
+            } else {
+                throw new SQLException("Id not generated for order");
+            }
+
             // Insert contents
             for (Map.Entry<BookDTO, Integer> entry : books.entrySet()) {
                 BookDTO book = entry.getKey();
@@ -105,10 +113,11 @@ public class OrderDAO {
 
             order = new Order(orderNumber, date, books);
             order.setOrderPrice((float) total_price);
+            order.setId(orderId);
             logger.debug("Order and order contents inserted successfully.");
             return order;
         } catch (SQLException e) {
-            logger.error( "Error creating order", e);
+            logger.error("Error creating order", e);
             throw new Exception("Error creating order: " + e.getMessage(), e);
         }
 

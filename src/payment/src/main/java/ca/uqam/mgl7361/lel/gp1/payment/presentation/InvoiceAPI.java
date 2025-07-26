@@ -1,9 +1,11 @@
 package ca.uqam.mgl7361.lel.gp1.payment.presentation;
 
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.InvoiceDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.PaymentMethod;
 
 public interface InvoiceAPI {
-    public InvoiceDTO createInvoice(AccountDTO account, PaymentMethod paymentMethod) throws Exception;
+    public InvoiceDTO createInvoice(AccountDTO account, PaymentMethod paymentMethod, OrderDTO orderDTO)
+            throws Exception;
 }

@@ -528,7 +528,8 @@ public class Main {
 
                 Main.scenarioStep("6.1 Simulation de paiement");
                 CheckoutAPIClient checkoutApiClient = Clients.checkoutClient;
-                AddressDTO address = new AddressDTO(accountDto.getFirstName(), accountDto.getLastName(), accountDto.getPhone(),"80 Rue du Faubourg Saint-Honoré", "Paris", "75008");
+                AddressDTO address = new AddressDTO(accountDto.getFirstName(), accountDto.getLastName(),
+                                accountDto.getPhone(), "80 Rue du Faubourg Saint-Honoré", "Paris", "75008");
                 Main.scenarioDetailsStep("Admettons les informations suivantes :");
                 Main.scenarioDetailsStep(" - On souhaite que la commande soit livrée à " + address);
                 Main.scenarioDetailsStep(" - On souhaite effectuer le paiement pour le compte " + account);
@@ -537,15 +538,17 @@ public class Main {
                 Main.scenarioStep("On envoie la requête de paiement suivante : ");
                 System.out.println(checkoutRequest.toString());
 
-                InvoiceDTO resultingInvoice = checkoutApiClient.checkout(checkoutRequest);
+                CheckoutDTO checkoutDTO = checkoutApiClient.checkout(checkoutRequest);
+                InvoiceDTO resultingInvoice = checkoutDTO.invoice();
                 Main.scenarioDetailsStep("La requête a été acceptée, voici la facture créée : ");
                 System.out.println(resultingInvoice);
+                Main.scenarioDetailsStep("On constate aussi l'état de la livraison : ");
+                System.out.println(checkoutDTO.deliveryDTO());
                 Main.scenarioStep(
                                 "8 : Le système procède automatiquement à l'expédition de la commande le lendemain du payment.");
                 Main.scenarioDetailsStep(
-                                "En attendant, on peut tout de même consulter l'état de livraison des commandes du compte.");
+                                "En attendant, on peut tout de même consulter manuellement l'état de livraison des commandes du compte.");
 
-                // OrderAPIClient orderAPI = Clients.orderClient;
                 DeliveryAPIClient deliveryAPIClient = Clients.deliveryClient;
 
                 List<DeliveryDTO> stati = deliveryAPIClient.getOrderStatiFor(accountDto);

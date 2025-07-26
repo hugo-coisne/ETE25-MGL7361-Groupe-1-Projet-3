@@ -1,11 +1,9 @@
 package ca.uqam.mgl7361.lel.gp1.order.model;
 
-
 import java.sql.Date;
 import java.util.Map;
 
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
-
 
 public class Order {
     /*
@@ -15,6 +13,7 @@ public class Order {
     private Date orderDate;
     private float orderPrice;
     private final Map<BookDTO, Integer> items; // Map of books to their quantities
+    private int id;
 
     public Order(String orderNumber, Date orderDate, Map<BookDTO, Integer> items) {
         this.setOrderNumber(orderNumber);
@@ -51,6 +50,14 @@ public class Order {
 
     public Map<BookDTO, Integer> getItems() {
         return items;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return this.id;
     }
 
 }

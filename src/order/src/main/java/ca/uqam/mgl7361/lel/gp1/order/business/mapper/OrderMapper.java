@@ -13,10 +13,12 @@ public class OrderMapper {
                 .map(entry -> new OrderItemDTO(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
 
-        return new OrderDTO(
+        OrderDTO orderDTO = new OrderDTO(
                 order.getOrderNumber(),
                 order.getOrderDate(),
                 order.getOrderPrice(),
                 orderItemDTOs);
+        orderDTO.setId(order.getId());
+        return orderDTO;
     }
 }

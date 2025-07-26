@@ -9,7 +9,7 @@ public interface AddressAPIClient {
 
     @RequestLine("POST /addresses")
     @Headers("Content-Type: application/json")
-    void create(AddressDTO addressDTO);
+    AddressDTO create(AddressDTO addressDTO);
 
     @RequestLine("GET /addresses/byId/{id}")
     @Headers("Accept: application/json")

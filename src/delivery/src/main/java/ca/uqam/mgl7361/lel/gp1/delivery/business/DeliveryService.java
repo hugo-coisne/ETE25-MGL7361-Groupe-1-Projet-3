@@ -1,5 +1,8 @@
 package ca.uqam.mgl7361.lel.gp1.delivery.business;
 
+import ca.uqam.mgl7361.lel.gp1.common.clients.AccountAPIClient;
+import ca.uqam.mgl7361.lel.gp1.common.clients.Clients;
+import ca.uqam.mgl7361.lel.gp1.common.clients.OrderAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.AddressDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.DeliveryDTO;
 import ca.uqam.mgl7361.lel.gp1.delivery.persistence.DeliveryDAO;
@@ -8,10 +11,13 @@ import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class DeliveryService {
 
     private final DeliveryDAO deliveryDAO;
+    private final AccountAPIClient accountAPIClient = Clients.accountClient;
+    OrderAPIClient orderAPIClient = Clients.orderClient;
 
     public DeliveryService() {
         this.deliveryDAO = new DeliveryDAO();
@@ -72,6 +78,11 @@ public class DeliveryService {
     public void updateStatusToDelivered(DeliveryDTO delivery) throws Exception {
         delivery.setStatus("Delivered");
         deliveryDAO.update(delivery);
+    }
+
+    public List<DeliveryDTO> getOrderStatiFor(AccountDTO accountDTO) throws Exception {
+        AccountDTO accountDTO2 = accountAPIClient.signin(Map.of("email", accountDTO.getEmail(), "password", accountDTO.getPassword()));
+        return deliveryDAO.findByAccountId(accountDTO2.getId());
     }
 
     // public void updateStatusToCanceled(DeliveryDTO delivery) {

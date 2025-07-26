@@ -24,6 +24,8 @@ public class DeliveryDAO {
 
         String sql = "INSERT INTO deliveries (order_id, address_id, delivery_date, status) VALUES (?, ?, ?, ?)";
 
+        logger.info("order ID " + order.getId());
+
         try (Connection connection = DBConnection.getConnection();
                 PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, order.getId());
@@ -197,6 +199,30 @@ public class DeliveryDAO {
             return deliveries;
         } catch (SQLException e) {
             throw new Exception("Error retrieving deliveries by status not equal to: " + e.getMessage(), e);
+        }
+    }
+
+    public List<DeliveryDTO> findByAccountId(int accountId) throws Exception {
+        String sql = """
+                    SELECT d.*, o.order_number, o.account_id, o.order_date, o.total_price
+                    FROM deliveries d
+                    JOIN orders o ON d.order_id = o.id
+                    WHERE o.account_id = ?
+                """;
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, accountId);
+            ResultSet rs = stmt.executeQuery();
+
+            List<DeliveryDTO> deliveries = new ArrayList<>();
+            while (rs.next()) {
+                deliveries.add(mapResultSetToDeliveryDTO(rs));
+            }
+            return deliveries;
+        } catch (SQLException e) {
+            throw new Exception("Error retrieving deliveries by account ID: " + e.getMessage(), e);
         }
     }
 
