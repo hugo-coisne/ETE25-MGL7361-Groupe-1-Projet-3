@@ -528,16 +528,16 @@ public class Main {
 
                 Main.scenarioStep("6.1 Simulation de paiement");
                 CheckoutAPIClient checkoutApiClient = Clients.checkoutClient;
-                AddressDTO address = new AddressDTO("80 Rue du Faubourg Saint-Honoré", "Paris", "75008");
+                AddressDTO address = new AddressDTO(accountDto.getFirstName(), accountDto.getLastName(), accountDto.getPhone(),"80 Rue du Faubourg Saint-Honoré", "Paris", "75008");
                 Main.scenarioDetailsStep("Admettons les informations suivantes :");
                 Main.scenarioDetailsStep(" - On souhaite que la commande soit livrée à " + address);
                 Main.scenarioDetailsStep(" - On souhaite effectuer le paiement pour le compte " + account);
                 Main.scenarioDetailsStep(" - Enfin, on souhaite (simuler) un paiement par carte de débit/crédit");
-                PaymentRequest paymentRequest = new PaymentRequest(accountDto, PaymentMethod.CARD, address);
+                CheckoutRequest checkoutRequest = new CheckoutRequest(accountDto, PaymentMethod.CARD, address);
                 Main.scenarioStep("On envoie la requête de paiement suivante : ");
-                System.out.println(paymentRequest.toString());
+                System.out.println(checkoutRequest.toString());
 
-                InvoiceDTO resultingInvoice = checkoutApiClient.checkout(paymentRequest);
+                InvoiceDTO resultingInvoice = checkoutApiClient.checkout(checkoutRequest);
                 Main.scenarioDetailsStep("La requête a été acceptée, voici la facture créée : ");
                 System.out.println(resultingInvoice);
                 Main.scenarioStep(

@@ -1,12 +1,14 @@
 package ca.uqam.mgl7361.lel.gp1.payment.business;
 
 import ca.uqam.mgl7361.lel.gp1.common.clients.AccountAPIClient;
+import ca.uqam.mgl7361.lel.gp1.common.clients.AddressAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.BookAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.CartAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.BookAPIClient.BookQuantityRequest;
 import ca.uqam.mgl7361.lel.gp1.common.clients.Clients;
 import ca.uqam.mgl7361.lel.gp1.common.clients.OrderAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.OrderAPIClient.OrderRequest;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.AddressDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 import ca.uqam.mgl7361.lel.gp1.payment.business.mapper.InvoiceMapper;
 import ca.uqam.mgl7361.lel.gp1.payment.model.Invoice;
@@ -49,6 +51,13 @@ public class InvoiceService {
         System.out.println("\u001B[32mSending email to: " + email + "\u001B[0m");
         System.out.println("\u001B[32mSubject: " + subject + "\u001B[0m");
         System.out.println("\u001B[32mBody: " + body + "\u001B[0m");
+    }
+
+    public InvoiceDTO checkout(AccountDTO accountDTO, PaymentMethod paymentMethod, AddressDTO addressDTO) throws Exception{
+        AddressAPIClient addressAPIClient = Clients.addressClient;
+        addressDTO.setAccountId(accountDTO.getId());
+        addressAPIClient.create(addressDTO);
+        return createInvoice(accountDTO, paymentMethod);
     }
 
     public InvoiceDTO createInvoice(AccountDTO account, PaymentMethod paymentMethod) throws Exception {

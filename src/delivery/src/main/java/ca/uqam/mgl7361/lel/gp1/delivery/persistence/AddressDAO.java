@@ -11,6 +11,7 @@ import java.util.List;
 
 public class AddressDAO {
 
+    private static AddressDAO instance = null;
     private static final Logger logger = LogManager.getLogger(AddressDAO.class);
 
     private static final String INSERT_SQL = """
@@ -26,6 +27,14 @@ public class AddressDAO {
             WHERE id = ?
             """;
     private static final String DELETE_SQL = "DELETE FROM addresses WHERE id = ?";
+
+
+    public static AddressDAO getInstance(){
+        if (instance == null){
+            instance = new AddressDAO();
+        }
+        return instance;
+    }
 
     public void create(Address address) throws Exception {
         logger.debug("Attempting to insert address: {}", address);

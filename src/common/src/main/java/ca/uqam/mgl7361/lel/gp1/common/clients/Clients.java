@@ -43,6 +43,11 @@ public class Clients {
                         .encoder(new JacksonEncoder())
                         .decoder(new JacksonDecoder())
                         .target(DeliveryAPIClient.class, deliveryServiceUrl);
+        
+        public static final AddressAPIClient addressClient = Feign.builder()
+                        .encoder(new JacksonEncoder())
+                        .decoder(new JacksonDecoder())
+                        .target(AddressAPIClient.class, deliveryServiceUrl);
 
         public static final CheckoutAPIClient checkoutClient = Feign.builder()
                         .encoder(new JacksonEncoder())
