@@ -7,7 +7,6 @@ import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 import feign.Headers;
 import feign.RequestLine;
 
-import java.sql.Time;
 import java.util.List;
 
 public interface DeliveryAPIClient {
@@ -32,11 +31,11 @@ public interface DeliveryAPIClient {
     @Headers("Accept: application/json")
     DeliveryDTO getOrderStatusFor(OrderDTO order);
 
-    @RequestLine("POST /deliveries/stati")
+    @RequestLine("POST /deliveries/statuses")
     @Headers("Content-Type: application/json")
-    List<DeliveryDTO> getOrderStatiFor(AccountDTO accountDto);
+    List<DeliveryDTO> getOrderStatusesFor(AccountDTO accountDto);
 
-    @RequestLine("GET /deliveries/passTime")
-    @Headers("Accept: application/json")
-    void pass(Time time);
+    @RequestLine("POST /deliveries/passTime")
+    @Headers("Content-Type: application/json")
+    void pass(int time);
 }

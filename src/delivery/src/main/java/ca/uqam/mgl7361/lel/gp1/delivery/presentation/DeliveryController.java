@@ -67,11 +67,11 @@ public class DeliveryController {
         }
     }
 
-    @PostMapping("/stati")
-    public ResponseEntity<?> getOrderStatiFor(@RequestBody AccountDTO accountDTO){
+    @PostMapping("/statuses")
+    public ResponseEntity<?> getOrderStatusesFor(@RequestBody AccountDTO accountDTO) {
         logger.info("Received request for " + accountDTO);
         try {
-            List<DeliveryDTO> deliveries = deliveryService.getOrderStatiFor(accountDTO);
+            List<DeliveryDTO> deliveries = deliveryService.getOrderStatusesFor(accountDTO);
             return ResponseEntity.ok().body(deliveries);
         } catch (Exception e) {
             logger.error("Error during search", e);
@@ -106,6 +106,18 @@ public class DeliveryController {
         } catch (Exception e) {
             logger.error("Error fetching delivered orders", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/passTime")
+    public ResponseEntity<?> pass(@RequestBody int time) {
+        logger.info("Received request for " + time);
+        try {
+            deliveryService.pass(time);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            logger.error("Error while passing time", e);
+            return ResponseEntity.internalServerError().build();
         }
     }
 }

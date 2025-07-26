@@ -111,7 +111,7 @@ public class InvoiceService {
         InvoiceDTO invoice = createInvoice(accountDTO, paymentMethod, order);
 
         DeliveryDTO deliveryDTO = deliveryAPIClient
-                .createDelivery(new CreateDeliveryRequest(addressDTO, new Date(), "Awaiting delivery", order));
+                .createDelivery(new CreateDeliveryRequest(addressDTO, new Date(), "Awaiting shipping", order));
 
         return new CheckoutDTO(invoice, deliveryDTO);
     }

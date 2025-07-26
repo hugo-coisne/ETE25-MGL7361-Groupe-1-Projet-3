@@ -13,11 +13,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+@Service
 public class DeliveryService {
 
     private final DeliveryDAO deliveryDAO;
     private final AccountAPIClient accountAPIClient = Clients.accountClient;
     OrderAPIClient orderAPIClient = Clients.orderClient;
+
+    Logger logger = LogManager.getLogger(DeliveryService.class);
 
     public DeliveryService() {
         this.deliveryDAO = new DeliveryDAO();
@@ -52,11 +59,15 @@ public class DeliveryService {
     // }
 
     public List<DeliveryDTO> getAllOrdersInTransit() throws Exception {
-        return deliveryDAO.findByStatus("In Transit");
+        return deliveryDAO.findByStatus("Shipped");
     }
 
-    public List<DeliveryDTO> getAllOrdersInTransit(AccountDTO account) throws Exception {
-        return deliveryDAO.findByStatusAndAccountId("In Transit", account.getId());
+    public List<DeliveryDTO> getAllOrdersAwaitingShipping() throws Exception {
+        return deliveryDAO.findByStatus("Awaiting shipping");
+    }
+
+    public List<DeliveryDTO> getAllOrdersInTransitFor(AccountDTO account) throws Exception {
+        return deliveryDAO.findByStatusAndAccountId("Shipped", account.getId());
     }
 
     public List<DeliveryDTO> getAllDeliveredOrders() throws Exception {
@@ -80,9 +91,38 @@ public class DeliveryService {
         deliveryDAO.update(delivery);
     }
 
-    public List<DeliveryDTO> getOrderStatiFor(AccountDTO accountDTO) throws Exception {
-        AccountDTO accountDTO2 = accountAPIClient.signin(Map.of("email", accountDTO.getEmail(), "password", accountDTO.getPassword()));
+    public void updateStatusToShipped(DeliveryDTO delivery) throws Exception {
+        delivery.setStatus("Shipped");
+        deliveryDAO.update(delivery);
+        // add cart and stock update logic here
+    }
+
+    public List<DeliveryDTO> getOrderStatusesFor(AccountDTO accountDTO) throws Exception {
+        AccountDTO accountDTO2 = accountAPIClient
+                .signin(Map.of("email", accountDTO.getEmail(), "password", accountDTO.getPassword()));
         return deliveryDAO.findByAccountId(accountDTO2.getId());
+    }
+
+    public void pass(int time) throws Exception { // to simulate the shipping of previous day orders
+        int shippingDelay = 60 * 60 * 24;
+        int deliveryDelay = 60 * 60 * 24 * 3;
+
+        if (time >= deliveryDelay) {
+            List<DeliveryDTO> ordersInTransit = getAllOrdersInTransit();
+            for (int i = 0; i < ordersInTransit.size(); i++) {
+                logger.info("setting " + ordersInTransit.get(i) + " to delivered");
+                updateStatusToDelivered(ordersInTransit.get(i));
+                i = i + 1;
+            }
+            logger.info(ordersInTransit.size() + " orders delivered");
+        }
+
+        if (time >= shippingDelay) {
+            List<DeliveryDTO> ordersWaitingToBeShipped = getAllOrdersAwaitingShipping();
+            for (int i = 0; i < ordersWaitingToBeShipped.size(); i++) {
+                updateStatusToShipped(ordersWaitingToBeShipped.get(i));
+            }
+        }
     }
 
     // public void updateStatusToCanceled(DeliveryDTO delivery) {

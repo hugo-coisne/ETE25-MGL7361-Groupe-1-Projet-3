@@ -12,7 +12,6 @@ import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.*;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.*;
 
 import java.sql.Date;
-import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -551,46 +550,46 @@ public class Main {
 
                 DeliveryAPIClient deliveryAPIClient = Clients.deliveryClient;
 
-                List<DeliveryDTO> stati = deliveryAPIClient.getOrderStatiFor(accountDto);
+                List<DeliveryDTO> statuses = deliveryAPIClient.getOrderStatusesFor(accountDto);
 
-                System.out.println(stati);
+                System.out.println(statuses);
 
                 Main.scenarioDetailsStep(
-                                "On remarque notamment l'état de livraison de la commande à "
-                                                + stati.getFirst().getStatus()
-                                                + ". (Normalement, il est à \"En attente de livraison\"");
-                Main.scenarioDetailsStep("On peut aussi consulter l'état de toutes les commandes, notamment :");
-                Main.scenarioStep(
+                                "On remarque notamment l'état de livraison de la commande à \""
+                                                + statuses.getFirst().getStatus() + "\"");
+                Main.scenarioStep("On peut aussi consulter l'état de toutes les commandes, notamment :");
+
+                Main.scenarioDetailsStep(
                                 "Voir la liste des commandes en transit (en cours de livraison) :");
                 List<DeliveryDTO> pendingDeliveries = deliveryAPIClient.getAllOrdersInTransit();
-                Main.scenarioDetailsStep("Pending Deliveries (" + pendingDeliveries.size() + ") :");
+                System.out.println("Pending Deliveries (" + pendingDeliveries.size() + ") :");
                 for (DeliveryDTO pendingDelivery : pendingDeliveries) {
-                        Main.scenarioDetailsStep("Order: " + pendingDelivery.getOrder().getOrderNumber() + ", Status: "
+                        System.out.println("Order: " + pendingDelivery.getOrder().getOrderNumber() + ", Status: "
                                         + pendingDelivery.getStatus());
                 }
-                Main.scenarioStep(
+                Main.scenarioDetailsStep(
                                 "Voir l'historique des commandes livrées : ");
                 List<DeliveryDTO> deliveredDeliveries = deliveryAPIClient.getAllDeliveredOrders();
-                Main.scenarioDetailsStep("Delivered Deliveries (" +
+                System.out.println("Delivered Deliveries (" +
                                 deliveredDeliveries.size() + ") :");
                 for (DeliveryDTO deliveredDelivery : deliveredDeliveries) {
-                        Main.scenarioDetailsStep("Order: " +
+                        System.out.println("Order: " +
                                         deliveredDelivery.getOrder().getOrderNumber() +
                                         ", Status: " + deliveredDelivery.getStatus());
                 }
 
                 Main.scenarioStep("On simule le passage d'une journée");
-                deliveryAPIClient.pass(new Time(60 * 60 * 24)); // une journée en secondes = 60 sec/min * 60 min/h *
-                                                                // 24h/j
+                deliveryAPIClient.pass(60 * 60 * 24);
+                // une journée en secondes = 60 sec/min * 60 min/h * 24h/j
 
                 Main.scenarioStep("9 : Après une journée, on revérifie l'état de livraison de la commande");
 
-                stati = deliveryAPIClient.getOrderStatiFor(accountDto); // stati étant le pluriel de status
-                System.out.println(stati);
+                statuses = deliveryAPIClient.getOrderStatusesFor(accountDto); // statusesétant le pluriel de status
+                System.out.println(statuses);
 
                 Main.scenarioDetailsStep(
                                 "On remarque désormais l'état de livraison de la commande à "
-                                                + stati.getFirst().getStatus()
+                                                + statuses.getFirst().getStatus()
                                                 + ". (Normalement, il est à \"En transit\"");
 
                 Main.scenarioDetailsStep(
@@ -604,7 +603,7 @@ public class Main {
                 Main.scenarioDetailsStep(
                                 "On peut aussi consulter de nouveau l'état de toutes les commandes, notamment :");
                 Main.scenarioStep(
-                                "Voir que la liste des commandes en transit (en cours de livraison) a ... :");
+                                "Voir que la liste des commandes en transit (en cours de livraison) compte désormais la commande qui a été passée :");
                 // TODO : voir ce qu'il se passe
                 pendingDeliveries = deliveryAPIClient.getAllOrdersInTransit();
                 Main.scenarioDetailsStep("Pending Deliveries (" + pendingDeliveries.size() + ") :");
@@ -613,7 +612,7 @@ public class Main {
                                         + pendingDelivery.getStatus());
                 }
                 Main.scenarioStep(
-                                "Voir l'historique des commandes livrées (n'a pas encore changé) : ");
+                                "Voir que l'historique des commandes livrées n'a pas encore changé : ");
                 // TODO : vérifier
                 deliveredDeliveries = deliveryAPIClient.getAllDeliveredOrders();
                 Main.scenarioDetailsStep("Delivered Deliveries (" +
@@ -625,23 +624,21 @@ public class Main {
                 }
 
                 Main.scenarioStep("On simule cette fois-ci le passage de trois journées");
-                deliveryAPIClient.pass(new Time(60 * 60 * 24 * 3));
+                deliveryAPIClient.pass(60 * 60 * 24 * 3);
 
                 Main.scenarioStep("Après trois jours, on revérifie l'état de livraison de la commande");
 
-                stati = deliveryAPIClient.getOrderStatiFor(accountDto); // stati étant le pluriel de status
-                System.out.println(stati);
+                statuses = deliveryAPIClient.getOrderStatusesFor(accountDto); // statuses étant le pluriel de status
+                System.out.println(statuses);
 
                 Main.scenarioDetailsStep(
-                                "On remarque désormais l'état de livraison de la commande à "
-                                                + stati.getFirst().getStatus()
-                                                + ". (Normalement, il est à \"Livrée\"");
+                                "On remarque désormais l'état de livraison de la commande à \""
+                                                + statuses.getFirst().getStatus() + "\"");
 
                 Main.scenarioDetailsStep(
                                 "On consulte une dernière fois l'état de toutes les commandes, notamment :");
                 Main.scenarioStep(
-                                "Voir que la liste des commandes en transit (en cours de livraison) a ... :");
-                // TODO : voir ce qu'il se passe
+                                "Voir que la liste des commandes en transit (en cours de livraison) ne compte plus la commande qui a été passée :");
                 pendingDeliveries = deliveryAPIClient.getAllOrdersInTransit();
                 Main.scenarioDetailsStep("Pending Deliveries (" + pendingDeliveries.size() + ") :");
                 for (DeliveryDTO pendingDelivery : pendingDeliveries) {
@@ -650,14 +647,11 @@ public class Main {
                 }
                 Main.scenarioStep(
                                 "Et surtout constater que l'historique des commandes livrées compte désormais la commande qui a été passée : ");
-                // TODO : vérifier
                 deliveredDeliveries = deliveryAPIClient.getAllDeliveredOrders();
                 Main.scenarioDetailsStep("Delivered Deliveries (" +
                                 deliveredDeliveries.size() + ") :");
                 for (DeliveryDTO deliveredDelivery : deliveredDeliveries) {
-                        Main.scenarioDetailsStep("Order: " +
-                                        deliveredDelivery.getOrder().getOrderNumber() +
-                                        ", Status: " + deliveredDelivery.getStatus());
+                        System.out.println(" - " + deliveredDelivery);
                 }
         }
 

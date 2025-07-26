@@ -15,6 +15,8 @@ public class DeliveryDTO extends DTO {
 
     private OrderDTO order;
 
+    private int id;
+
     public DeliveryDTO(AddressDTO address, Date date, String status, OrderDTO order) {
         this.address = address;
         this.date = date;
@@ -56,5 +58,13 @@ public class DeliveryDTO extends DTO {
 
     public void setOrder(OrderDTO order) {
         this.order = order;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return this.id;
     }
 }
