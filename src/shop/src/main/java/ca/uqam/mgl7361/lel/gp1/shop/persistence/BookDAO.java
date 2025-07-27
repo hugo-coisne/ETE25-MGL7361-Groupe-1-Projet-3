@@ -475,4 +475,21 @@ public class BookDAO {
         return null;
     }
 
+    public void update(String isbn, int i) {
+        String query = "UPDATE books SET stock_quantity = ? WHERE isbn = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, i);
+            stmt.setString(2, isbn);
+            int rowsUpdated = stmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                logger.debug("Stock quantity updated for book with ISBN: " + isbn);
+            } else {
+                logger.warn("No book found with ISBN: " + isbn);
+            }
+        } catch (SQLException e) {
+            logger.error("Error updating stock quantity for book with ISBN: " + isbn, e);
+        }
+    }
+
 }

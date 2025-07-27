@@ -70,4 +70,9 @@ public class BookService {
         return bookDAO.isSufficientlyInStock(book, quantity);
     }
 
+    public void decreasedBookStockQuantity(String isbn, int quantity) throws Exception {
+        Book book = bookDAO.getBooksBy(Map.of(BookProperty.ISBN, isbn)).getFirst();
+        bookDAO.update(isbn, book.getStockQuantity() - quantity);
+    }
+
 }

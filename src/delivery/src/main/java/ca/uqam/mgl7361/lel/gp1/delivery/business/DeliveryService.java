@@ -1,13 +1,17 @@
 package ca.uqam.mgl7361.lel.gp1.delivery.business;
 
 import ca.uqam.mgl7361.lel.gp1.common.clients.AccountAPIClient;
+import ca.uqam.mgl7361.lel.gp1.common.clients.BookAPIClient;
+import ca.uqam.mgl7361.lel.gp1.common.clients.CartAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.Clients;
 import ca.uqam.mgl7361.lel.gp1.common.clients.OrderAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.AddressDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.DeliveryDTO;
 import ca.uqam.mgl7361.lel.gp1.delivery.persistence.DeliveryDAO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookStockQuantityRequest;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -23,6 +27,8 @@ public class DeliveryService {
     private final DeliveryDAO deliveryDAO;
     private final AccountAPIClient accountAPIClient = Clients.accountClient;
     OrderAPIClient orderAPIClient = Clients.orderClient;
+    CartAPIClient cartAPI = Clients.cartClient;
+    BookAPIClient bookAPIClient = Clients.bookClient;
 
     Logger logger = LogManager.getLogger(DeliveryService.class);
 
@@ -94,7 +100,14 @@ public class DeliveryService {
     public void updateStatusToShipped(DeliveryDTO delivery) throws Exception {
         delivery.setStatus("Shipped");
         deliveryDAO.update(delivery);
-        // add cart and stock update logic here
+        CartDTO cartDTO = cartAPI.getCart(delivery.getAddress().getAccountId());
+        cartDTO.getCartItemDtos().forEach(cartItemDTO -> {
+            BookStockQuantityRequest bookStockQuantityRequest = new BookStockQuantityRequest(
+                    cartItemDTO.book().getIsbn(), cartItemDTO.quantity());
+            bookAPIClient.decreasedBookStockQuantity(bookStockQuantityRequest);
+        });
+        logger.info("Decreased book stock for cart items in delivery: " + delivery.getId());
+        cartAPI.clearCart(cartDTO.getId());
     }
 
     public List<DeliveryDTO> getOrderStatusesFor(AccountDTO accountDTO) throws Exception {
@@ -112,7 +125,6 @@ public class DeliveryService {
             for (int i = 0; i < ordersInTransit.size(); i++) {
                 logger.info("setting " + ordersInTransit.get(i) + " to delivered");
                 updateStatusToDelivered(ordersInTransit.get(i));
-                i = i + 1;
             }
             logger.info(ordersInTransit.size() + " orders delivered");
         }

@@ -87,4 +87,25 @@ public class CartService {
         }
     }
 
+    public CartDTO getCartFor(int accountId) {
+        logger.debug("Retrieving cart for account id : " + accountId);
+
+        Cart cart = cartDAO.getCartFor(accountId);
+
+        if (cart.getId() < 0 || cart.getTotalPrice() < 0) {
+            logger.debug("No cart found for account id : " + accountId);
+            return null;
+        }
+        logger.debug(cart.toString());
+        CartDTO cartDto = CartMapper.toDTO(cart);
+        logger.debug(cartDto.toString());
+        logger.debug("Returning " + cartDto);
+        return cartDto;
+    }
+
+    public void clearCart(int id) {
+        cartDAO.clearCart(id);
+        logger.debug("Cart with id " + id + " cleared.");
+    }
+
 }

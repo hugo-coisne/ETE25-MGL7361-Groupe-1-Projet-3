@@ -4,6 +4,7 @@ import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 import feign.Headers;
+import feign.Param;
 import feign.RequestLine;
 
 public interface CartAPIClient {
@@ -23,6 +24,14 @@ public interface CartAPIClient {
     @RequestLine("POST /cart/clear")
     @Headers("Content-Type: application/json")
     void clearCart(AccountDTO account);
+
+    @RequestLine("GET /cart/view/{accountId}")
+    @Headers("Accept: application/json")
+    CartDTO getCart(@Param("accountId") int accountId);
+
+    @RequestLine("DELETE /cart/clear/{id}")
+    @Headers("Content-Type: application/json")
+    void clearCart(@Param("id") int id);
 
     record CartBookRequest(AccountDTO account, BookDTO book) {
         public String toString() {

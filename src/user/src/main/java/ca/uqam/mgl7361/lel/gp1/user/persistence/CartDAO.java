@@ -310,4 +310,92 @@ public class CartDAO {
         }
     }
 
+    public Cart getCartFor(int accountId) {
+        logger.debug("Retrieving cart for account ID: " + accountId);
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement statement = conn.prepareStatement(
+                        "SELECT \n" + //
+                                "carts.id as cart_id,  \n" +
+                                "cart_book.book_id,\n" +
+                                "books.title as book_title,\n" +
+                                "books.isbn as book_isbn,\n" +
+                                "books.description as book_description,\n" +
+                                "books.publication_date as book_publication_date,\n" +
+                                "books.price as book_unit_price,\n" +
+                                "books.stock_quantity as book_stock_quantity,\n" +
+                                "cart_book.quantity as cart_book_quantity, \n" +
+                                "publishers.name as publisher_name, \n" +
+                                "publishers.id as publisher_id, \n" +
+                                "carts.total_price as cart_total_price \n" +
+                                "FROM carts \n" +
+                                "LEFT JOIN cart_book ON carts.id = cart_book.cart_id \n" +
+                                "LEFT JOIN books ON cart_book.book_id = books.id \n" +
+                                "LEFT JOIN publishers ON books.publisher_id = publishers.id \n"
+                                +
+                                "WHERE carts.account_id = ?")) {
+
+            statement.setInt(1, accountId);
+
+            ResultSet resultSet = statement.executeQuery();
+            int cartId = -1;
+            double totalPrice = -1.0;
+            Map<BookDTO, Integer> booksDto = new java.util.HashMap<>();
+            Cart cart = new Cart(cartId, totalPrice);
+            while (resultSet.next()) {
+                cartId = resultSet.getInt("cart_id");
+                totalPrice = resultSet.getDouble("cart_total_price");
+                cart.setId(cartId);
+                cart.setTotalPrice(totalPrice);
+                // int bookId = resultSet.getInt("book_id");
+                String bookTitle = resultSet.getString("book_title");
+                String bookIsbn = resultSet.getString("book_isbn");
+                String bookDescription = resultSet.getString("book_description");
+                Date bookPublicationDate = resultSet.getDate("book_publication_date");
+                double bookUnitPrice = resultSet.getDouble("book_unit_price");
+                int bookStockQuantity = resultSet.getInt("book_stock_quantity");
+                int cartBookQuantity = resultSet.getInt("cart_book_quantity");
+                // int publisherId = resultSet.getInt("publisher_id");
+                String publisherName = resultSet.getString("publisher_name");
+                if (bookTitle == null || bookIsbn == null || bookUnitPrice <= 0) {
+                    logger.error("Book data is incomplete or invalid bookTitle=" + bookTitle + ", bookIsbn=" + bookIsbn
+                            + ", bookUnitPrice=" + bookUnitPrice + ", skipping this book.");
+                    continue; // Skip this book if data is incomplete
+                }
+                BookDTO bookDto = new BookDTO(bookTitle, bookIsbn, bookUnitPrice);
+                // bookDto.setId(bookId);
+                bookDto.setDescription(bookDescription);
+                bookDto.setPublicationDate(bookPublicationDate);
+                bookDto.setStockQuantity(bookStockQuantity);
+                bookDto.setPublisher(new PublisherDTO(publisherName));
+                booksDto.put(bookDto, cartBookQuantity);
+            }
+            cart.setBooksDto(booksDto);
+            logger.debug("Returning " + cart.toString());
+            return cart;
+
+        } catch (SQLException e) {
+            logger.error("Error retrieving cart: " + e.getMessage());
+            throw new RuntimeException("Error retrieving cart", e);
+        }
+    }
+
+    public void clearCart(int id) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement deleteStatement = conn.prepareStatement(
+                    "DELETE FROM cart_book WHERE cart_id = ?");
+            deleteStatement.setInt(1, id);
+            deleteStatement.executeUpdate();
+            logger.debug("Cart cleared for cart ID: " + id);
+            PreparedStatement deleteCartStatement = conn.prepareStatement(
+                    "DELETE FROM carts WHERE id = ?");
+            deleteCartStatement.setInt(1, id);
+            deleteCartStatement.executeUpdate();
+            logger.debug("Cart deleted for cart ID: " + id);
+        } catch (SQLException e) {
+            logger.error("Error clearing cart: " + e.getMessage());
+            throw new RuntimeException("Error clearing cart", e);
+        }
+    }
+
 }

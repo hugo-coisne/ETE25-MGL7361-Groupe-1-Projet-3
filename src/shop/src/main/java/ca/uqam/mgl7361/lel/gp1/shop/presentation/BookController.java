@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookStockQuantityRequest;
 import ca.uqam.mgl7361.lel.gp1.shop.business.BookService;
 import ca.uqam.mgl7361.lel.gp1.shop.dto.BookDTO;
 import ca.uqam.mgl7361.lel.gp1.shop.dto.BookProperty;
@@ -121,6 +122,20 @@ public class BookController {
         boolean sufficient = bookService.isSufficientlyInStock(bookDTO, quantity);
         logger.debug("Book '{}' in stock with quantity {}: {}", bookDTO.getTitle(), quantity, sufficient);
         return ResponseEntity.ok(sufficient);
+    }
+
+    @DeleteMapping("/stock/decrease")
+    public ResponseEntity<?> decreasedBookStockQuantity(
+            @RequestBody BookStockQuantityRequest bookStockQuantityRequest) {
+        logger.info("Received request to decrease stock for book: {}", bookStockQuantityRequest.isbn());
+        try {
+            bookService.decreasedBookStockQuantity(bookStockQuantityRequest.isbn(), bookStockQuantityRequest.quantity());
+            logger.debug("Decreased stock for book: {}", bookStockQuantityRequest.isbn());
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            logger.error("Error decreasing stock for book: {}", bookStockQuantityRequest.isbn(), e);
+            return ResponseEntity.internalServerError().body(e);
+        }
     }
 
     // DTO for requests with a book and its properties

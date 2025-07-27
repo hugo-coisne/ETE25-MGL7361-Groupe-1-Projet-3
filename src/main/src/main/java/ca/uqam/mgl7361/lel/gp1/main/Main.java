@@ -249,7 +249,7 @@ public class Main {
                 // l'historique des commandes livrées
                 System.out.println("Getting all orders in transit");
                 List<DeliveryDTO> pendingDeliveries = deliveryAPIClient.getAllOrdersInTransit();
-                System.out.println("Pending Deliveries (" + pendingDeliveries.size() + "):");
+                System.out.println("Shipped Deliveries (" + pendingDeliveries.size() + "):");
                 for (DeliveryDTO pendingDelivery : pendingDeliveries) {
                         System.out.println("Order: " + pendingDelivery.getOrder().getOrderNumber() +
                                         ", Status: " + pendingDelivery.getStatus());
@@ -271,7 +271,7 @@ public class Main {
                 System.out.println("Updated Status: " + delivery.getStatus());
 
                 pendingDeliveries = deliveryAPIClient.getAllOrdersInTransit();
-                System.out.println("Pending Deliveries (" + pendingDeliveries.size() + "):");
+                System.out.println("Shipped Deliveries (" + pendingDeliveries.size() + "):");
                 for (DeliveryDTO pendingDelivery : pendingDeliveries) {
                         System.out.println("Order: " + pendingDelivery.getOrder().getOrderNumber() +
                                         ", Status: " + pendingDelivery.getStatus());
@@ -562,7 +562,7 @@ public class Main {
                 Main.scenarioDetailsStep(
                                 "Voir la liste des commandes en transit (en cours de livraison) :");
                 List<DeliveryDTO> pendingDeliveries = deliveryAPIClient.getAllOrdersInTransit();
-                System.out.println("Pending Deliveries (" + pendingDeliveries.size() + ") :");
+                System.out.println("Shipped Deliveries (" + pendingDeliveries.size() + ") :");
                 for (DeliveryDTO pendingDelivery : pendingDeliveries) {
                         System.out.println("Order: " + pendingDelivery.getOrder().getOrderNumber() + ", Status: "
                                         + pendingDelivery.getStatus());
@@ -606,7 +606,7 @@ public class Main {
                                 "Voir que la liste des commandes en transit (en cours de livraison) compte désormais la commande qui a été passée :");
                 // TODO : voir ce qu'il se passe
                 pendingDeliveries = deliveryAPIClient.getAllOrdersInTransit();
-                Main.scenarioDetailsStep("Pending Deliveries (" + pendingDeliveries.size() + ") :");
+                Main.scenarioDetailsStep("Shipped Deliveries (" + pendingDeliveries.size() + ") :");
                 for (DeliveryDTO pendingDelivery : pendingDeliveries) {
                         Main.scenarioDetailsStep("Order: " + pendingDelivery.getOrder().getOrderNumber() + ", Status: "
                                         + pendingDelivery.getStatus());
@@ -640,7 +640,7 @@ public class Main {
                 Main.scenarioStep(
                                 "Voir que la liste des commandes en transit (en cours de livraison) ne compte plus la commande qui a été passée :");
                 pendingDeliveries = deliveryAPIClient.getAllOrdersInTransit();
-                Main.scenarioDetailsStep("Pending Deliveries (" + pendingDeliveries.size() + ") :");
+                Main.scenarioDetailsStep("Shipped Deliveries (" + pendingDeliveries.size() + ") :");
                 for (DeliveryDTO pendingDelivery : pendingDeliveries) {
                         Main.scenarioDetailsStep("Order: " + pendingDelivery.getOrder().getOrderNumber() + ", Status: "
                                         + pendingDelivery.getStatus());
