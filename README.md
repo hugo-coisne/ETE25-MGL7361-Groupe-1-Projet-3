@@ -7,7 +7,7 @@
 - Cloner le projet puis :
 
 ```bash
-docker compose build && docker compose up -d
+docker compose up db -d && ./build-all.sh && docker compose build && docker compose up -d
 ```
 
 - Pour voir l'exécution du "Main" :

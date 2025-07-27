@@ -17,7 +17,7 @@ services:
       - user_net
       - shop_net
       - order_net
-      - payment_net
+      - checkout_net
       - delivery_net
 
   user:
@@ -77,24 +77,24 @@ services:
     networks:
       - order_net
 
-  payment:
-    container_name: payment
+  checkout:
+    container_name: checkout
     build:
       context: src
-      dockerfile: payment/dockerfile
+      dockerfile: checkout/dockerfile
     environment:
-      - CONTEXT_PATH=${PAYMENT_PATH}
+      - CONTEXT_PATH=${CHECKOUT_PATH}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.payment.rule=PathPrefix(`${PAYMENT_PATH}`)"
-      - "traefik.http.routers.payment.entrypoints=web"
-      - "traefik.http.services.payment.loadbalancer.server.port=8080"
+      - "traefik.http.routers.checkout.rule=PathPrefix(`${CHECKOUT_PATH}`)"
+      - "traefik.http.routers.checkout.entrypoints=web"
+      - "traefik.http.services.checkout.loadbalancer.server.port=8080"
     volumes:
       - .env:/app/.env
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080${PAYMENT_PATH}/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080${CHECKOUT_PATH}/actuator/health"]
     networks:
-      - payment_net
+      - checkout_net
 
   delivery:
     container_name: delivery
@@ -130,7 +130,7 @@ services:
         condition: service_healthy
       order:
         condition: service_healthy
-      payment:
+      checkout:
         condition: service_healthy
       delivery:
         condition: service_healthy
@@ -156,7 +156,7 @@ services:
       - user_net
       - shop_net
       - order_net
-      - payment_net
+      - checkout_net
       - delivery_net
 
 networks:
@@ -164,5 +164,5 @@ networks:
   user_net:
   shop_net:
   order_net:
-  payment_net:
+  checkout_net:
   delivery_net:

@@ -6,7 +6,7 @@ cd ../shop
 mvn clean install package -DskipTests
 cd ../order
 mvn clean install package -DskipTests
-cd ../payment
+cd ../checkout
 mvn clean install package -DskipTests
 cd ../delivery
 mvn clean install package -DskipTests

@@ -294,39 +294,39 @@ package delivery {
     }
 }
 
-package payment {
-    package payment.presentation {
-        interface PaymentAPI {
-            + Invoice createInvoice(Order order, String paymentMethod)
+package checkout {
+    package checkout.presentation {
+        interface CheckoutAPI {
+            + Invoice createInvoice(Order order, String paymentmethod)
             + Invoice getInvoiceDetails(Order order)
-            + void processPayment(Invoice invoice)
+            + void processCheckout(Invoice invoice)
         }
 
-        class PaymentAPIImpl implements PaymentAPI
+        class CheckoutAPIImpl implements CheckoutAPI
     }
-    package payment.business {
-        package payment.business.entities {
+    package checkout.business {
+        package checkout.business.entities {
             class Invoice {
                 - invoiceNumber
                 - invoiceDate
                 - totalPrice
-                - paymentMethod
+                - paymentmethod
             }
         }
 
-        package payment.business.services {
-            class PaymentService {
+        package checkout.business.services {
+            class CheckoutService {
 
             }
         }
     }
-    package payment.persistence {
-        class PaymentDAO {
+    package checkout.persistence {
+        class CheckoutDAO {
 
         }
 
-        PaymentService -up- PaymentAPIImpl
-        PaymentDAO -up- PaymentService
+        CheckoutService -up- CheckoutAPIImpl
+        CheckoutDAO -up- CheckoutService
     }
 }
 

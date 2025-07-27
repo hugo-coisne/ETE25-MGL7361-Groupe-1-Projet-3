@@ -7,7 +7,7 @@ import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.AddressDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.CreateDeliveryRequest;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.DeliveryDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.payment.*;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.checkout.*;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.*;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.*;
 
@@ -544,7 +544,7 @@ public class Main {
                 Main.scenarioDetailsStep("On constate aussi l'état de la livraison : ");
                 System.out.println(checkoutDTO.deliveryDTO());
                 Main.scenarioStep(
-                                "8 : Le système procède automatiquement à l'expédition de la commande le lendemain du payment.");
+                                "8 : Le système procède automatiquement à l'expédition de la commande le lendemain du checkout.");
                 Main.scenarioDetailsStep(
                                 "En attendant, on peut tout de même consulter manuellement l'état de livraison des commandes du compte.");
 
@@ -589,8 +589,7 @@ public class Main {
 
                 Main.scenarioDetailsStep(
                                 "On remarque désormais l'état de livraison de la commande à "
-                                                + statuses.getFirst().getStatus()
-                                                + ". (Normalement, il est à \"En transit\"");
+                                                + statuses.getFirst().getStatus() + "\"");
 
                 Main.scenarioDetailsStep(
                                 "La commande et les livres associés étant en transit, ils ne se trouvent plus en stock.");

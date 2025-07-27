@@ -4,7 +4,7 @@
     "src/common",
     "src/order",
     "src/delivery",
-    "src/payment",
+    "src/checkout",
     "src/account",
     "src/shop",
     "src/main"
