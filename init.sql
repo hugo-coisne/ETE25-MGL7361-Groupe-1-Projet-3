@@ -263,3 +263,33 @@ VALUES ('20250623-AAAABBBB',
 INSERT INTO invoices (invoice_number, order_number, invoice_date, total_price, payment_method)
 VALUES ('INV-20250623-AAAABBBB-001', '20250623-AAAABBBB', '20250623', 19.99, 'CARD'),
        ('INV-20250623-AABBAABB-001', '20250623-AABBAABB', '20250623', 14.99, 'PAYPAL');
+
+
+-- Utilisateur pour user-service
+CREATE USER 'user_svc'@'%' IDENTIFIED BY 'user_svc_pwd';
+GRANT SELECT, INSERT, UPDATE ON lel.accounts TO 'user_svc'@'%';
+GRANT SELECT, INSERT, UPDATE ON lel.addresses TO 'user_svc'@'%';
+GRANT SELECT ON lel.carts TO 'user_svc'@'%';
+
+-- Utilisateur pour shop-service
+CREATE USER 'shop_svc'@'%' IDENTIFIED BY 'shop_svc_pwd';
+GRANT SELECT ON lel.books TO 'shop_svc'@'%';
+GRANT SELECT ON lel.categories TO 'shop_svc'@'%';
+GRANT SELECT ON lel.authors TO 'shop_svc'@'%';
+GRANT SELECT ON lel.publishers TO 'shop_svc'@'%';
+
+-- Utilisateur pour order-service
+CREATE USER 'order_svc'@'%' IDENTIFIED BY 'order_svc_pwd';
+GRANT SELECT, INSERT, UPDATE ON lel.orders TO 'order_svc'@'%';
+GRANT SELECT, INSERT ON lel.order_contents TO 'order_svc'@'%';
+
+-- Utilisateur pour payment-service
+CREATE USER 'payment_svc'@'%' IDENTIFIED BY 'payment_svc_pwd';
+GRANT SELECT, INSERT ON lel.invoices TO 'payment_svc'@'%';
+
+-- Utilisateur pour delivery-service
+CREATE USER 'delivery_svc'@'%' IDENTIFIED BY 'delivery_svc_pwd';
+GRANT SELECT, INSERT, UPDATE ON lel.deliveries TO 'delivery_svc'@'%';
+
+-- Appliquer les privilèges
+FLUSH PRIVILEGES;

@@ -5,29 +5,21 @@ services:
     container_name: traefik
     command:
       - "--api.insecure=true"
-      - "--api.dashboard=true"
       - "--providers.docker=true"
       - "--entrypoints.web.address=:80"
     ports:
       - "80:80"
-      - "8080:8080"  # Optional: Traefik dashboard
+      - "8080:8080"  # dashboard
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - traefik
+      - user_net
+      - shop_net
+      - order_net
+      - payment_net
+      - delivery_net
 
-  db:
-    image: mariadb
-    restart: always
-    container_name: mariadb
-    environment:
-      MARIADB_ROOT_PASSWORD: root
-    ports:
-      - 3306:3306
-    volumes:
-      - ./db_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    healthcheck:
-      test: ["CMD-SHELL", "mariadb -h 127.0.0.1 -uroot -proot -e 'SELECT 1;'"]
-  
   user:
     container_name: user
     build:
@@ -37,17 +29,16 @@ services:
       - CONTEXT_PATH=${USER_PATH}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.user.rule=PathPrefix(`$USER_PATH`)"
+      - "traefik.http.routers.user.rule=PathPrefix(`${USER_PATH}`)"
       - "traefik.http.routers.user.entrypoints=web"
       - "traefik.http.services.user.loadbalancer.server.port=8080"
-    # depends_on:
-    #   db:
-    #     condition: service_healthy
     volumes:
       - .env:/app/.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080${USER_PATH}/actuator/health"]
-  
+    networks:
+      - user_net
+
   shop:
     container_name: shop
     build:
@@ -57,16 +48,15 @@ services:
       - CONTEXT_PATH=${SHOP_PATH}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.shop.rule=PathPrefix(`$SHOP_PATH`)"
+      - "traefik.http.routers.shop.rule=PathPrefix(`${SHOP_PATH}`)"
       - "traefik.http.routers.shop.entrypoints=web"
       - "traefik.http.services.shop.loadbalancer.server.port=8080"
-    # depends_on:
-    #   db:
-    #     condition: service_healthy
     volumes:
       - .env:/app/.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080${SHOP_PATH}/actuator/health"]
+    networks:
+      - shop_net
 
   order:
     container_name: order
@@ -74,78 +64,105 @@ services:
       context: src
       dockerfile: order/dockerfile
     environment:
-    - CONTEXT_PATH=${ORDER_PATH}
+      - CONTEXT_PATH=${ORDER_PATH}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.order.rule=PathPrefix(`$ORDER_PATH`)"
+      - "traefik.http.routers.order.rule=PathPrefix(`${ORDER_PATH}`)"
       - "traefik.http.routers.order.entrypoints=web"
       - "traefik.http.services.order.loadbalancer.server.port=8080"
-    # depends_on:
-    #   db:
-    #     condition: service_healthy
     volumes:
       - .env:/app/.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080${ORDER_PATH}/actuator/health"]
-  
+    networks:
+      - order_net
+
   payment:
     container_name: payment
     build:
       context: src
       dockerfile: payment/dockerfile
     environment:
-    - CONTEXT_PATH=${PAYMENT_PATH}
+      - CONTEXT_PATH=${PAYMENT_PATH}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.payment.rule=PathPrefix(`$PAYMENT_PATH`)"
+      - "traefik.http.routers.payment.rule=PathPrefix(`${PAYMENT_PATH}`)"
       - "traefik.http.routers.payment.entrypoints=web"
       - "traefik.http.services.payment.loadbalancer.server.port=8080"
-    # depends_on:
-    #   db:
-    #     condition: service_healthy
     volumes:
       - .env:/app/.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080${PAYMENT_PATH}/actuator/health"]
-    
+    networks:
+      - payment_net
+
   delivery:
     container_name: delivery
     build:
       context: src
       dockerfile: delivery/dockerfile
     environment:
-    - CONTEXT_PATH=${DELIVERY_PATH}
-    volumes:
-      - .env:/app/.env
+      - CONTEXT_PATH=${DELIVERY_PATH}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.delivery.rule=PathPrefix(`$DELIVERY_PATH`)"
+      - "traefik.http.routers.delivery.rule=PathPrefix(`${DELIVERY_PATH}`)"
       - "traefik.http.routers.delivery.entrypoints=web"
       - "traefik.http.services.delivery.loadbalancer.server.port=8080"
-    # depends_on:
-    #   db:
-    #     condition: service_healthy
+    volumes:
+      - .env:/app/.env
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080${DELIVERY_PATH}/actuator/health"]
-  
+    networks:
+      - delivery_net
+
   main:
     container_name: main
     build:
       context: src
       dockerfile: main/dockerfile
+    command: sh -c "sleep 5 && java -jar app.jar"
     volumes:
       - .env:/app/.env
-    command: sh -c "sleep 5 && java -jar app.jar"
     depends_on:
       user:
         condition: service_healthy
       shop:
         condition: service_healthy
-      delivery:
+      order:
         condition: service_healthy
       payment:
         condition: service_healthy
-      order:
+      delivery:
         condition: service_healthy
-      db:
-        condition: service_healthy
+    networks:
+      - traefik  # seul réseau partagé avec tous via traefik
+
+  db:
+    image: mariadb
+    container_name: mariadb
+    environment:
+      - MARIADB_ROOT_PASSWORD=root
+    volumes:
+      - ./db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+    ports:
+      - "3306:3306"
+    networks:
+      - user_net
+      - shop_net
+      - order_net
+      - payment_net
+      - delivery_net
+
+networks:
+  traefik:
+  user_net:
+  shop_net:
+  order_net:
+  payment_net:
+  delivery_net:
