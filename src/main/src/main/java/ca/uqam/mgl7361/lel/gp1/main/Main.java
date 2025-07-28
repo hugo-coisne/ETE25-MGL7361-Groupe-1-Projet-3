@@ -352,29 +352,16 @@ public class Main {
                 System.out.println(account);
                 accountClient.signup(account);
 
-                // Main.scenarioStep("1.2 Tentative de création du même compte");
-                // accountClient.signup(account);
-
-                // Main.scenarioStep("1.2 Tentative de création d'un autre compte");
-                // firstName = "Paul";
-                // lastName = "Smith";
-                // phone = "1234567891";
-                // email = "paul.smith@mail.com";
-                // password = "P@ssword1234";
-                // accountClient.signup(account);
-
                 Main.scenarioStep("1.2 Connexion au compte crée");
                 Map<String, String> credentials = Map.of("email", account.getEmail(), "password",
                                 account.getPassword());
                 account = accountClient.signin(credentials);
                 Main.scenarioDetailsStep("Connecté avec le compte - " + account);
-                /* Should show that signin was a success */
 
                 // get the cart for the account
                 // if the cart does not exist, it should be created
                 CartAPIClient cartAPIClient = Clients.cartClient;
                 showCartFor(account);
-                /* Should show that the cart was retrieved successfully */
 
                 Main.scenarioStep("2. Sélectionner un ou plusieurs livres");
                 Main.scenarioStep("2.1 Obtenir les catégories existantes");
