@@ -4,17 +4,38 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
 
+@Schema(description = "Data Transfer Object representing a book")
 public class BookDTO extends DTO {
+
+    @Schema(description = "Title of the book", example = "Clean Code")
     private String title;
+
+    @Schema(description = "Short description or summary of the book", example = "A handbook of agile software craftsmanship")
     private String description;
+
+    @Schema(description = "International Standard Book Number", example = "9780132350884")
     private String isbn;
+
+    @Schema(description = "Date of publication", example = "2008-08-01")
     private Date publicationDate;
+
+    @Schema(description = "Price of the book", example = "49.99")
     private double price;
+
+    @Schema(description = "Number of books available in stock", example = "12")
     private int stockQuantity;
+
+    @Schema(description = "Publisher of the book")
     private PublisherDTO publisher;
+
+    @Schema(description = "List of categories for the book")
     private List<CategoryDTO> categories;
+
+    @Schema(description = "List of authors of the book")
     private List<AuthorDTO> authors;
 
     public BookDTO(String title, String isbn, double price) {

@@ -1,7 +1,14 @@
 package ca.uqam.mgl7361.lel.gp1.common.dtos.shop;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Data transfer object representing a book publisher")
 public class PublisherDTO {
+
+    @Schema(description = "Unique identifier of the publisher", example = "7", required = true)
     private int id;
+
+    @Schema(description = "Name of the publisher", example = "Penguin Random House", required = true)
     private String name;
 
     public PublisherDTO(String name) {
@@ -33,7 +40,7 @@ public class PublisherDTO {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return this.name;
     }
 }

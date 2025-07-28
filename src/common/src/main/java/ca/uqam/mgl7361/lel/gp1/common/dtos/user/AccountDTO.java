@@ -1,14 +1,27 @@
 package ca.uqam.mgl7361.lel.gp1.common.dtos.user;
 
 import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "User account data")
 public class AccountDTO extends DTO {
+
+    @Schema(description = "First name", example = "Alice")
     private String firstName;
+
+    @Schema(description = "Last name", example = "Smith")
     private String lastName;
+
+    @Schema(description = "Phone number", example = "+1-555-1234")
     private String phone;
+
+    @Schema(description = "Email address", example = "alice@example.com")
     private String email;
+
+    @Schema(description = "Account password", example = "securePassword123")
     private String password;
 
+    @Schema(description = "Unique account ID", example = "42")
     private int id;
 
     public AccountDTO(String firstName, String lastName, String phone, String email, String password) {

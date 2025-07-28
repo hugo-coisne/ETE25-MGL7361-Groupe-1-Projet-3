@@ -7,6 +7,13 @@ import ca.uqam.mgl7361.lel.gp1.shop.exception.AuthorsException;
 import ca.uqam.mgl7361.lel.gp1.shop.exception.CategoriesException;
 import ca.uqam.mgl7361.lel.gp1.shop.exception.DTOException;
 import ca.uqam.mgl7361.lel.gp1.shop.exception.PublishersException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,16 +25,21 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/attributes")
+@Tag(name = "Book Attributes", description = "Endpoints for managing book-related metadata")
 public class BookAttributeController {
 
     private static final Logger logger = LogManager.getLogger(BookAttributeController.class);
-
     private final BookAttributeService bookAttributeService;
 
     public BookAttributeController(BookAttributeService bookAttributeService) {
         this.bookAttributeService = bookAttributeService;
     }
 
+    @Operation(summary = "Retrieve all authors")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Authors retrieved successfully"),
+            @ApiResponse(responseCode = "500", description = "Error retrieving authors")
+    })
     @GetMapping("/authors")
     public ResponseEntity<?> getAuthors() {
         logger.info("Received request");
@@ -42,6 +54,11 @@ public class BookAttributeController {
         }
     }
 
+    @Operation(summary = "Retrieve all categories")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Categories retrieved successfully"),
+            @ApiResponse(responseCode = "500", description = "Error retrieving categories")
+    })
     @GetMapping("/categories")
     public ResponseEntity<?> getCategories() {
         logger.info("Received request");
@@ -56,6 +73,11 @@ public class BookAttributeController {
         }
     }
 
+    @Operation(summary = "Retrieve all publishers")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Publishers retrieved successfully"),
+            @ApiResponse(responseCode = "500", description = "Error retrieving publishers")
+    })
     @GetMapping("/publishers")
     public ResponseEntity<?> getPublishers() {
         logger.info("Received request");
@@ -70,8 +92,14 @@ public class BookAttributeController {
         }
     }
 
+    @Operation(summary = "Add multiple book attributes (authors, publishers, categories)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Attributes added successfully"),
+            @ApiResponse(responseCode = "500", description = "Error adding attributes")
+    })
     @PostMapping
-    public ResponseEntity<?> addAttributes(@RequestBody List<BookAttributeDTO> attributes) {
+    public ResponseEntity<?> addAttributes(
+            @RequestBody(description = "List of attributes to add", required = true, content = @Content(schema = @Schema(implementation = BookAttributeDTO.class))) @org.springframework.web.bind.annotation.RequestBody List<BookAttributeDTO> attributes) {
         logger.info("Received request with attributes : {}", attributes);
         try {
             bookAttributeService.addAttributes(attributes);
@@ -85,8 +113,14 @@ public class BookAttributeController {
         }
     }
 
+    @Operation(summary = "Remove a specific attribute (author, publisher, category)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Attribute removed successfully"),
+            @ApiResponse(responseCode = "500", description = "Error removing attribute")
+    })
     @DeleteMapping
-    public ResponseEntity<?> removeAttribute(@RequestBody BookAttributeDTO attribute) {
+    public ResponseEntity<?> removeAttribute(
+            @RequestBody(description = "Attribute to remove", required = true, content = @Content(schema = @Schema(implementation = BookAttributeDTO.class))) @org.springframework.web.bind.annotation.RequestBody BookAttributeDTO attribute) {
         logger.info("Received request with attribute : {}", attribute);
         try {
             bookAttributeService.removeAttribute(attribute);

@@ -6,13 +6,25 @@ import java.util.List;
 import java.util.Map;
 
 import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "DTO representing a user's shopping cart")
 public class CartDTO extends DTO {
+
+    @Schema(description = "Map of ISBN to quantity", example = "{\"9780132350884\": 2}")
     private Map<String, Integer> booksIsbn;
+
+    @Schema(description = "User ID to whom the cart belongs", example = "42")
     private int userId;
-    private List<CartItemDTO> cartItemDtos;
+
+    @Schema(description = "Total price of the cart", example = "129.99")
     private double totalPrice;
+
+    @Schema(description = "Cart ID", example = "1001")
     private int id;
+
+    @Schema(description = "List of cart items (book + quantity)")
+    private List<CartItemDTO> cartItemDtos;
 
     public CartDTO(int User) {
         this.userId = User;
@@ -92,7 +104,7 @@ public class CartDTO extends DTO {
     public int getId() {
         return this.id;
     }
-    
+
     public void setId(int id) {
         this.id = id;
     }
