@@ -4,13 +4,25 @@ import java.sql.Date;
 import java.util.List;
 
 import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "Represents a customer order containing multiple items.")
 public class OrderDTO extends DTO {
+
+    @Schema(description = "Unique order number assigned to the order", example = "ORD-20250728-001", required = true)
     private String orderNumber;
+
+    @Schema(description = "Date the order was placed", example = "2025-07-28", required = true)
     private Date orderDate;
+
+    @Schema(description = "Total price of the order", example = "89.99", required = true)
     private float orderPrice;
-    private List<OrderItemDTO> orderItemDTOs; // Map of books to their quantities
-    private int id; // Assuming there's an ID field for the order
+
+    @Schema(description = "List of ordered items", required = true)
+    private List<OrderItemDTO> orderItemDTOs;
+
+    @Schema(description = "Internal ID of the order", example = "123")
+    private int id;
 
     public OrderDTO(
             String orderNumber,

@@ -7,6 +7,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.*;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/orders")
+@Tag(name = "Orders", description = "Endpoints for order management")
 public class OrderController {
 
     private static final Logger logger = LogManager.getLogger(OrderController.class);
@@ -26,8 +30,14 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+    @Operation(summary = "Create a new order")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Order created successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Order creation failed")
+    })
     @PostMapping
-    public ResponseEntity<?> createOrder(@RequestBody OrderRequest request) {
+    public ResponseEntity<?> createOrder(
+            @RequestBody(description = "Order request containing account and cart", required = true, content = @Content(schema = @Schema(implementation = OrderRequest.class))) @org.springframework.web.bind.annotation.RequestBody OrderRequest request) {
         logger.info("Received request " + request);
         try {
             OrderDTO order = orderService.createOrder(request.account(), request.cart());
@@ -39,8 +49,14 @@ public class OrderController {
         }
     }
 
+    @Operation(summary = "Get order details by order ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Order retrieved successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Order not found")
+    })
     @GetMapping("/{orderId}")
-    public ResponseEntity<?> getOrderById(@PathVariable(name = "orderId") String orderId) {
+    public ResponseEntity<?> getOrderById(
+            @Parameter(description = "Order ID", required = true) @PathVariable(name = "orderId") String orderId) {
         logger.info("Received request with orderId " + orderId);
         try {
             OrderDTO order = orderService.findOrderByOrderNumber(orderId);
