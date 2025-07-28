@@ -1,4 +1,4 @@
-package ca.uqam.mgl7361.lel.gp1.common.dtos.user;
+package ca.uqam.mgl7361.lel.gp1.common.dtos.shop;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 
 public class CartDTO extends DTO {
     private Map<String, Integer> booksIsbn;

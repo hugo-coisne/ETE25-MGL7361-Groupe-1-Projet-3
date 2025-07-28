@@ -10,8 +10,8 @@ import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.DeliveryDTO;
 import ca.uqam.mgl7361.lel.gp1.delivery.persistence.DeliveryDAO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookStockQuantityRequest;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartDTO;
 
 import java.util.Date;
 import java.util.List;

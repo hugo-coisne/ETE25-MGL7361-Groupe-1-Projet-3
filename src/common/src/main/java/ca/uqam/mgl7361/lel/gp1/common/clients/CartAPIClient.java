@@ -1,8 +1,8 @@
 package ca.uqam.mgl7361.lel.gp1.common.clients;
 
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.CartBookRequest;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartBookRequest;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartDTO;
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;

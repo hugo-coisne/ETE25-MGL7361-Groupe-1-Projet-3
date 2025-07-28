@@ -20,9 +20,9 @@ import ca.uqam.mgl7361.lel.gp1.common.dtos.checkout.PaymentMethod;
 import ca.uqam.mgl7361.lel.gp1.checkout.persistence.InvoiceDAO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookStockQuantityRequest;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.CartDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.CartItemDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartDTO;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartItemDTO;
 
 import java.util.Date;
 import java.util.Map;

@@ -1,6 +1,6 @@
-package ca.uqam.mgl7361.lel.gp1.common.dtos.user;
+package ca.uqam.mgl7361.lel.gp1.common.dtos.shop;
 
-import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 
 public record CartBookRequest(AccountDTO account, BookDTO book) {
     public String toString() {

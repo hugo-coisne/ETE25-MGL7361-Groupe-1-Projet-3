@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ca.uqam.mgl7361.lel.gp1.shop.business.CartService;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.CartBookRequest;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartBookRequest;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.shop.exception.InvalidCartException;
 import ca.uqam.mgl7361.lel.gp1.shop.exception.UnsufficientStockException;
 
