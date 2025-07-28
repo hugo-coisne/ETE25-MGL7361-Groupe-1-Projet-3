@@ -3,12 +3,24 @@ package ca.uqam.mgl7361.lel.gp1.common.dtos.checkout;
 import java.sql.Date;
 
 import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(name = "InvoiceDTO", description = "Données représentant une facture")
 public class InvoiceDTO extends DTO {
+
+    @Schema(description = "Numéro unique de la facture", example = "INV123456")
     private String invoiceNumber;
+
+    @Schema(description = "Date de la facture", example = "2025-07-28")
     private Date invoiceDate;
+
+    @Schema(description = "Prix total facturé", example = "199.99")
     private float totalPrice;
+
+    @Schema(description = "Méthode de paiement utilisée")
     private PaymentMethod paymentmethod;
+
+    @Schema(description = "Numéro de la commande associée", example = "ORD987654")
     private String orderNumber;
 
     public InvoiceDTO(String invoiceNumber, String orderNumber, Date invoiceDate, float totalPrice,
@@ -66,7 +78,4 @@ public class InvoiceDTO extends DTO {
     public String getOrderNumber() {
         return orderNumber;
     }
-
-    // OTHERS -----------------------------------------------------------------
-
 }
