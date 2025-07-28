@@ -6,22 +6,25 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import ca.uqam.mgl7361.lel.gp1.user.business.AccountService;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 import ca.uqam.mgl7361.lel.gp1.user.exception.DuplicateEmailException;
 import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidArgumentException;
 import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCredentialsException;
-import org.springframework.web.bind.annotation.RequestBody;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @RestController
 @RequestMapping("/account")
+@Tag(name = "Account", description = "Endpoints for account management")
 public class AccountController {
     private final AccountService accountService;
 
@@ -31,8 +34,16 @@ public class AccountController {
         this.accountService = accountService;
     }
 
+    @Operation(summary = "Sign up a new account")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Account created"),
+            @ApiResponse(responseCode = "409", description = "Email already used"),
+            @ApiResponse(responseCode = "400", description = "Invalid argument"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody AccountDTO dto) {
+    public ResponseEntity<?> signup(
+            @RequestBody(description = "Account details to create", required = true, content = @Content(schema = @Schema(implementation = AccountDTO.class))) @org.springframework.web.bind.annotation.RequestBody AccountDTO dto) {
         logger.info("Signup request: {}", dto.getEmail());
         try {
             accountService.create(dto);
@@ -49,8 +60,14 @@ public class AccountController {
         }
     }
 
+    @Operation(summary = "Sign in with email and password")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Signed in successfully"),
+            @ApiResponse(responseCode = "401", description = "Invalid credentials")
+    })
     @PostMapping("/signin")
-    public ResponseEntity<?> signin(@RequestBody Map<String, String> credentials) {
+    public ResponseEntity<?> signin(
+            @RequestBody(description = "Credentials map containing email and password", required = true, content = @Content(schema = @Schema(implementation = Map.class))) @org.springframework.web.bind.annotation.RequestBody Map<String, String> credentials) {
         String email = credentials.get("email");
         logger.info("Signin request for " + email);
         String password = credentials.get("password");
@@ -62,10 +79,18 @@ public class AccountController {
         }
     }
 
+    @Operation(summary = "Change a property of an account")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Property updated successfully"),
+            @ApiResponse(responseCode = "401", description = "Invalid credentials"),
+            @ApiResponse(responseCode = "400", description = "Invalid argument"),
+            @ApiResponse(responseCode = "404", description = "Invalid property"),
+            @ApiResponse(responseCode = "409", description = "Email already used")
+    })
     @PatchMapping("/change/{property}")
     public ResponseEntity<?> changeProperty(
-            @PathVariable(name = "property") String property,
-            @RequestBody Map<String, String> request) {
+            @PathVariable(name = "property", required = true) String property,
+            @RequestBody(description = "Request containing email, password, and new value", required = true, content = @Content(schema = @Schema(implementation = Map.class))) @org.springframework.web.bind.annotation.RequestBody Map<String, String> request) {
         logger.info("Received request " + request);
         AccountDTO account = new AccountDTO();
         account.setEmail(request.get("email"));
@@ -85,8 +110,15 @@ public class AccountController {
         }
     }
 
+    @Operation(summary = "Delete an account")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Account deleted successfully"),
+            @ApiResponse(responseCode = "401", description = "Invalid credentials"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @DeleteMapping
-    public ResponseEntity<?> deleteAccount(@RequestBody AccountDTO accountDto) {
+    public ResponseEntity<?> deleteAccount(
+            @RequestBody(description = "Account details to delete", required = true, content = @Content(schema = @Schema(implementation = AccountDTO.class))) @org.springframework.web.bind.annotation.RequestBody AccountDTO accountDto) {
         logger.info("Received request for: {}", accountDto.getEmail());
 
         try {
