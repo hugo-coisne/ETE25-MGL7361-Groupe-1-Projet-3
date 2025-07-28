@@ -8,7 +8,7 @@
 
 - Implémenter les différents microservices selon l'architecture en couches où l'interface utilisateur correspondra à une API REST implémentant les fonctionnalités exposées aux autres microservices
 
-- Documenter les APIs REST avec (Swagger)[https://swagger.io/tools/open-source/], selon la spécification (OpenAPI)[https://www.openapis.org/]
+- Documenter les APIs REST avec [Swagger](https://swagger.io/tools/open-source/), selon la spécification [OpenAPI](https://www.openapis.org/)
 
 - Préparer un jeu de tests, dans le programme principal, pour simuler le fonctionnement de l'application à l'aide d'appels aux différentes APIs REST des différents microservices
 
