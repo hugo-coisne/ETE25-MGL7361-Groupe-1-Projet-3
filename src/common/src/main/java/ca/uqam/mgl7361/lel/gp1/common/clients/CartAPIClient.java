@@ -1,8 +1,8 @@
 package ca.uqam.mgl7361.lel.gp1.common.clients;
 
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartBookRequest;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartDTO;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
@@ -32,10 +32,4 @@ public interface CartAPIClient {
     @RequestLine("DELETE /cart/clear/{id}")
     @Headers("Content-Type: application/json")
     void clearCart(@Param("id") int id);
-
-    record CartBookRequest(AccountDTO account, BookDTO book) {
-        public String toString() {
-            return "CartBookRequest(AccountDTO=" + account + ", BookDTO=" + book + ")";
-        }
-    }
 }

@@ -1,10 +1,8 @@
 package ca.uqam.mgl7361.lel.gp1.order.presentation;
 
-import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.order.business.OrderService;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
-
+import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.*;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -63,20 +61,5 @@ public class OrderController {
             logger.error("Order not found: {}", orderId, e);
             return ResponseEntity.status(404).body("Order not found: " + e.getMessage());
         }
-    }
-
-    /**
-     * DTO used to wrap order creation payload.
-     */
-    @Schema(name = "OrderRequest", description = "Payload to create an order")
-    public record OrderRequest(
-            @Schema(description = "Account information", required = true) AccountDTO account,
-
-            @Schema(description = "Cart information", required = true) CartDTO cart) {
-
-        public String toString() {
-            return "OrderRequest(account=" + account + ", cart=" + cart + ")";
-        }
-
     }
 }

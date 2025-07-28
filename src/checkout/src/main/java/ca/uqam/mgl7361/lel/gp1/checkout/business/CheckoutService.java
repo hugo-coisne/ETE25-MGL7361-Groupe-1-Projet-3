@@ -4,15 +4,14 @@ import ca.uqam.mgl7361.lel.gp1.common.clients.AccountAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.AddressAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.BookAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.CartAPIClient;
-import ca.uqam.mgl7361.lel.gp1.common.clients.BookAPIClient.BookQuantityRequest;
 import ca.uqam.mgl7361.lel.gp1.common.clients.Clients;
 import ca.uqam.mgl7361.lel.gp1.common.clients.DeliveryAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.OrderAPIClient;
-import ca.uqam.mgl7361.lel.gp1.common.clients.OrderAPIClient.OrderRequest;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.AddressDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.CreateDeliveryRequest;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.DeliveryDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderRequest;
 import ca.uqam.mgl7361.lel.gp1.checkout.business.mapper.InvoiceMapper;
 import ca.uqam.mgl7361.lel.gp1.checkout.model.Invoice;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.checkout.CheckoutDTO;
@@ -20,6 +19,7 @@ import ca.uqam.mgl7361.lel.gp1.common.dtos.checkout.InvoiceDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.checkout.PaymentMethod;
 import ca.uqam.mgl7361.lel.gp1.checkout.persistence.InvoiceDAO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookStockQuantityRequest;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartItemDTO;
@@ -54,7 +54,7 @@ public class CheckoutService {
         for (CartItemDTO entry : cart.getCartItemDtos()) {
             BookDTO book = entry.book();
             Integer quantity = entry.quantity();
-            if (!bookAPI.isSufficientlyInStock(new BookQuantityRequest(book, quantity))) {
+            if (!bookAPI.isSufficientlyInStock(new BookStockQuantityRequest(book, quantity))) {
                 return false;
             }
         }

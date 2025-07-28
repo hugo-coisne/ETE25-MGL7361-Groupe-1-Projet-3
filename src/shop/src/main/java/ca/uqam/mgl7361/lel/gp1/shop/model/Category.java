@@ -1,6 +1,6 @@
 package ca.uqam.mgl7361.lel.gp1.shop.model;
 
-import ca.uqam.mgl7361.lel.gp1.shop.dto.BookProperty;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookProperty;
 
 public class Category extends BookAttribute {
     private int id;

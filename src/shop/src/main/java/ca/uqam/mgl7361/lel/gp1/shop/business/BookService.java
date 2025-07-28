@@ -1,11 +1,11 @@
 package ca.uqam.mgl7361.lel.gp1.shop.business;
 
-import ca.uqam.mgl7361.lel.gp1.shop.dto.BookDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 import ca.uqam.mgl7361.lel.gp1.shop.business.mapper.BookMapper;
 import ca.uqam.mgl7361.lel.gp1.shop.exception.DTOException;
 import ca.uqam.mgl7361.lel.gp1.shop.exception.DuplicationBookException;
 import ca.uqam.mgl7361.lel.gp1.shop.model.Book;
-import ca.uqam.mgl7361.lel.gp1.shop.dto.BookProperty;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookProperty;
 import ca.uqam.mgl7361.lel.gp1.shop.persistence.BookDAO;
 
 import java.util.List;
@@ -70,9 +70,9 @@ public class BookService {
         return bookDAO.isSufficientlyInStock(book, quantity);
     }
 
-    public void decreasedBookStockQuantity(String isbn, int quantity) throws Exception {
-        Book book = bookDAO.getBooksBy(Map.of(BookProperty.ISBN, isbn)).getFirst();
-        bookDAO.update(isbn, book.getStockQuantity() - quantity);
+    public void decreaseBookStockQuantity(BookDTO bookDTO, int quantity) throws Exception {
+        Book book = bookDAO.getBooksBy(Map.of(BookProperty.ISBN, bookDTO.getIsbn())).getFirst();
+        bookDAO.update(book.getIsbn(), book.getStockQuantity() - quantity);
     }
 
 }

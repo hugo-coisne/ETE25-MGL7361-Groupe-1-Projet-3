@@ -1,6 +1,6 @@
 package ca.uqam.mgl7361.lel.gp1.shop.business.mapper;
 
-import ca.uqam.mgl7361.lel.gp1.shop.dto.BookAttributeDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookAttributeDTO;
 import ca.uqam.mgl7361.lel.gp1.shop.model.Author;
 import ca.uqam.mgl7361.lel.gp1.shop.model.BookAttribute;
 import ca.uqam.mgl7361.lel.gp1.shop.model.Category;

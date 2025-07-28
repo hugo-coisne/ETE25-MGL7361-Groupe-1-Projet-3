@@ -1,6 +1,7 @@
 package ca.uqam.mgl7361.lel.gp1.common.clients;
 
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookPropertiesRequest;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookProperty;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookStockQuantityRequest;
 import feign.Headers;
@@ -41,17 +42,9 @@ public interface BookAPIClient {
 
     @RequestLine("POST /books/quantity-in-stock")
     @Headers("Content-Type: application/json")
-    Boolean isSufficientlyInStock(BookQuantityRequest bookQuantityRequest);
+    Boolean isSufficientlyInStock(BookStockQuantityRequest bookStockQuantityRequest);
 
     @RequestLine("DELETE /books/stock/decrease")
     @Headers("Content-Type: application/json")
-    void decreasedBookStockQuantity(BookStockQuantityRequest bookStockQuantityRequest);
-
-    record BookPropertiesRequest(
-            BookDTO book,
-            Map<BookProperty, List<String>> properties) {
-    }
-
-    public record BookQuantityRequest(BookDTO book, int quantity){}
-
+    void decreaseBookStockQuantity(BookStockQuantityRequest bookStockQuantityRequest);
 }

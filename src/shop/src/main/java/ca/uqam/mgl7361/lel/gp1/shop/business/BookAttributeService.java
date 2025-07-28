@@ -1,10 +1,10 @@
 package ca.uqam.mgl7361.lel.gp1.shop.business;
 
 import ca.uqam.mgl7361.lel.gp1.shop.business.mapper.BookAttributeMapper;
-import ca.uqam.mgl7361.lel.gp1.shop.dto.AuthorDTO;
-import ca.uqam.mgl7361.lel.gp1.shop.dto.BookAttributeDTO;
-import ca.uqam.mgl7361.lel.gp1.shop.dto.CategoryDTO;
-import ca.uqam.mgl7361.lel.gp1.shop.dto.PublisherDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.AuthorDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookAttributeDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.CategoryDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.PublisherDTO;
 import ca.uqam.mgl7361.lel.gp1.shop.model.BookAttribute;
 import ca.uqam.mgl7361.lel.gp1.shop.model.Author;
 import ca.uqam.mgl7361.lel.gp1.shop.model.Category;

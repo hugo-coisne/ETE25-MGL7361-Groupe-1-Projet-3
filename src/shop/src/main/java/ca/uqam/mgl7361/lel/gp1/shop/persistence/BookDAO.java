@@ -7,7 +7,7 @@ import ca.uqam.mgl7361.lel.gp1.shop.model.Book;
 import ca.uqam.mgl7361.lel.gp1.shop.model.Category;
 import ca.uqam.mgl7361.lel.gp1.shop.model.Publisher;
 import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
-import ca.uqam.mgl7361.lel.gp1.shop.dto.BookProperty;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookProperty;
 
 import java.sql.*;
 import java.util.*;
@@ -478,7 +478,7 @@ public class BookDAO {
     public void update(String isbn, int i) {
         String query = "UPDATE books SET stock_quantity = ? WHERE isbn = ?";
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+                PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, i);
             stmt.setString(2, isbn);
             int rowsUpdated = stmt.executeUpdate();

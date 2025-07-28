@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ca.uqam.mgl7361.lel.gp1.user.business.CartService;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartBookRequest;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCartException;
 import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCredentialsException;
 import ca.uqam.mgl7361.lel.gp1.user.exception.UnsufficientStockException;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 
 @RestController
 @RequestMapping("/cart")
@@ -136,15 +136,6 @@ public class CartController {
             logger.error("Error clearing cart", e);
             return ResponseEntity.internalServerError()
                     .body(Map.of("message", "Error clearing cart : " + e.getMessage()));
-        }
-    }
-
-    /**
-     * Simple DTO to wrap book and account together.
-     */
-    public record CartBookRequest(AccountDTO account, BookDTO book) {
-        public String toString() {
-            return "CartBookRequest(AccountDTO=" + account + ", BookDTO=" + book + ")";
         }
     }
 }

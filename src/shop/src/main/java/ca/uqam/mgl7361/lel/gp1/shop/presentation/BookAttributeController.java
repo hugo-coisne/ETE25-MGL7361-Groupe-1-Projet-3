@@ -1,7 +1,7 @@
 package ca.uqam.mgl7361.lel.gp1.shop.presentation;
 
 import ca.uqam.mgl7361.lel.gp1.shop.business.BookAttributeService;
-import ca.uqam.mgl7361.lel.gp1.shop.dto.BookAttributeDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookAttributeDTO;
 import ca.uqam.mgl7361.lel.gp1.shop.exception.AttributesException;
 import ca.uqam.mgl7361.lel.gp1.shop.exception.AuthorsException;
 import ca.uqam.mgl7361.lel.gp1.shop.exception.CategoriesException;

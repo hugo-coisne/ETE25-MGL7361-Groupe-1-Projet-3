@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookStockQuantityRequest;
 import ca.uqam.mgl7361.lel.gp1.shop.business.BookService;
-import ca.uqam.mgl7361.lel.gp1.shop.dto.BookDTO;
-import ca.uqam.mgl7361.lel.gp1.shop.dto.BookProperty;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookPropertiesRequest;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookProperty;
 
 import java.util.List;
 import java.util.Map;
@@ -115,38 +116,26 @@ public class BookController {
     @Operation(summary = "Check if a book is in stock with given quantity")
     @PostMapping("/quantity-in-stock")
     public ResponseEntity<Boolean> isSufficientlyInStock(
-            @RequestBody BookQuantityRequest bookQuantityRequest) {
-        logger.info("Received request for " + bookQuantityRequest);
-        BookDTO bookDTO = bookQuantityRequest.book;
-        int quantity = bookQuantityRequest.quantity;
+            @RequestBody BookStockQuantityRequest bookStockQuantityRequest) {
+        logger.info("Received request for " + bookStockQuantityRequest);
+        BookDTO bookDTO = bookStockQuantityRequest.book();
+        int quantity = bookStockQuantityRequest.quantity();
         boolean sufficient = bookService.isSufficientlyInStock(bookDTO, quantity);
         logger.debug("Book '{}' in stock with quantity {}: {}", bookDTO.getTitle(), quantity, sufficient);
         return ResponseEntity.ok(sufficient);
     }
 
     @DeleteMapping("/stock/decrease")
-    public ResponseEntity<?> decreasedBookStockQuantity(
+    public ResponseEntity<?> decreaseBookStockQuantity(
             @RequestBody BookStockQuantityRequest bookStockQuantityRequest) {
-        logger.info("Received request to decrease stock for book: {}", bookStockQuantityRequest.isbn());
+        logger.info("Received request to decrease stock for book: {}", bookStockQuantityRequest.book());
         try {
-            bookService.decreasedBookStockQuantity(bookStockQuantityRequest.isbn(), bookStockQuantityRequest.quantity());
-            logger.debug("Decreased stock for book: {}", bookStockQuantityRequest.isbn());
+            bookService.decreaseBookStockQuantity(bookStockQuantityRequest.book(), bookStockQuantityRequest.quantity());
+            logger.debug("Decreased stock for book: {}", bookStockQuantityRequest.book());
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            logger.error("Error decreasing stock for book: {}", bookStockQuantityRequest.isbn(), e);
+            logger.error("Error decreasing stock for book: {}", bookStockQuantityRequest.book(), e);
             return ResponseEntity.internalServerError().body(e);
-        }
-    }
-
-    // DTO for requests with a book and its properties
-    public record BookPropertiesRequest(
-            BookDTO book,
-            Map<BookProperty, List<String>> properties) {
-    }
-
-    public record BookQuantityRequest(BookDTO book, int quantity) {
-        public String toString() {
-            return "BookQuanityRequest(book=" + book + ", quantity" + quantity + ")";
         }
     }
 }

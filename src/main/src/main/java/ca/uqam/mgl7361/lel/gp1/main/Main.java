@@ -1,8 +1,6 @@
 package ca.uqam.mgl7361.lel.gp1.main;
 
 import ca.uqam.mgl7361.lel.gp1.common.clients.*;
-import ca.uqam.mgl7361.lel.gp1.common.clients.CartAPIClient.CartBookRequest;
-import ca.uqam.mgl7361.lel.gp1.common.clients.OrderAPIClient.OrderRequest;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.AddressDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.CreateDeliveryRequest;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.DeliveryDTO;
@@ -10,6 +8,7 @@ import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.checkout.*;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.*;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.*;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.order.*;
 
 import java.sql.Date;
 import java.time.LocalDate;

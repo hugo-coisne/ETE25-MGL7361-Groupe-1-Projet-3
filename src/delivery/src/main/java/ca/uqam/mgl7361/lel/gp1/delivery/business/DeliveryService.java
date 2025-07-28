@@ -103,8 +103,8 @@ public class DeliveryService {
         CartDTO cartDTO = cartAPI.getCart(delivery.getAddress().getAccountId());
         cartDTO.getCartItemDtos().forEach(cartItemDTO -> {
             BookStockQuantityRequest bookStockQuantityRequest = new BookStockQuantityRequest(
-                    cartItemDTO.book().getIsbn(), cartItemDTO.quantity());
-            bookAPIClient.decreasedBookStockQuantity(bookStockQuantityRequest);
+                    cartItemDTO.book(), cartItemDTO.quantity());
+            bookAPIClient.decreaseBookStockQuantity(bookStockQuantityRequest);
         });
         logger.info("Decreased book stock for cart items in delivery: " + delivery.getId());
         cartAPI.clearCart(cartDTO.getId());
