@@ -73,8 +73,7 @@ public class OrderService {
         try {
             bookDTO = getBooksFromCart(cart);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error(e);
         }
         double totalPrice = 0.0;
         for (Map.Entry<BookDTO, Integer> entry : bookDTO.entrySet()) {
@@ -88,7 +87,7 @@ public class OrderService {
         Order order = this.orderDAO.createOrder(account, bookDTO, totalPrice);
         logger.debug("Order created : {}", order);
         OrderDTO orderDTO = OrderMapper.toDTO(order);
-        logger.debug("returning "+orderDTO); 
+        logger.debug("returning " + orderDTO);
         return orderDTO;
     }
 
@@ -104,14 +103,14 @@ public class OrderService {
         logger.debug("Order ID resolved to: {}", id);
 
         OrderDTO order = this.orderDAO.findById(id);
-        
+
         if (order == null) {
             logger.warn("Order not found for number: {}", orderNumber);
         } else {
             order.setId(id);
             logger.debug("Order retrieved successfully for number: {}", orderNumber);
         }
-        
+
         return order;
     }
 }

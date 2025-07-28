@@ -589,7 +589,6 @@ public class Main {
                                 "On peut aussi consulter de nouveau l'état de toutes les commandes, notamment :");
                 Main.scenarioStep(
                                 "Voir que la liste des commandes en transit (en cours de livraison) compte désormais la commande qui a été passée :");
-                // TODO : voir ce qu'il se passe
                 pendingDeliveries = deliveryAPIClient.getAllOrdersInTransit();
                 Main.scenarioDetailsStep("Shipped Deliveries (" + pendingDeliveries.size() + ") :");
                 for (DeliveryDTO pendingDelivery : pendingDeliveries) {
@@ -598,7 +597,6 @@ public class Main {
                 }
                 Main.scenarioStep(
                                 "Voir que l'historique des commandes livrées n'a pas encore changé : ");
-                // TODO : vérifier
                 deliveredDeliveries = deliveryAPIClient.getAllDeliveredOrders();
                 Main.scenarioDetailsStep("Delivered Deliveries (" +
                                 deliveredDeliveries.size() + ") :");
