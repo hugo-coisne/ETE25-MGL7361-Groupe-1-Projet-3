@@ -1,4 +1,4 @@
-package ca.uqam.mgl7361.lel.gp1.user.presentation;
+package ca.uqam.mgl7361.lel.gp1.shop.presentation;
 
 import java.util.Map;
 
@@ -14,13 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ca.uqam.mgl7361.lel.gp1.user.business.CartService;
+import ca.uqam.mgl7361.lel.gp1.shop.business.CartService;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartBookRequest;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartDTO;
-import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCartException;
-import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCredentialsException;
-import ca.uqam.mgl7361.lel.gp1.user.exception.UnsufficientStockException;
+import ca.uqam.mgl7361.lel.gp1.shop.exception.InvalidCartException;
+import ca.uqam.mgl7361.lel.gp1.shop.exception.UnsufficientStockException;
 
 @RestController
 @RequestMapping("/cart")
@@ -42,10 +41,9 @@ public class CartController {
             logger.debug("Cart retrieved for account: {}, Cart ID: {}, Total Price: {}",
                     accountDto.getEmail(), cartDto.getId(), cartDto.getTotalPrice());
             return ResponseEntity.ok(cartDto);
-        } catch (InvalidCredentialsException e) {
-            logger.error("Invalid credentials for account: " + accountDto.getEmail(), e);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "Invalid credentials"));
+        } catch (Exception e) {
+            logger.error(e);
+            return ResponseEntity.internalServerError().build();
         }
     }
 
@@ -75,10 +73,6 @@ public class CartController {
         } catch (InvalidCartException e) {
             logger.error("Invalid cart: " + e.getMessage());
             return ResponseEntity.badRequest().body("Cart is invalid.");
-        } catch (InvalidCredentialsException e) {
-            logger.error("Invalid credentials for account: " + request.account().getEmail(), e);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "Invalid credentials"));
         } catch (Exception e) {
             logger.error("Error adding book to cart", e);
             return ResponseEntity.internalServerError()
@@ -95,10 +89,6 @@ public class CartController {
         } catch (InvalidCartException e) {
             logger.error("Invalid cart: " + e.getMessage());
             return ResponseEntity.badRequest().body("Invalid cart.");
-        } catch (InvalidCredentialsException e) {
-            logger.error("Invalid credentials for account: " + request.account().getEmail(), e);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "Invalid credentials"));
         } catch (Exception e) {
             logger.error("Error removing book from cart", e);
             return ResponseEntity.internalServerError()
@@ -112,10 +102,6 @@ public class CartController {
         try {
             cartService.clearCart(accountDto);
             return ResponseEntity.ok().body("Cart emptied successfully ! (or was already empty)");
-        } catch (InvalidCredentialsException e) {
-            logger.error("Invalid credentials for account: " + accountDto.getEmail(), e);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "Invalid credentials"));
         } catch (InvalidCartException e) {
             logger.error("Invalid cart: " + e.getMessage());
             return ResponseEntity.badRequest().body("Cart is invalid or already empty.");

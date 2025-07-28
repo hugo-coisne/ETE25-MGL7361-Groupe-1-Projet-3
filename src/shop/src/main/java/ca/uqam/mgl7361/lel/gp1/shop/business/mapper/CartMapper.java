@@ -1,10 +1,10 @@
-package ca.uqam.mgl7361.lel.gp1.user.mapper;
+package ca.uqam.mgl7361.lel.gp1.shop.business.mapper;
 
 import java.util.stream.Collectors;
 
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartItemDTO;
-import ca.uqam.mgl7361.lel.gp1.user.model.Cart;
+import ca.uqam.mgl7361.lel.gp1.shop.model.Cart;
 
 public class CartMapper {
 

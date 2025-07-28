@@ -369,38 +369,94 @@ VALUES (
 -- Utilisateur pour user-service
 CREATE USER 'user_svc' @'%' IDENTIFIED BY 'user_svc_pwd';
 
-GRANT SELECT, INSERT , UPDATE ON lel.accounts TO 'user_svc' @'%';
-
-GRANT SELECT ON lel.carts TO 'user_svc' @'%';
+GRANT
+SELECT,
+INSERT
+,
+UPDATE,
+DELETE ON lel.accounts TO 'user_svc' @'%';
 
 -- Utilisateur pour shop-service
 CREATE USER 'shop_svc' @'%' IDENTIFIED BY 'shop_svc_pwd';
 
-GRANT SELECT ON lel.books TO 'shop_svc' @'%';
+GRANT
+SELECT,
+INSERT
+,
+UPDATE,
+DELETE ON lel.books TO 'shop_svc' @'%';
 
-GRANT SELECT ON lel.categories TO 'shop_svc' @'%';
+GRANT
+SELECT,
+INSERT
+,
+UPDATE,
+DELETE ON lel.categories TO 'shop_svc' @'%';
 
-GRANT SELECT ON lel.authors TO 'shop_svc' @'%';
+GRANT
+SELECT,
+INSERT
+,
+UPDATE,
+DELETE ON lel.authors TO 'shop_svc' @'%';
 
-GRANT SELECT ON lel.publishers TO 'shop_svc' @'%';
+GRANT
+SELECT,
+INSERT
+,
+UPDATE,
+DELETE ON lel.publishers TO 'shop_svc' @'%';
+
+GRANT
+SELECT,
+INSERT
+,
+UPDATE,
+DELETE ON lel.carts TO 'shop_svc' @'%';
 
 -- Utilisateur pour order-service
 CREATE USER 'order_svc' @'%' IDENTIFIED BY 'order_svc_pwd';
 
-GRANT SELECT, INSERT , UPDATE ON lel.orders TO 'order_svc' @'%';
+GRANT
+SELECT,
+INSERT
+,
+UPDATE,
+DELETE ON lel.orders TO 'order_svc' @'%';
 
-GRANT SELECT, INSERT ON lel.order_contents TO 'order_svc' @'%';
+GRANT
+SELECT,
+INSERT
+,
+UPDATE,
+DELETE ON lel.order_contents TO 'order_svc' @'%';
 
 -- Utilisateur pour checkout-service
 CREATE USER 'checkout_svc' @'%' IDENTIFIED BY 'checkout_svc_pwd';
 
-GRANT SELECT, INSERT ON lel.invoices TO 'checkout_svc' @'%';
+GRANT
+SELECT,
+INSERT
+,
+UPDATE,
+DELETE ON lel.invoices TO 'checkout_svc' @'%';
 
 -- Utilisateur pour delivery-service
 CREATE USER 'delivery_svc' @'%' IDENTIFIED BY 'delivery_svc_pwd';
 
-GRANT SELECT, INSERT , UPDATE ON lel.deliveries TO 'delivery_svc' @'%';
-GRANT SELECT, INSERT , UPDATE ON lel.addresses TO 'delivery_svc' @'%';
+GRANT
+SELECT,
+INSERT
+,
+UPDATE,
+DELETE ON lel.deliveries TO 'delivery_svc' @'%';
+
+GRANT
+SELECT,
+INSERT
+,
+UPDATE,
+DELETE ON lel.addresses TO 'delivery_svc' @'%';
 
 -- Appliquer les privilèges
 FLUSH PRIVILEGES;

@@ -1,4 +1,4 @@
-package ca.uqam.mgl7361.lel.gp1.user.persistence;
+package ca.uqam.mgl7361.lel.gp1.shop.persistence;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -12,9 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCartException;
-import ca.uqam.mgl7361.lel.gp1.user.model.Account;
-import ca.uqam.mgl7361.lel.gp1.user.model.Cart;
+import ca.uqam.mgl7361.lel.gp1.shop.exception.InvalidCartException;
+import ca.uqam.mgl7361.lel.gp1.shop.model.Cart;
 import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.PublisherDTO;
@@ -214,16 +213,16 @@ public class CartDAO {
         }
     }
 
-    public void removeBookFromCart(Account account, BookDTO bookDto) throws InvalidCartException {
+    public void removeBookFromCart(int accountId, BookDTO bookDto) throws InvalidCartException {
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement statement = conn.prepareStatement(
                         "SELECT id FROM carts WHERE account_id = ?")) {
 
-            statement.setInt(1, account.getId());
+            statement.setInt(1, accountId);
             ResultSet rs = statement.executeQuery();
             if (!rs.next()) {
-                logger.error("No cart found for account ID: " + account.getId());
-                throw new InvalidCartException("No cart found for account ID: " + account.getId());
+                logger.error("No cart found for account ID: " + accountId);
+                throw new InvalidCartException("No cart found for account ID: " + accountId);
             }
             int cartId = rs.getInt("id");
 
@@ -247,10 +246,10 @@ public class CartDAO {
             int rowsDeleted = substractStatement.executeUpdate();
 
             if (rowsDeleted > 0) {
-                logger.debug("Book quantity decremented successfully for account ID: " + account.getId());
+                logger.debug("Book quantity decremented successfully for account ID: " + accountId);
             } else {
-                logger.error("No book found in cart to decrement for account ID: " + account.getId());
-                throw new SQLException("No book found in cart to decrement for account ID: " + account.getId());
+                logger.error("No book found in cart to decrement for account ID: " + accountId);
+                throw new SQLException("No book found in cart to decrement for account ID: " + accountId);
             }
             // Check if the book quantity is now zero, if so, remove it from the cart
             PreparedStatement checkStatement = conn.prepareStatement(
@@ -259,9 +258,9 @@ public class CartDAO {
             checkStatement.setInt(2, bookId);
             int rowsRemoved = checkStatement.executeUpdate();
             if (rowsRemoved > 0) {
-                logger.debug("Book removed from cart successfully for account ID: " + account.getId());
+                logger.debug("Book removed from cart successfully for account ID: " + accountId);
             } else {
-                logger.error("No book found in cart to remove for account ID: " + account.getId());
+                logger.error("No book found in cart to remove for account ID: " + accountId);
             }
 
             // Update the total price of the cart
@@ -271,9 +270,9 @@ public class CartDAO {
             updateStatement.setInt(2, cartId);
             int rowsUpdated = updateStatement.executeUpdate();
             if (rowsUpdated > 0) {
-                logger.debug("Cart total price updated successfully for account ID: " + account.getId());
+                logger.debug("Cart total price updated successfully for account ID: " + accountId);
             } else {
-                logger.error("Failed to update cart total price for account ID: " + account.getId());
+                logger.error("Failed to update cart total price for account ID: " + accountId);
             }
         } catch (SQLException e) {
             logger.error("Error removing book from cart: " + e.getMessage());
@@ -281,7 +280,7 @@ public class CartDAO {
         }
     }
 
-    public void clearCart(Account account) throws InvalidCartException {
+    public void clearCart(AccountDTO account) throws InvalidCartException {
         try {
             Connection conn = DBConnection.getConnection();
             PreparedStatement statement = conn.prepareStatement(

@@ -22,7 +22,7 @@ public class Clients {
         public static final CartAPIClient cartClient = Feign.builder()
                         .encoder(new JacksonEncoder())
                         .decoder(new JacksonDecoder())
-                        .target(CartAPIClient.class, userServiceUrl);
+                        .target(CartAPIClient.class, shopServiceUrl);
 
         public static final BookAPIClient bookClient = Feign.builder()
                         .encoder(new JacksonEncoder())

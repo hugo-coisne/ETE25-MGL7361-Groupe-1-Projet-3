@@ -8,10 +8,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import ca.uqam.mgl7361.lel.gp1.common.clients.CartAPIClient;
+import ca.uqam.mgl7361.lel.gp1.common.clients.Clients;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 import ca.uqam.mgl7361.lel.gp1.user.exception.DuplicateEmailException;
 import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidArgumentException;
-import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCartException;
 import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCredentialsException;
 import ca.uqam.mgl7361.lel.gp1.user.model.Account;
 import ca.uqam.mgl7361.lel.gp1.user.persistence.AccountDAO;
@@ -25,7 +26,7 @@ public class AccountService {
     Logger logger = LogManager.getLogger(AccountService.class);
 
     AccountDAO accountDao = AccountDAO.getInstance();
-    static CartService cartService = CartService.getInstance();
+    static CartAPIClient cartAPIClient = Clients.cartClient;
 
     public static AccountService getInstance() {
         if (instance == null) {
@@ -60,8 +61,8 @@ public class AccountService {
         Account authenticatedAccount = AccountMapper.toModel(signin(account.getEmail(), account.getPassword()));
         logger.debug("Deleting cart for account with email: " + authenticatedAccount.getEmail());
         try {
-            cartService.clearCart(AccountMapper.toDTO(authenticatedAccount));
-        } catch (InvalidCartException e) {
+            cartAPIClient.clearCart(AccountMapper.toDTO(authenticatedAccount));
+        } catch (Exception e) {
             logger.warn("No cart to delete for account: " + authenticatedAccount.getEmail());
         }
         logger.debug("Deleting account with email " + authenticatedAccount.getEmail());

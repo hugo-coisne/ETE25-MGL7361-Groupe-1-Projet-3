@@ -26,11 +26,6 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @Operation(summary = "Create a new order from account and cart")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Order successfully created", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDTO.class))),
-            @ApiResponse(responseCode = "500", description = "Order creation failed", content = @Content(mediaType = "application/json"))
-    })
     @PostMapping
     public ResponseEntity<?> createOrder(@RequestBody OrderRequest request) {
         logger.info("Received request " + request);
@@ -44,11 +39,6 @@ public class OrderController {
         }
     }
 
-    @Operation(summary = "Retrieve an order by its order number")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Order successfully retrieved", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Order not found", content = @Content)
-    })
     @GetMapping("/{orderId}")
     public ResponseEntity<?> getOrderById(@PathVariable(name = "orderId") String orderId) {
         logger.info("Received request with orderId " + orderId);

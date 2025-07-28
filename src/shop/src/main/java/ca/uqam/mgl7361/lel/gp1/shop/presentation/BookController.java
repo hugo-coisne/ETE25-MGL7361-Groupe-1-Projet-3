@@ -27,7 +27,6 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @Operation(summary = "Get books by criteria")
     @PostMapping("/search")
     public ResponseEntity<List<BookDTO>> getBooksBy(@RequestBody Map<BookProperty, String> criteria) {
         logger.info("Received request with criteria: {}", criteria);
@@ -42,7 +41,6 @@ public class BookController {
         }
     }
 
-    @Operation(summary = "Create a new book")
     @PostMapping
     public ResponseEntity<?> createBook(@RequestBody BookDTO bookDTO) {
         logger.info("Received request with {}", bookDTO);
@@ -56,7 +54,6 @@ public class BookController {
         }
     }
 
-    @Operation(summary = "Add a book (used for re-adding an existing book to the catalog)")
     @PostMapping("/add")
     public ResponseEntity<?> addBook(@RequestBody BookDTO bookDTO) {
         logger.info("Adding book to catalog: {}", bookDTO.getTitle());
@@ -70,7 +67,6 @@ public class BookController {
         }
     }
 
-    @Operation(summary = "Delete a book")
     @DeleteMapping
     public ResponseEntity<?> deleteBook(@RequestBody BookDTO bookDTO) {
         logger.info("Received request for {}", bookDTO);
@@ -84,7 +80,6 @@ public class BookController {
         }
     }
 
-    @Operation(summary = "Set properties for a book")
     @PostMapping("/properties/set")
     public ResponseEntity<Void> setPropertiesFor(@RequestBody BookPropertiesRequest request) {
         logger.info("Received request for " + request);
@@ -94,7 +89,6 @@ public class BookController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "Remove properties from a book")
     @PostMapping("/properties/remove")
     public ResponseEntity<Void> removePropertiesFrom(@RequestBody BookPropertiesRequest request) {
         logger.info("Received request " + request);
@@ -104,7 +98,6 @@ public class BookController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "Check if a book is in stock")
     @PostMapping("/is-in-stock")
     public ResponseEntity<Boolean> isInStock(@RequestBody BookDTO bookDTO) {
         logger.info("Received request for " + bookDTO);
@@ -113,7 +106,6 @@ public class BookController {
         return ResponseEntity.ok(inStock);
     }
 
-    @Operation(summary = "Check if a book is in stock with given quantity")
     @PostMapping("/quantity-in-stock")
     public ResponseEntity<Boolean> isSufficientlyInStock(
             @RequestBody BookStockQuantityRequest bookStockQuantityRequest) {

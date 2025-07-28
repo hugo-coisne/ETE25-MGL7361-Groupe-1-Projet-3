@@ -28,10 +28,6 @@ public class DeliveryController {
     }
 
     @Operation(summary = "Create a delivery")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Delivery created successfully"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @PostMapping("/create")
     public ResponseEntity<DeliveryDTO> createDelivery(@RequestBody CreateDeliveryRequest request) {
         logger.info("Received request " + request);
@@ -49,11 +45,6 @@ public class DeliveryController {
         }
     }
 
-    @Operation(summary = "Update delivery status to delivered")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Delivery status updated"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @PutMapping("/delivered")
     public ResponseEntity<Void> updateStatusToDelivered(@RequestBody DeliveryDTO delivery) {
         logger.info("Received request " + delivery);
@@ -79,8 +70,6 @@ public class DeliveryController {
         }
     }
 
-    @Operation(summary = "Get all deliveries in transit")
-    @ApiResponse(responseCode = "200", description = "List of in-transit deliveries")
     @GetMapping("/in-transit")
     public ResponseEntity<List<DeliveryDTO>> getAllOrdersInTransit() {
         logger.info("Received request");
@@ -94,8 +83,6 @@ public class DeliveryController {
         }
     }
 
-    @Operation(summary = "Get all delivered orders")
-    @ApiResponse(responseCode = "200", description = "List of delivered orders")
     @GetMapping("/delivered")
     public ResponseEntity<List<DeliveryDTO>> getAllDeliveredOrders() {
         logger.info("Received request");

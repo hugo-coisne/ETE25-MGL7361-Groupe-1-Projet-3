@@ -1,22 +1,23 @@
-package ca.uqam.mgl7361.lel.gp1.user.business;
+package ca.uqam.mgl7361.lel.gp1.shop.business;
+
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCartException;
-import ca.uqam.mgl7361.lel.gp1.user.exception.InvalidCredentialsException;
-import ca.uqam.mgl7361.lel.gp1.user.exception.UnsufficientStockException;
-import ca.uqam.mgl7361.lel.gp1.user.mapper.AccountMapper;
-import ca.uqam.mgl7361.lel.gp1.user.mapper.CartMapper;
-import ca.uqam.mgl7361.lel.gp1.user.model.Cart;
-import ca.uqam.mgl7361.lel.gp1.user.persistence.CartDAO;
+import ca.uqam.mgl7361.lel.gp1.shop.exception.InvalidCartException;
+import ca.uqam.mgl7361.lel.gp1.shop.exception.UnsufficientStockException;
+import ca.uqam.mgl7361.lel.gp1.common.clients.AccountAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.BookAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.Clients;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookStockQuantityRequest;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.CartDTO;
+import ca.uqam.mgl7361.lel.gp1.shop.business.mapper.CartMapper;
+import ca.uqam.mgl7361.lel.gp1.shop.model.Cart;
+import ca.uqam.mgl7361.lel.gp1.shop.persistence.CartDAO;
 
 @Service
 public class CartService {
@@ -24,7 +25,7 @@ public class CartService {
     static CartService instance;
     Logger logger = LogManager.getLogger(CartService.class.getName());
 
-    static AccountService accountService = AccountService.getInstance();
+    AccountAPIClient accountAPIClient = Clients.accountClient;
     BookAPIClient bookAPIClient = Clients.bookClient;
 
     CartDAO cartDAO = new CartDAO();
@@ -36,9 +37,11 @@ public class CartService {
         return instance;
     }
 
-    public CartDTO getCart(AccountDTO accountDto) throws InvalidCredentialsException {
+    public CartDTO getCart(AccountDTO accountDto) {
         logger.debug("Retrieving cart for account: " + accountDto.getEmail());
-        accountDto = accountService.signin(accountDto.getEmail(), accountDto.getPassword());
+        Map<String, String> credentialsMap = Map.of("email", accountDto.getEmail(), "password",
+                accountDto.getPassword());
+        accountDto = accountAPIClient.signin(credentialsMap);
 
         Cart cart = cartDAO.getCart(accountDto);
 
@@ -54,8 +57,10 @@ public class CartService {
     }
 
     public void addBookToCart(AccountDTO accountDto, BookDTO bookDto)
-            throws UnsufficientStockException, InvalidCartException, InvalidCredentialsException {
-        accountDto = accountService.signin(accountDto.getEmail(), accountDto.getPassword());
+            throws UnsufficientStockException, InvalidCartException {
+        Map<String, String> credentialsMap = Map.of("email", accountDto.getEmail(), "password",
+                accountDto.getPassword());
+        accountDto = accountAPIClient.signin(credentialsMap);
 
         CartDTO cart = this.getCart(accountDto);
         logger.debug("Calling bookAPIClient to check if " + bookDto + " is in stock then sufficiently in stock");
@@ -73,16 +78,20 @@ public class CartService {
     }
 
     public void removeBookFromCart(AccountDTO accountDto, BookDTO bookDto)
-            throws InvalidCartException, InvalidCredentialsException {
-        accountDto = accountService.signin(accountDto.getEmail(), accountDto.getPassword());
-        cartDAO.removeBookFromCart(AccountMapper.toModel(accountDto), bookDto);
+            throws InvalidCartException {
+        Map<String, String> credentialsMap = Map.of("email", accountDto.getEmail(), "password",
+                accountDto.getPassword());
+        accountDto = accountAPIClient.signin(credentialsMap);
+        cartDAO.removeBookFromCart(accountDto.getId(), bookDto);
     }
 
-    public void clearCart(AccountDTO accountDto) throws InvalidCartException, InvalidCredentialsException {
-        accountDto = accountService.signin(accountDto.getEmail(), accountDto.getPassword());
+    public void clearCart(AccountDTO accountDto) throws InvalidCartException {
+        Map<String, String> credentialsMap = Map.of("email", accountDto.getEmail(), "password",
+                accountDto.getPassword());
+        accountDto = accountAPIClient.signin(credentialsMap);
         try {
-            cartDAO.clearCart(AccountMapper.toModel(accountDto));
-        } catch (InvalidCartException e) {
+            cartDAO.clearCart(accountDto.getId());
+        } catch (Exception e) {
             logger.debug("No cart found for account id, considered clear");
         }
     }

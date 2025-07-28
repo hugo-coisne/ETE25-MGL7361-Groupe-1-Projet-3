@@ -1,4 +1,4 @@
-package ca.uqam.mgl7361.lel.gp1.user.model;
+package ca.uqam.mgl7361.lel.gp1.shop.model;
 
 import java.util.HashMap;
 import java.util.Map;
