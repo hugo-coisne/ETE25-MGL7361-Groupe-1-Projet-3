@@ -1,54 +1,53 @@
 package ca.uqam.mgl7361.lel.gp1.common.dtos.delivery;
 
-import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.Printable;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Date;
 
 @Schema(description = "Représente une livraison")
-public class DeliveryDTO extends DTO {
+public class DeliveryDTO extends Printable {
 
-    @Schema(description = "Adresse de livraison", required = true)
-    private AddressDTO address;
-
-    @Schema(description = "Date prévue de la livraison", required = true, example = "2025-08-01T10:00:00Z")
-    private Date date;
-
-    @Schema(description = "Statut de la livraison", example = "en cours")
-    private String status;
-
-    @Schema(description = "Commande associée à la livraison", required = true)
-    private OrderDTO order;
-
-    @Schema(description = "Identifiant unique de la livraison", example = "123")
     private int id;
+    private int addressId;
+    private Date deliveryDate;
+    private String status;
+    private int orderId;
 
-    public DeliveryDTO(AddressDTO address, Date date, String status, OrderDTO order) {
-        this.address = address;
-        this.date = date;
+    public DeliveryDTO(int id, int addressId, Date deliveryDate, String status, int orderId) {
+        this.id = id;
+        this.addressId = addressId;
+        this.deliveryDate = deliveryDate;
         this.status = status;
-        this.order = order;
+        this.orderId = orderId;
     }
 
     public DeliveryDTO() {
-        // Default constructor for serialization/deserialization
+        // Default constructor
     }
 
-    public AddressDTO getAddress() {
-        return address;
+    public int getId() {
+        return id;
     }
 
-    public void setAddress(AddressDTO address) {
-        this.address = address;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(int addressId) {
+        this.addressId = addressId;
     }
 
     public Date getDate() {
-        return date;
+        return deliveryDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDate(Date deliveryDate) {
+        this.deliveryDate = deliveryDate;
     }
 
     public String getStatus() {
@@ -59,19 +58,11 @@ public class DeliveryDTO extends DTO {
         this.status = status;
     }
 
-    public OrderDTO getOrder() {
-        return order;
+    public int getOrderId() {
+        return orderId;
     }
 
-    public void setOrder(OrderDTO order) {
-        this.order = order;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return this.id;
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 }

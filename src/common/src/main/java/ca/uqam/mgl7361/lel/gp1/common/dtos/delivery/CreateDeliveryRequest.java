@@ -1,13 +1,13 @@
 package ca.uqam.mgl7361.lel.gp1.common.dtos.delivery;
 
-import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.Printable;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Date;
 
 @Schema(description = "Requête pour créer une livraison")
-public class CreateDeliveryRequest extends DTO {
+public class CreateDeliveryRequest extends Printable {
 
     @Schema(description = "Adresse de livraison", required = true)
     private AddressDTO address;

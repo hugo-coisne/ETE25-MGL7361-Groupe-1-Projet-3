@@ -1,9 +1,8 @@
 package ca.uqam.mgl7361.lel.gp1.delivery.persistence;
 
 import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.AddressDTO;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.DeliveryDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
+import ca.uqam.mgl7361.lel.gp1.delivery.model.Delivery;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,16 +18,16 @@ public class DeliveryDAO {
     public DeliveryDAO() {
     }
 
-    public DeliveryDTO createDelivery(DeliveryDTO delivery, OrderDTO order) throws Exception {
-        int addressId = delivery.getAddress().getId(); // ici, on suppose que AddressDTO a un id
+    public Delivery createDelivery(Delivery delivery) throws Exception {
+        int addressId = delivery.getAddressId(); // ici, on suppose que AddressDTO a un id
 
         String sql = "INSERT INTO deliveries (order_id, address_id, delivery_date, status) VALUES (?, ?, ?, ?)";
 
-        logger.info("order ID " + order.getId());
+        logger.info("order ID " + delivery.getOrderId());
 
         try (Connection connection = DBConnection.getConnection();
                 PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setInt(1, order.getId());
+            stmt.setInt(1, delivery.getOrderId());
             stmt.setInt(2, addressId);
             stmt.setDate(3, new Date(delivery.getDate().getTime()));
             stmt.setString(4, delivery.getStatus());
@@ -45,7 +44,7 @@ public class DeliveryDAO {
         }
     }
 
-    private DeliveryDTO mapResultSetToDeliveryDTOWithAddress(ResultSet rs) throws SQLException {
+    private Delivery mapResultSetToDeliveryAddress(ResultSet rs) throws SQLException {
         // int deliveryId = rs.getInt("id");
         // int orderId = rs.getInt("order_id");
         // String orderNumber = rs.getString("order_number");
@@ -63,23 +62,13 @@ public class DeliveryDAO {
                 rs.getFloat("total_price"),
                 null);
         orderDTO.setId(rs.getInt("order_id"));
-        AddressDTO addressDTO = new AddressDTO(
-                rs.getInt("address_id"),
-                rs.getInt("account_id"),
-                rs.getString("first_name"),
-                rs.getString("last_name"),
-                rs.getString("phone"),
-                rs.getString("street"),
-                rs.getString("city"),
-                rs.getString("postal_code"));
 
-        DeliveryDTO delivery = new DeliveryDTO(
-                addressDTO,
+        Delivery delivery = new Delivery(
+                rs.getInt("id"),
+                rs.getInt("address_id"),
                 rs.getDate("delivery_date"),
                 rs.getString("status"),
-                orderDTO);
-        delivery.setOrder(orderDTO);
-        delivery.setId(rs.getInt("id"));
+                rs.getInt("order_id"));
 
         return delivery;
     }
@@ -108,13 +97,13 @@ public class DeliveryDAO {
     // }
     // }
 
-    public void update(DeliveryDTO delivery) throws Exception {
-        int orderId = delivery.getOrder().getId();
+    public void update(Delivery delivery) throws Exception {
+        int orderId = delivery.getOrderId();
 
         String sql = "UPDATE deliveries SET address_id = ?, delivery_date = ?, status = ? WHERE order_id = ?";
         try (Connection connection = DBConnection.getConnection();
                 PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, delivery.getAddress().getId());
+            stmt.setInt(1, delivery.getAddressId());
             stmt.setDate(2, new Date(delivery.getDate().getTime()));
             stmt.setString(3, delivery.getStatus());
             stmt.setInt(4, orderId);
@@ -140,7 +129,7 @@ public class DeliveryDAO {
     }
 
     // R�cup�re toutes les livraisons avec un statut sp�cifique
-    public List<DeliveryDTO> findByStatus(String status) throws Exception {
+    public List<Delivery> findByStatus(String status) throws Exception {
         String sql = """
                     SELECT d.*, o.order_number, o.account_id, o.order_date, o.total_price, a.first_name, a.last_name, a.street, a.city, a.postal_code, a.phone
                     FROM deliveries d
@@ -155,9 +144,9 @@ public class DeliveryDAO {
             stmt.setString(1, status);
             ResultSet rs = stmt.executeQuery();
 
-            List<DeliveryDTO> deliveries = new ArrayList<>();
+            List<Delivery> deliveries = new ArrayList<>();
             while (rs.next()) {
-                deliveries.add(mapResultSetToDeliveryDTOWithAddress(rs));
+                deliveries.add(mapResultSetToDeliveryAddress(rs));
             }
             return deliveries;
         } catch (SQLException e) {
@@ -166,7 +155,7 @@ public class DeliveryDAO {
     }
 
     // R�cup�re toutes les livraisons par statut ET utilisateur
-    public List<DeliveryDTO> findByStatusAndAccountId(String status, int accountId) throws Exception {
+    public List<Delivery> findByStatusAndAccountId(String status, int accountId) throws Exception {
         String sql = """
                     SELECT d.*, o.order_number, o.account_id, o.order_date, o.total_price, a.first_name, a.last_name, a.street, a.city, a.postal_code, a.phone
                     FROM deliveries d
@@ -182,9 +171,9 @@ public class DeliveryDAO {
             stmt.setInt(2, accountId);
             ResultSet rs = stmt.executeQuery();
 
-            List<DeliveryDTO> deliveries = new ArrayList<>();
+            List<Delivery> deliveries = new ArrayList<>();
             while (rs.next()) {
-                deliveries.add(mapResultSetToDeliveryDTOWithAddress(rs));
+                deliveries.add(mapResultSetToDeliveryAddress(rs));
             }
             return deliveries;
         } catch (SQLException e) {
@@ -192,29 +181,22 @@ public class DeliveryDAO {
         }
     }
 
-    private DeliveryDTO mapResultSetToDeliveryDTO(ResultSet rs) {
+    private Delivery mapResultSetToDelivery(ResultSet rs) {
         try {
-            DeliveryDTO delivery = new DeliveryDTO();
+            Delivery delivery = new Delivery();
             delivery.setId(rs.getInt("id"));
             delivery.setDate(rs.getDate("delivery_date"));
             delivery.setStatus(rs.getString("status"));
-
-            OrderDTO order = new OrderDTO();
-            order.setId(rs.getInt("order_id"));
-            order.setOrderNumber(rs.getString("order_number"));
-            order.setOrderDate(rs.getDate("order_date"));
-            order.setOrderPrice(rs.getFloat("total_price"));
-
-            delivery.setOrder(order);
+            delivery.setOrderId(rs.getInt("order_id"));
             return delivery;
         } catch (SQLException e) {
-            logger.error("Error mapping ResultSet to DeliveryDTO: " + e.getMessage(), e);
+            logger.error("Error mapping ResultSet to Delivery: " + e.getMessage(), e);
             return null;
         }
     }
 
     // R�cup�re toutes les livraisons dont le statut est diff�rent de celui donn�
-    public List<DeliveryDTO> findByStatusNot(String status) throws Exception {
+    public List<Delivery> findByStatusNot(String status) throws Exception {
         String sql = """
                     SELECT d.*, o.order_number, o.account_id, o.order_date, o.total_price
                     FROM deliveries d
@@ -228,9 +210,9 @@ public class DeliveryDAO {
             stmt.setString(1, status);
             ResultSet rs = stmt.executeQuery();
 
-            List<DeliveryDTO> deliveries = new ArrayList<>();
+            List<Delivery> deliveries = new ArrayList<>();
             while (rs.next()) {
-                deliveries.add(mapResultSetToDeliveryDTO(rs));
+                deliveries.add(mapResultSetToDelivery(rs));
             }
             return deliveries;
         } catch (SQLException e) {
@@ -238,7 +220,7 @@ public class DeliveryDAO {
         }
     }
 
-    public List<DeliveryDTO> findByAccountId(int accountId) throws Exception {
+    public List<Delivery> findByAccountId(int accountId) throws Exception {
         String sql = """
                     SELECT d.*, o.order_number, o.account_id, o.order_date, o.total_price, a.first_name, a.last_name, a.street, a.city, a.postal_code, a.phone
                     FROM deliveries d
@@ -246,7 +228,6 @@ public class DeliveryDAO {
                     JOIN addresses a ON d.address_id = a.id
                     WHERE  o.account_id = ?
                 """;
-                
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -254,9 +235,9 @@ public class DeliveryDAO {
             stmt.setInt(1, accountId);
             ResultSet rs = stmt.executeQuery();
 
-            List<DeliveryDTO> deliveries = new ArrayList<>();
+            List<Delivery> deliveries = new ArrayList<>();
             while (rs.next()) {
-                deliveries.add(mapResultSetToDeliveryDTOWithAddress(rs));
+                deliveries.add(mapResultSetToDeliveryAddress(rs));
             }
             return deliveries;
         } catch (SQLException e) {

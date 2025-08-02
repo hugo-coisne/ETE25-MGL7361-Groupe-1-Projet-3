@@ -6,10 +6,10 @@ import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.Printable;
 
 @Schema(description = "Data Transfer Object representing a book")
-public class BookDTO extends DTO {
+public class BookDTO extends Printable {
 
     @Schema(description = "Title of the book", example = "Clean Code")
     private String title;

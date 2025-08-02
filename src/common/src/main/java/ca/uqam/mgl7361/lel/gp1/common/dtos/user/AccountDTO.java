@@ -1,10 +1,10 @@
 package ca.uqam.mgl7361.lel.gp1.common.dtos.user;
 
-import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.Printable;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "User account data")
-public class AccountDTO extends DTO {
+public class AccountDTO extends Printable {
 
     @Schema(description = "First name", example = "Alice")
     private String firstName;

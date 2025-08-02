@@ -1,10 +1,6 @@
-package ca.uqam.mgl7361.lel.gp1.common.dtos.order;
+package ca.uqam.mgl7361.lel.gp1.order.model;
 
-import ca.uqam.mgl7361.lel.gp1.common.dtos.Printable;
-import io.swagger.v3.oas.annotations.media.Schema;
-
-@Schema(description = "Represents an item in an order, including the book and quantity.")
-public class OrderItemDTO extends Printable {
+public class OrderItem {
 
     private int id;
     private String orderNumber;
@@ -12,11 +8,11 @@ public class OrderItemDTO extends Printable {
     private float bookPrice;
     private int quantity;
 
-    public OrderItemDTO() {
+    public OrderItem(){
 
     }
 
-    public OrderItemDTO(int id, String orderNumber, String bookIsbn, float bookPrice, int quantity) {
+    public OrderItem(int id, String orderNumber, String bookIsbn, float bookPrice, int quantity){
         this.setId(id);
         this.setOrderNumber(orderNumber);
         this.setBookIsbn(bookIsbn);

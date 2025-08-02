@@ -3,14 +3,16 @@ package ca.uqam.mgl7361.lel.gp1.common.dtos.order;
 import java.sql.Date;
 import java.util.List;
 
-import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.Printable;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Represents a customer order containing multiple items.")
-public class OrderDTO extends DTO {
+public class OrderDTO extends Printable {
 
     @Schema(description = "Unique order number assigned to the order", example = "ORD-20250728-001", required = true)
     private String orderNumber;
+
+    private int accountId;
 
     @Schema(description = "Date the order was placed", example = "2025-07-28", required = true)
     private Date orderDate;
@@ -36,11 +38,6 @@ public class OrderDTO extends DTO {
     }
 
     public OrderDTO() {
-        // Default constructor for serialization/deserialization
-        this.orderNumber = null;
-        this.orderDate = null;
-        this.orderPrice = 0.0f;
-        this.orderItemDTOs = null;
     }
 
     // GETTERS ----------------------------------------------------------------
@@ -69,6 +66,10 @@ public class OrderDTO extends DTO {
         return this.id;
     }
 
+    public int getAccountId() {
+        return this.accountId;
+    }
+
     public void setItems(List<OrderItemDTO> orderItemDTOs) {
         this.orderItemDTOs = orderItemDTOs;
     }
@@ -83,6 +84,10 @@ public class OrderDTO extends DTO {
 
     public void setOrderPrice(float orderPrice) {
         this.orderPrice = orderPrice;
+    }
+
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
     }
 
 }

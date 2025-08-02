@@ -1,27 +1,21 @@
 package ca.uqam.mgl7361.lel.gp1.delivery.model;
 
-import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.AddressDTO;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
-
-import java.sql.Date;
+import java.util.Date;
 
 public class Delivery {
 
     private int id;
-    private AddressDTO address;
-
-    private Date date;
-
+    private int addressId;
+    private Date deliveryDate;
     private String status;
+    private int orderId;
 
-    private OrderDTO order;
-
-    public Delivery(int id, AddressDTO address, Date date, String status, OrderDTO order) {
+    public Delivery(int id, int addressId, Date deliveryDate, String status, int orderId) {
         this.id = id;
-        this.address = address;
-        this.date = date;
+        this.addressId = addressId;
+        this.deliveryDate = deliveryDate;
         this.status = status;
-        this.order = order;
+        this.orderId = orderId;
     }
 
     public Delivery() {
@@ -36,20 +30,20 @@ public class Delivery {
         this.id = id;
     }
 
-    public AddressDTO getAddress() {
-        return address;
+    public int getAddressId() {
+        return addressId;
     }
 
-    public void setAddress(AddressDTO address) {
-        this.address = address;
+    public void setAddressId(int addressId) {
+        this.addressId = addressId;
     }
 
     public Date getDate() {
-        return date;
+        return deliveryDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDate(Date deliveryDate) {
+        this.deliveryDate = deliveryDate;
     }
 
     public String getStatus() {
@@ -60,18 +54,18 @@ public class Delivery {
         this.status = status;
     }
 
-    public OrderDTO getOrder() {
-        return order;
+    public int getOrderId() {
+        return orderId;
     }
 
-    public void setOrder(OrderDTO order) {
-        this.order = order;
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 
     public String toString() {
         return "Delivery{" +
-                "address=" + address +
-                ", date=" + date +
+                "addressId=" + addressId +
+                ", deliveryDate=" + deliveryDate +
                 ", status='" + status + '\'' +
                 '}';
     }

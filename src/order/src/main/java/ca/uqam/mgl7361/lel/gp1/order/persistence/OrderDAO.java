@@ -1,11 +1,9 @@
 package ca.uqam.mgl7361.lel.gp1.order.persistence;
 
 import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderItemDTO;
 import ca.uqam.mgl7361.lel.gp1.order.model.Order;
+import ca.uqam.mgl7361.lel.gp1.order.model.OrderItem;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -14,8 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
@@ -31,7 +29,7 @@ public class OrderDAO {
         return datePart + "-" + uuidPart;
     }
 
-    public Order createOrder(AccountDTO accountDTO, Map<BookDTO, Integer> books, double total_price) throws Exception {
+    public Order createOrder(AccountDTO accountDTO, List<OrderItem> books, double total_price) throws Exception {
         logger.debug(String.format("Creating order for account %s", accountDTO));
 
         String orderNumber = generateOrderNumber();
@@ -45,10 +43,8 @@ public class OrderDAO {
                         PreparedStatement.RETURN_GENERATED_KEYS);
                 PreparedStatement insertContent = conn.prepareStatement(
                         "INSERT INTO order_contents (" +
-                                "order_number, book_isbn, book_title, book_description, " +
-                                "book_price, book_publisher, book_publication_date, " +
-                                "book_authors, quantity) " +
-                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                                "order_number, book_isbn, book_price, quantity) " +
+                                "VALUES (?, ?, ?, ?)")) {
             conn.setAutoCommit(false);
 
             // Insert order
@@ -67,43 +63,19 @@ public class OrderDAO {
             }
 
             // Insert contents
-            for (Map.Entry<BookDTO, Integer> entry : books.entrySet()) {
-                BookDTO book = entry.getKey();
-                int quantity = entry.getValue();
+            for (OrderItem orderItem : books) {
 
                 insertContent.setString(1, orderNumber);
 
-                insertContent.setString(2, nullable(book.getIsbn()));
-                insertContent.setString(3, nullable(book.getTitle()));
-                insertContent.setString(4, nullable(book.getDescription()));
+                insertContent.setString(2, orderItem.getBookIsbn());
 
-                if (book.getPrice() != 0.0) {
-                    insertContent.setDouble(5, book.getPrice());
+                if (orderItem.getBookPrice() != 0.0) {
+                    insertContent.setDouble(3, orderItem.getBookPrice());
                 } else {
-                    insertContent.setNull(5, java.sql.Types.DECIMAL);
+                    insertContent.setNull(3, java.sql.Types.DECIMAL);
                 }
 
-                if (book.getPublisher() != null) {
-                    insertContent.setString(6, book.getPublisher().getName());
-                } else {
-                    insertContent.setNull(6, java.sql.Types.VARCHAR);
-                }
-
-                if (book.getPublicationDate() != null) {
-                    insertContent.setDate(7, book.getPublicationDate());
-                } else {
-                    insertContent.setNull(7, java.sql.Types.DATE);
-                }
-
-                if (book.getAuthors() != null && !book.getAuthors().isEmpty()) {
-                    insertContent.setString(8, String.join(", ", book.getAuthors().stream()
-                            .map(a -> a != null ? a.getName() : "")
-                            .toList()));
-                } else {
-                    insertContent.setNull(8, java.sql.Types.VARCHAR);
-                }
-
-                insertContent.setInt(9, quantity);
+                insertContent.setInt(4, orderItem.getQuantity());
 
                 insertContent.addBatch(); // Add to batch for order contents
             }
@@ -121,10 +93,6 @@ public class OrderDAO {
             throw new Exception("Error creating order: " + e.getMessage(), e);
         }
 
-    }
-
-    private String nullable(String value) {
-        return value != null ? value : null;
     }
 
     public int findIdByOrderNumber(String orderNumber) throws Exception {
@@ -146,7 +114,7 @@ public class OrderDAO {
         }
     }
 
-    public OrderDTO findById(int orderId) throws Exception {
+    public Order findById(int orderId) throws Exception {
         String sql = "SELECT id, order_number, account_id, order_date, total_price FROM orders WHERE id = ?";
 
         try (
@@ -159,10 +127,62 @@ public class OrderDAO {
                     String orderNumber = rs.getString("order_number");
                     java.sql.Date orderDate = rs.getDate("order_date");
                     float orderPrice = (float) rs.getDouble("total_price");
-                    List<OrderItemDTO> items = List.of(); // Assuming items are fetched separately TODO
-                    return new OrderDTO(orderNumber, orderDate, orderPrice, items);
+                    Order order = new Order(orderNumber, orderDate, null);
+                    order.setOrderPrice(orderPrice);
+                    order.setAccountId(rs.getInt("account_id"));
+                    return order;
                 } else {
                     logger.debug("No order found with id: " + orderId);
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            throw new Exception("Error fetching order by ID: " + e.getMessage(), e);
+        }
+    }
+
+    public List<OrderItem> getOrderItems(Order order) throws Exception {
+        String sql = "SELECT * FROM order_contents WHERE order_number=?";
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, order.getOrderNumber());
+            ResultSet rs = stmt.executeQuery();
+            List<OrderItem> orderItems = new ArrayList<>();
+            while (rs.next()) {
+                OrderItem orderItem = new OrderItem();
+                orderItem.setBookIsbn(rs.getString("book_isbn"));
+                orderItem.setBookPrice(rs.getFloat("book_price"));
+                orderItem.setId(rs.getInt("id"));
+                orderItem.setQuantity(rs.getInt("quantity"));
+                orderItems.add(orderItem);
+            }
+            return orderItems;
+        } catch (SQLException e) {
+            logger.error(e);
+            throw new Exception("Error finding order id by order number: " + e.getMessage(), e);
+        }
+    }
+
+    public Order findByOrderNumber(String orderNumber) throws Exception {
+        String sql = "SELECT id, account_id, order_date, total_price FROM orders WHERE order_number = ?";
+
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, orderNumber);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int id = rs.getInt("id");
+                    java.sql.Date orderDate = rs.getDate("order_date");
+                    float orderPrice = (float) rs.getDouble("total_price");
+                    Order order = new Order(orderNumber, orderDate);
+                    order.setOrderPrice(orderPrice);
+                    order.setId(id);
+                    return order;
+                } else {
+                    logger.debug("No order found with number : " + orderNumber);
                     return null;
                 }
             }

@@ -223,7 +223,7 @@ public class Main {
                 OrderAPIClient orderAPIClient = Clients.orderClient;
 
                 System.out.println("Getting order by id");
-                OrderDTO order = orderAPIClient.getOrderById("20250623-AAAABBBB");
+                OrderDTO order = orderAPIClient.getOrderByNumber("20250623-AAAABBBB");
                 System.out.println(order);
                 AddressDTO address = new AddressDTO(1, "55 Rue du Faubourg Saint-Honoré", "Paris", "75008");
 
@@ -241,8 +241,8 @@ public class Main {
                 System.out.println("Created Delivery: ");
                 System.out.println("Status: " + delivery.getStatus());
                 System.out.println("Delivery Date: " + delivery.getDate());
-                System.out.println("Address : " + delivery.getAddress());
-                System.out.println("Order: " + delivery.getOrder().getOrderNumber());
+                System.out.println("Address : " + address);
+                System.out.println("Order: " + order);
 
                 // Étape 9 : Voir la liste des commandes en attente de livraison ainsi que
                 // l'historique des commandes livrées
@@ -250,14 +250,14 @@ public class Main {
                 List<DeliveryDTO> pendingDeliveries = deliveryAPIClient.getAllOrdersInTransit();
                 System.out.println("Shipped Deliveries (" + pendingDeliveries.size() + "):");
                 for (DeliveryDTO pendingDelivery : pendingDeliveries) {
-                        System.out.println("Order: " + pendingDelivery.getOrder().getOrderNumber() +
+                        System.out.println("Order id : " + pendingDelivery.getOrderId() +
                                         ", Status: " + pendingDelivery.getStatus());
                 }
 
                 List<DeliveryDTO> deliveredDeliveries = deliveryAPIClient.getAllDeliveredOrders();
                 System.out.println("Delivered Deliveries (" + deliveredDeliveries.size() + "):");
                 for (DeliveryDTO deliveredDelivery : deliveredDeliveries) {
-                        System.out.println("Order: " + deliveredDelivery.getOrder().getOrderNumber()
+                        System.out.println("Order id : " + deliveredDelivery.getOrderId()
                                         +
                                         ", Status: " + deliveredDelivery.getStatus());
                 }
@@ -272,14 +272,14 @@ public class Main {
                 pendingDeliveries = deliveryAPIClient.getAllOrdersInTransit();
                 System.out.println("Shipped Deliveries (" + pendingDeliveries.size() + "):");
                 for (DeliveryDTO pendingDelivery : pendingDeliveries) {
-                        System.out.println("Order: " + pendingDelivery.getOrder().getOrderNumber() +
+                        System.out.println("Order: " + pendingDelivery.getOrderId() +
                                         ", Status: " + pendingDelivery.getStatus());
                 }
 
                 deliveredDeliveries = deliveryAPIClient.getAllDeliveredOrders();
                 System.out.println("Delivered Deliveries (" + deliveredDeliveries.size() + "):");
                 for (DeliveryDTO deliveredDelivery : deliveredDeliveries) {
-                        System.out.println("Order: " + deliveredDelivery.getOrder().getOrderNumber()
+                        System.out.println("Order: " + deliveredDelivery.getOrderId()
                                         +
                                         ", Status: " + deliveredDelivery.getStatus());
                 }
@@ -479,6 +479,9 @@ public class Main {
                 System.out.println(accountDto);
                 accountClient.signup(accountDto);
 
+                credentials = Map.of("email", accountDto.getEmail(), "password",
+                                accountDto.getPassword());
+
                 Main.scenarioStep("5.1.2 Connexion au deuxième compte créé");
                 accountDto = accountClient.signin(credentials);
                 Main.scenarioDetailsStep("Connecté avec le compte - " + accountDto);
@@ -550,7 +553,7 @@ public class Main {
                 List<DeliveryDTO> pendingDeliveries = deliveryAPIClient.getAllOrdersInTransit();
                 System.out.println("Shipped Deliveries (" + pendingDeliveries.size() + ") :");
                 for (DeliveryDTO pendingDelivery : pendingDeliveries) {
-                        System.out.println("Order: " + pendingDelivery.getOrder().getOrderNumber() + ", Status: "
+                        System.out.println("Order id : " + pendingDelivery.getOrderId() + ", Status: "
                                         + pendingDelivery.getStatus());
                 }
                 Main.scenarioDetailsStep(
@@ -559,8 +562,8 @@ public class Main {
                 System.out.println("Delivered Deliveries (" +
                                 deliveredDeliveries.size() + ") :");
                 for (DeliveryDTO deliveredDelivery : deliveredDeliveries) {
-                        System.out.println("Order: " +
-                                        deliveredDelivery.getOrder().getOrderNumber() +
+                        System.out.println("Order id: " +
+                                        deliveredDelivery.getOrderId() +
                                         ", Status: " + deliveredDelivery.getStatus());
                 }
 
@@ -592,7 +595,7 @@ public class Main {
                 pendingDeliveries = deliveryAPIClient.getAllOrdersInTransit();
                 Main.scenarioDetailsStep("Shipped Deliveries (" + pendingDeliveries.size() + ") :");
                 for (DeliveryDTO pendingDelivery : pendingDeliveries) {
-                        Main.scenarioDetailsStep("Order: " + pendingDelivery.getOrder().getOrderNumber() + ", Status: "
+                        Main.scenarioDetailsStep("Order id : " + pendingDelivery.getOrderId() + ", Status: "
                                         + pendingDelivery.getStatus());
                 }
                 Main.scenarioStep(
@@ -601,8 +604,8 @@ public class Main {
                 Main.scenarioDetailsStep("Delivered Deliveries (" +
                                 deliveredDeliveries.size() + ") :");
                 for (DeliveryDTO deliveredDelivery : deliveredDeliveries) {
-                        Main.scenarioDetailsStep("Order: " +
-                                        deliveredDelivery.getOrder().getOrderNumber() +
+                        Main.scenarioDetailsStep("Order id : " +
+                                        deliveredDelivery.getOrderId() +
                                         ", Status: " + deliveredDelivery.getStatus());
                 }
 
@@ -625,7 +628,7 @@ public class Main {
                 pendingDeliveries = deliveryAPIClient.getAllOrdersInTransit();
                 Main.scenarioDetailsStep("Shipped Deliveries (" + pendingDeliveries.size() + ") :");
                 for (DeliveryDTO pendingDelivery : pendingDeliveries) {
-                        Main.scenarioDetailsStep("Order: " + pendingDelivery.getOrder().getOrderNumber() + ", Status: "
+                        Main.scenarioDetailsStep("Order: " + pendingDelivery.getOrderId() + ", Status: "
                                         + pendingDelivery.getStatus());
                 }
                 Main.scenarioStep(

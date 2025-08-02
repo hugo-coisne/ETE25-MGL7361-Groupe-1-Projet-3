@@ -1,10 +1,10 @@
 package ca.uqam.mgl7361.lel.gp1.common.dtos.shop;
 
-import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.Printable;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Data transfer object for a book attribute (author, category, publisher, etc.)")
-public class BookAttributeDTO extends DTO {
+public class BookAttributeDTO extends Printable {
 
     @Schema(description = "Name of the attribute", example = "J.K. Rowling", required = true)
     private String name;

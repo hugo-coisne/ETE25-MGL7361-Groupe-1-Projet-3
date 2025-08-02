@@ -2,11 +2,11 @@ package ca.uqam.mgl7361.lel.gp1.common.dtos.checkout;
 
 import java.sql.Date;
 
-import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.Printable;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "InvoiceDTO", description = "Données représentant une facture")
-public class InvoiceDTO extends DTO {
+public class InvoiceDTO extends Printable {
 
     @Schema(description = "Numéro unique de la facture", example = "INV123456")
     private String invoiceNumber;

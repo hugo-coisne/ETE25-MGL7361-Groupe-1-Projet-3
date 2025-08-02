@@ -2,7 +2,7 @@ package ca.uqam.mgl7361.lel.gp1.common.dtos;
 
 import java.lang.reflect.Field;
 
-public class DTO {
+public class Printable {
 
     @Override
     public String toString() {

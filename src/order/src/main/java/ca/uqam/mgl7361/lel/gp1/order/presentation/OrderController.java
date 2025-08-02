@@ -49,17 +49,37 @@ public class OrderController {
         }
     }
 
+    @Operation(summary = "Get order details by order number")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Order retrieved successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Order not found")
+    })
+    @GetMapping("/number/{orderNumber}")
+    public ResponseEntity<?> getOrderByNumber(
+            @Parameter(description = "Order ID", required = true) @PathVariable(name = "orderNumber") String orderNumber) {
+        logger.info("Received request with orderId " + orderNumber);
+        try {
+            OrderDTO order = orderService.findOrderByOrderNumber(orderNumber);
+            logger.debug("Order retrieved successfully: {}", orderNumber);
+            logger.debug("Found order : " + order);
+            return ResponseEntity.ok(order);
+        } catch (Exception e) {
+            logger.error("Order not found: {}", orderNumber, e);
+            return ResponseEntity.status(404).body("Order not found: " + e.getMessage());
+        }
+    }
+
     @Operation(summary = "Get order details by order ID")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Order retrieved successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDTO.class))),
             @ApiResponse(responseCode = "404", description = "Order not found")
     })
-    @GetMapping("/{orderId}")
+    @GetMapping("/id/{orderId}")
     public ResponseEntity<?> getOrderById(
-            @Parameter(description = "Order ID", required = true) @PathVariable(name = "orderId") String orderId) {
-        logger.info("Received request with orderId " + orderId);
+            @Parameter(description = "Order ID", required = true) @PathVariable(name = "orderId") int orderId) {
+        logger.info("getOrderById(" + orderId + ")");
         try {
-            OrderDTO order = orderService.findOrderByOrderNumber(orderId);
+            OrderDTO order = orderService.getOrderById(orderId);
             logger.debug("Order retrieved successfully: {}", orderId);
             logger.debug("Found order : " + order);
             return ResponseEntity.ok(order);

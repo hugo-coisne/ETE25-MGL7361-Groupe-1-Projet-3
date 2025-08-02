@@ -1,10 +1,10 @@
 package ca.uqam.mgl7361.lel.gp1.common.dtos.delivery;
 
-import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.Printable;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Adresse complète d'un compte utilisateur")
-public class AddressDTO extends DTO {
+public class AddressDTO extends Printable {
     @Schema(description = "Identifiant unique de l'adresse", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private int id;
 

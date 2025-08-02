@@ -9,8 +9,10 @@ import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 import ca.uqam.mgl7361.lel.gp1.order.business.mapper.OrderMapper;
 import ca.uqam.mgl7361.lel.gp1.order.model.Order;
+import ca.uqam.mgl7361.lel.gp1.order.model.OrderItem;
 import ca.uqam.mgl7361.lel.gp1.order.persistence.OrderDAO;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,25 +55,14 @@ public class OrderService {
         return result;
     }
 
-    public OrderDTO createOrder(AccountDTO account, CartDTO cart) throws Exception {
+    public OrderDTO createOrder(AccountDTO account, CartDTO cartDTO) throws Exception {
         logger.debug("Creating order for account: {}", account != null ? account.getEmail() : "null");
 
-        if (account == null || cart == null) {
-            logger.error("Account or cart is null");
-            throw new IllegalArgumentException("Account and Cart cannot be null");
-        }
-        if (account.getId() <= 0) {
-            logger.error("Invalid account ID: {}", account.getId());
-            throw new IllegalArgumentException("Invalid account ID");
-        }
-        if (cart.getBookIsbn() == null || cart.getBookIsbn().isEmpty()) {
-            logger.warn("Attempted to create order with empty cart for account: {}", account.getEmail());
-            throw new IllegalArgumentException("Cart is empty");
-        }
+        checkValues(account, cartDTO);
 
         Map<BookDTO, Integer> bookDTO = Map.of(new BookDTO(), 0);
         try {
-            bookDTO = getBooksFromCart(cart);
+            bookDTO = getBooksFromCart(cartDTO);
         } catch (Exception e) {
             logger.error(e);
         }
@@ -84,11 +75,37 @@ public class OrderService {
         }
 
         logger.debug("Total price for order: {}", totalPrice);
-        Order order = this.orderDAO.createOrder(account, bookDTO, totalPrice);
+
+        List<OrderItem> orderItems = new ArrayList<>();
+
+        cartDTO.getCartItemDtos().forEach(cartItemDTO -> {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setBookIsbn(cartItemDTO.book().getIsbn());
+            orderItem.setBookPrice(((float) cartItemDTO.book().getPrice()));
+            orderItem.setQuantity(cartItemDTO.quantity());
+            orderItems.add(orderItem);
+        });
+
+        Order order = this.orderDAO.createOrder(account, orderItems, totalPrice);
         logger.debug("Order created : {}", order);
         OrderDTO orderDTO = OrderMapper.toDTO(order);
         logger.debug("returning " + orderDTO);
         return orderDTO;
+    }
+
+    private void checkValues(AccountDTO account, CartDTO cartDTO) {
+        if (account == null || cartDTO == null) {
+            logger.error("Account or cart is null");
+            throw new IllegalArgumentException("Account and Cart cannot be null");
+        }
+        if (account.getId() <= 0) {
+            logger.error("Invalid account ID: {}", account.getId());
+            throw new IllegalArgumentException("Invalid account ID");
+        }
+        if (cartDTO.getBookIsbn() == null || cartDTO.getBookIsbn().isEmpty()) {
+            logger.warn("Attempted to create order with empty cart for account: {}", account.getEmail());
+            throw new IllegalArgumentException("Cart is empty");
+        }
     }
 
     public OrderDTO findOrderByOrderNumber(String orderNumber) throws Exception {
@@ -99,18 +116,22 @@ public class OrderService {
             throw new IllegalArgumentException("Order ID cannot be null or empty");
         }
 
-        int id = orderDAO.findIdByOrderNumber(orderNumber);
-        logger.debug("Order ID resolved to: {}", id);
+        Order order = orderDAO.findByOrderNumber(orderNumber);
+        logger.debug("Order found : {}", order);
 
-        OrderDTO order = this.orderDAO.findById(id);
+        order.setItems(orderDAO.getOrderItems(order));
 
-        if (order == null) {
-            logger.warn("Order not found for number: {}", orderNumber);
-        } else {
-            order.setId(id);
-            logger.debug("Order retrieved successfully for number: {}", orderNumber);
-        }
+        return OrderMapper.toDTO(order);
+    }
 
-        return order;
+    public OrderDTO getOrderById(int orderId) throws Exception {
+        logger.debug("Looking for order with id: {}", orderId);
+
+        Order order = orderDAO.findById(orderId);
+        logger.debug("Order found : {}", order);
+
+        order.setItems(orderDAO.getOrderItems(order));
+
+        return OrderMapper.toDTO(order);
     }
 }

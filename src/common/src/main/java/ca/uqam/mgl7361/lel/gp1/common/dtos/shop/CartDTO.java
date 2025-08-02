@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ca.uqam.mgl7361.lel.gp1.common.dtos.DTO;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.Printable;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "DTO representing a user's shopping cart")
-public class CartDTO extends DTO {
+public class CartDTO extends Printable {
 
     @Schema(description = "Map of ISBN to quantity", example = "{\"9780132350884\": 2}")
     private Map<String, Integer> booksIsbn;

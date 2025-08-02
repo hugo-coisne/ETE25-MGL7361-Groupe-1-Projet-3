@@ -11,7 +11,11 @@ public interface OrderAPIClient {
     @Headers("Content-Type: application/json")
     OrderDTO createOrder(OrderRequest request);
 
-    @RequestLine("GET /orders/{orderId}")
+    @RequestLine("GET /orders/number/{orderId}")
     @Headers("Accept: application/json")
-    OrderDTO getOrderById(@Param("orderId") String orderId);
+    OrderDTO getOrderByNumber(@Param("orderId") String orderId);
+
+    @RequestLine("GET /orders/id/{orderId}")
+    @Headers("Accept: application/json")
+    OrderDTO getOrderById(@Param("orderId") int orderId);
 }

@@ -7,13 +7,8 @@
   </Appenders>
 
   <Loggers>
-    <Root level="info">
+    <Root level="DEBUG">
       <AppenderRef ref="Console"/>
     </Root>
-
-    <!-- Optional: Custom log level for your package -->
-    <Logger name="ca.uqam.mgl7361" level="debug" additivity="false">
-      <AppenderRef ref="Console"/>
-    </Logger>
   </Loggers>
 </Configuration>

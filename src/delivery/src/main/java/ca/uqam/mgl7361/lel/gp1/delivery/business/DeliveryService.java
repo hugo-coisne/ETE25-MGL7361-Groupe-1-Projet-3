@@ -7,6 +7,8 @@ import ca.uqam.mgl7361.lel.gp1.common.clients.Clients;
 import ca.uqam.mgl7361.lel.gp1.common.clients.OrderAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.AddressDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.delivery.DeliveryDTO;
+import ca.uqam.mgl7361.lel.gp1.delivery.business.mapper.DeliveryMapper;
+import ca.uqam.mgl7361.lel.gp1.delivery.model.Delivery;
 import ca.uqam.mgl7361.lel.gp1.delivery.persistence.DeliveryDAO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookStockQuantityRequest;
@@ -42,65 +44,43 @@ public class DeliveryService {
 
     public DeliveryDTO createDelivery(AddressDTO address, Date date, String status, OrderDTO order)
             throws Exception {
-        DeliveryDTO deliveryDTO = new DeliveryDTO(address, date, status, order);
-        deliveryDAO.createDelivery(deliveryDTO, order);
-        return deliveryDTO;
+        Delivery delivery = new Delivery(0, address.getId(), date, status, order.getId());
+        deliveryDAO.createDelivery(delivery);
+        return DeliveryMapper.toDTO(delivery);
     }
 
-    // public void updateDeliveryOrder(DeliveryDTO delivery, OrderDTO order) {
-    // delivery.setOrder(order);
-    // }
-
-    // public void updateStatus(DeliveryDTO delivery, String newStatus) {
-    // delivery.setStatus(newStatus);
-    // }
-
-    // public void updateDeliveryAddress(DeliveryDTO delivery, AddressDTO
-    // newAddress) {
-    // delivery.setAddress(newAddress);
-    // }
-
-    // public void updateDate(DeliveryDTO delivery, Date newDate) {
-    // delivery.setDate(newDate);
-    // }
-
     public List<DeliveryDTO> getAllOrdersInTransit() throws Exception {
-        return deliveryDAO.findByStatus("Shipped");
+        return DeliveryMapper.toDTO(deliveryDAO.findByStatus("Shipped"));
     }
 
     public List<DeliveryDTO> getAllOrdersAwaitingShipping() throws Exception {
-        return deliveryDAO.findByStatus("Awaiting shipping");
+        return DeliveryMapper.toDTO(deliveryDAO.findByStatus("Awaiting shipping"));
     }
 
     public List<DeliveryDTO> getAllOrdersInTransitFor(AccountDTO account) throws Exception {
-        return deliveryDAO.findByStatusAndAccountId("Shipped", account.getId());
+        return DeliveryMapper.toDTO(deliveryDAO.findByStatusAndAccountId("Shipped", account.getId()));
     }
 
     public List<DeliveryDTO> getAllDeliveredOrders() throws Exception {
-        return deliveryDAO.findByStatus("Delivered");
+        return DeliveryMapper.toDTO(deliveryDAO.findByStatus("Delivered"));
     }
-
-    // public List<DeliveryDTO> getAllOrdersNotDelivered() throws Exception {
-    // return deliveryDAO.findByStatusNot("Delivered");
-    // }
-
-    // public void updateStatusToInProgress(DeliveryDTO delivery) {
-    // delivery.setStatus("In Progress");
-    // }
-
-    // public void updateStatusToInTransit(DeliveryDTO delivery) {
-    // delivery.setStatus("In Transit");
-    // }
 
     public void updateStatusToDelivered(DeliveryDTO delivery) throws Exception {
         delivery.setStatus("Delivered");
-        deliveryDAO.update(delivery);
+        deliveryDAO.update(DeliveryMapper.toModel(delivery));
     }
 
     public void updateStatusToShipped(DeliveryDTO delivery) throws Exception {
         delivery.setStatus("Shipped");
-        deliveryDAO.update(delivery);
-        CartDTO cartDTO = cartAPI.getCart(delivery.getAddress().getAccountId());
+        deliveryDAO.update(DeliveryMapper.toModel(delivery));
+
+        OrderDTO orderDTO = orderAPIClient.getOrderById(delivery.getOrderId());
+        logger.info("Got order (by id) : " + orderDTO);
+        int accountId = orderDTO.getAccountId();
+
+        logger.info("Getting cart for accountId " + accountId);
+
+        CartDTO cartDTO = cartAPI.getCart(accountId);
         cartDTO.getCartItemDtos().forEach(cartItemDTO -> {
             BookStockQuantityRequest bookStockQuantityRequest = new BookStockQuantityRequest(
                     cartItemDTO.book(), cartItemDTO.quantity());
@@ -113,7 +93,8 @@ public class DeliveryService {
     public List<DeliveryDTO> getOrderStatusesFor(AccountDTO accountDTO) throws Exception {
         AccountDTO accountDTO2 = accountAPIClient
                 .signin(Map.of("email", accountDTO.getEmail(), "password", accountDTO.getPassword()));
-        return deliveryDAO.findByAccountId(accountDTO2.getId());
+        List<Delivery> deliveries = deliveryDAO.findByAccountId(accountDTO2.getId());
+        return DeliveryMapper.toDTO(deliveries);
     }
 
     public void pass(int time) throws Exception { // to simulate the shipping of previous day orders
@@ -136,9 +117,5 @@ public class DeliveryService {
             }
         }
     }
-
-    // public void updateStatusToCanceled(DeliveryDTO delivery) {
-    // delivery.setStatus("Canceled");
-    // }
 
 }

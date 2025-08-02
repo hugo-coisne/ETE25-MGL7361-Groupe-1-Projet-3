@@ -63,6 +63,7 @@ public class CartController {
     public ResponseEntity<?> getCart(
             @PathVariable(name = "accountId") @Parameter(description = "ID of the account") int accountId) {
         try {
+            logger.info("Received request for getCart(" + accountId + ")");
             CartDTO cartDto = cartService.getCartFor(accountId);
             return ResponseEntity.ok(cartDto);
         } catch (Exception e) {
