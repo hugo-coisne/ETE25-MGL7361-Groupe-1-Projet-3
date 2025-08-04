@@ -1,7 +1,6 @@
 package ca.uqam.mgl7361.lel.gp1.delivery.persistence;
 
-import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
-import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
+import ca.uqam.mgl7361.lel.gp1.delivery.DBConnection;
 import ca.uqam.mgl7361.lel.gp1.delivery.model.Delivery;
 
 import java.sql.*;
@@ -45,57 +44,14 @@ public class DeliveryDAO {
     }
 
     private Delivery mapResultSetToDeliveryAddress(ResultSet rs) throws SQLException {
-        // int deliveryId = rs.getInt("id");
-        // int orderId = rs.getInt("order_id");
-        // String orderNumber = rs.getString("order_number");
-        // int accountId = rs.getInt("account_id");
-        // int addressId = rs.getInt("address_id");
-        // Date date = rs.getDate("delivery_date");
-        // String status = rs.getString("status");
-        // Date orderDate = rs.getDate("order_date");
-        // float orderPrice = rs.getFloat("total_price");
-
-        // Cr�e les objets DTO partiels
-        OrderDTO orderDTO = new OrderDTO(
-                rs.getString("order_number"),
-                rs.getDate("order_date"),
-                rs.getFloat("total_price"),
-                null);
-        orderDTO.setId(rs.getInt("order_id"));
-
         Delivery delivery = new Delivery(
                 rs.getInt("id"),
                 rs.getInt("address_id"),
                 rs.getDate("delivery_date"),
                 rs.getString("status"),
                 rs.getInt("order_id"));
-
         return delivery;
     }
-
-    // public Delivery findById(int id, OrderDTO order) throws Exception {
-    // String sql = "SELECT * FROM deliveries WHERE id = ?";
-    // Connection connection = DBConnection.getConnection();
-    // try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-    // stmt.setInt(1, id);
-
-    // ResultSet rs = stmt.executeQuery();
-    // if (rs.next()) {
-    // int orderId = rs.getInt("order_id");
-    // int addressId = rs.getInt("address_id");
-    // Date date = rs.getDate("delivery_date");
-    // String status = rs.getString("status");
-
-    // AddressDTO address = toDTO(addressDAO.findById(addressId));
-
-    // return new Delivery(id, address, date, status, order);
-    // } else {
-    // return null;
-    // }
-    // } catch (SQLException e) {
-    // throw new Exception("Error finding delivery by ID: " + e.getMessage(), e);
-    // }
-    // }
 
     public void update(Delivery delivery) throws Exception {
         int orderId = delivery.getOrderId();
@@ -131,9 +87,8 @@ public class DeliveryDAO {
     // R�cup�re toutes les livraisons avec un statut sp�cifique
     public List<Delivery> findByStatus(String status) throws Exception {
         String sql = """
-                    SELECT d.*, o.order_number, o.account_id, o.order_date, o.total_price, a.first_name, a.last_name, a.street, a.city, a.postal_code, a.phone
+                    SELECT d.*, a.first_name, a.last_name, a.street, a.city, a.postal_code, a.phone
                     FROM deliveries d
-                    JOIN orders o ON d.order_id = o.id
                     JOIN addresses a ON d.address_id = a.id
                     WHERE d.status = ?
                 """;
@@ -154,33 +109,6 @@ public class DeliveryDAO {
         }
     }
 
-    // R�cup�re toutes les livraisons par statut ET utilisateur
-    public List<Delivery> findByStatusAndAccountId(String status, int accountId) throws Exception {
-        String sql = """
-                    SELECT d.*, o.order_number, o.account_id, o.order_date, o.total_price, a.first_name, a.last_name, a.street, a.city, a.postal_code, a.phone
-                    FROM deliveries d
-                    JOIN orders o ON d.order_id = o.id
-                    JOIN addresses a ON d.address_id = a.id
-                    WHERE d.status = ? AND o.account_id = ?
-                """;
-
-        try (Connection conn = DBConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, status);
-            stmt.setInt(2, accountId);
-            ResultSet rs = stmt.executeQuery();
-
-            List<Delivery> deliveries = new ArrayList<>();
-            while (rs.next()) {
-                deliveries.add(mapResultSetToDeliveryAddress(rs));
-            }
-            return deliveries;
-        } catch (SQLException e) {
-            throw new Exception("Error retrieving deliveries by status and account ID: " + e.getMessage(), e);
-        }
-    }
-
     private Delivery mapResultSetToDelivery(ResultSet rs) {
         try {
             Delivery delivery = new Delivery();
@@ -197,12 +125,7 @@ public class DeliveryDAO {
 
     // R�cup�re toutes les livraisons dont le statut est diff�rent de celui donn�
     public List<Delivery> findByStatusNot(String status) throws Exception {
-        String sql = """
-                    SELECT d.*, o.order_number, o.account_id, o.order_date, o.total_price
-                    FROM deliveries d
-                    JOIN orders o ON d.order_id = o.id
-                    WHERE d.status != ?
-                """;
+        String sql = "SELECT * FROM deliveriesWHERE status != ?";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -220,19 +143,13 @@ public class DeliveryDAO {
         }
     }
 
-    public List<Delivery> findByAccountId(int accountId) throws Exception {
-        String sql = """
-                    SELECT d.*, o.order_number, o.account_id, o.order_date, o.total_price, a.first_name, a.last_name, a.street, a.city, a.postal_code, a.phone
-                    FROM deliveries d
-                    JOIN orders o ON d.order_id = o.id
-                    JOIN addresses a ON d.address_id = a.id
-                    WHERE  o.account_id = ?
-                """;
+    public List<Delivery> findByOrderId(int orderId) throws Exception {
+        String sql = "SELECT * FROM deliveries WHERE order_id=?";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, accountId);
+            stmt.setInt(1, orderId);
             ResultSet rs = stmt.executeQuery();
 
             List<Delivery> deliveries = new ArrayList<>();

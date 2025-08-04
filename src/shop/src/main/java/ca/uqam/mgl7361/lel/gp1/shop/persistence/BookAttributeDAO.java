@@ -1,7 +1,7 @@
 package ca.uqam.mgl7361.lel.gp1.shop.persistence;
 
 import ca.uqam.mgl7361.lel.gp1.shop.model.BookAttribute;
-import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
+import ca.uqam.mgl7361.lel.gp1.shop.DBConnection;
 import ca.uqam.mgl7361.lel.gp1.shop.exception.AttributesException;
 import ca.uqam.mgl7361.lel.gp1.shop.exception.AuthorsException;
 import ca.uqam.mgl7361.lel.gp1.shop.exception.CategoriesException;
@@ -27,8 +27,8 @@ public class BookAttributeDAO {
         String query = "SELECT id, name FROM authors";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(query);
+                ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 authors.add(new Author(rs.getInt("id"), rs.getString("name")));
@@ -49,8 +49,8 @@ public class BookAttributeDAO {
         String query = "SELECT id, name FROM categories";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(query);
+                ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 categories.add(new Category(rs.getInt("id"), rs.getString("name")));
@@ -71,8 +71,8 @@ public class BookAttributeDAO {
         String query = "SELECT id, name FROM publishers";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+                PreparedStatement stmt = conn.prepareStatement(query);
+                ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 publishers.add(new Publisher(rs.getInt("id"), rs.getString("name")));
@@ -113,7 +113,7 @@ public class BookAttributeDAO {
         logger.debug("Removing attribute '{}' from table '{}'", bookAttribute.getName(), table);
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+                PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setString(1, bookAttribute.getName());
             int rowsAffected = stmt.executeUpdate();

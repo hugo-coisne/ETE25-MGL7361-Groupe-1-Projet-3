@@ -3,6 +3,7 @@ package ca.uqam.mgl7361.lel.gp1.order.presentation;
 import ca.uqam.mgl7361.lel.gp1.order.business.OrderService;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderRequest;
+import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.*;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -10,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Parameter;
+
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -86,6 +89,18 @@ public class OrderController {
         } catch (Exception e) {
             logger.error("Order not found: {}", orderId, e);
             return ResponseEntity.status(404).body("Order not found: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/account")
+    public ResponseEntity<?> getOrdersFor(@org.springframework.web.bind.annotation.RequestBody AccountDTO accountDTO) {
+        try {
+            logger.info("getOrdersFor("+accountDTO+")");
+            List<OrderDTO> orders = orderService.getOrdersFor(accountDTO);
+            return ResponseEntity.ok().body(orders);
+        } catch (Exception e) {
+            logger.error(e);
+            return ResponseEntity.internalServerError().build();
         }
     }
 }

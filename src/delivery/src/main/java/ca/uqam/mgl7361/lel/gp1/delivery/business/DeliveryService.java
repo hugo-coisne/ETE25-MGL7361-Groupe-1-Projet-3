@@ -15,6 +15,7 @@ import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookStockQuantityRequest;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.CartDTO;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -57,10 +58,6 @@ public class DeliveryService {
         return DeliveryMapper.toDTO(deliveryDAO.findByStatus("Awaiting shipping"));
     }
 
-    public List<DeliveryDTO> getAllOrdersInTransitFor(AccountDTO account) throws Exception {
-        return DeliveryMapper.toDTO(deliveryDAO.findByStatusAndAccountId("Shipped", account.getId()));
-    }
-
     public List<DeliveryDTO> getAllDeliveredOrders() throws Exception {
         return DeliveryMapper.toDTO(deliveryDAO.findByStatus("Delivered"));
     }
@@ -91,9 +88,22 @@ public class DeliveryService {
     }
 
     public List<DeliveryDTO> getOrderStatusesFor(AccountDTO accountDTO) throws Exception {
-        AccountDTO accountDTO2 = accountAPIClient
+        accountDTO = accountAPIClient
                 .signin(Map.of("email", accountDTO.getEmail(), "password", accountDTO.getPassword()));
-        List<Delivery> deliveries = deliveryDAO.findByAccountId(accountDTO2.getId());
+        List<OrderDTO> orders = orderAPIClient.getOrdersFor(accountDTO);
+        logger.debug("orders :\n" + orders);
+        List<Delivery> deliveries = new ArrayList<>();
+        orders.forEach(order -> {
+            try {
+                logger.debug("order : "+order);
+                List<Delivery> tmpDeliveries = deliveryDAO.findByOrderId(order.getId());
+                logger.debug("tmpDeliveries :\n" + tmpDeliveries);
+                tmpDeliveries.forEach(delivery -> deliveries.add(delivery));
+            } catch (Exception e) {
+                logger.error(e);
+            }
+        });
+        logger.debug("deliveries :\n" + deliveries);
         return DeliveryMapper.toDTO(deliveries);
     }
 

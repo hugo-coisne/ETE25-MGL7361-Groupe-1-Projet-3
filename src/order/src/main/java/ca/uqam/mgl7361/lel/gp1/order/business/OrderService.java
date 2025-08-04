@@ -1,6 +1,7 @@
 package ca.uqam.mgl7361.lel.gp1.order.business;
 
 import ca.uqam.mgl7361.lel.gp1.common.dtos.order.OrderDTO;
+import ca.uqam.mgl7361.lel.gp1.common.clients.AccountAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.BookAPIClient;
 import ca.uqam.mgl7361.lel.gp1.common.clients.Clients;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.shop.BookDTO;
@@ -27,10 +28,12 @@ public class OrderService {
 
     private final OrderDAO orderDAO;
     private final BookAPIClient bookAPI;
+    private final AccountAPIClient accountAPIClient;
 
     public OrderService() {
         this.orderDAO = new OrderDAO();
         this.bookAPI = Clients.bookClient;
+        this.accountAPIClient = Clients.accountClient;
     }
 
     private Map<BookDTO, Integer> getBooksFromCart(CartDTO cart) throws Exception {
@@ -133,5 +136,21 @@ public class OrderService {
         order.setItems(orderDAO.getOrderItems(order));
 
         return OrderMapper.toDTO(order);
+    }
+
+    public List<OrderDTO> getOrdersFor(AccountDTO accountDTO) throws Exception {
+        logger.debug("getting orders for" + accountDTO);
+        accountDTO = accountAPIClient.signin(
+                Map.of("email", accountDTO.getEmail(),
+                        "password", accountDTO.getPassword()));
+        List<Order> orders = orderDAO.getFor(accountDTO.getId());
+        orders.forEach(order -> {
+            try {
+                order.setItems(orderDAO.getOrderItems(order));
+            } catch (Exception e) {
+                logger.error(e);
+            }
+        });
+        return OrderMapper.toDTO(orders);
     }
 }

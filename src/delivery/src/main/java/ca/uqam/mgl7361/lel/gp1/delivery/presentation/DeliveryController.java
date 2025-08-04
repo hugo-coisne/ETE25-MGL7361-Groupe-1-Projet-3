@@ -68,6 +68,7 @@ public class DeliveryController {
         logger.info("Received request for " + accountDTO);
         try {
             List<DeliveryDTO> deliveries = deliveryService.getOrderStatusesFor(accountDTO);
+            logger.debug(deliveries);
             return ResponseEntity.ok().body(deliveries);
         } catch (Exception e) {
             logger.error("Error during search", e);

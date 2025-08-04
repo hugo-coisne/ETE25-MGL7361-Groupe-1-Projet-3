@@ -1,7 +1,7 @@
 package ca.uqam.mgl7361.lel.gp1.order.persistence;
 
-import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.user.AccountDTO;
+import ca.uqam.mgl7361.lel.gp1.order.DBConnection;
 import ca.uqam.mgl7361.lel.gp1.order.model.Order;
 import ca.uqam.mgl7361.lel.gp1.order.model.OrderItem;
 
@@ -188,6 +188,31 @@ public class OrderDAO {
             }
         } catch (SQLException e) {
             throw new Exception("Error fetching order by ID: " + e.getMessage(), e);
+        }
+    }
+
+    public List<Order> getFor(int accountId) throws Exception {
+        String sql = "SELECT * FROM orders WHERE account_id=?";
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, accountId);
+            ResultSet rs = stmt.executeQuery();
+            List<Order> orders = new ArrayList<>();
+            while (rs.next()) {
+                Order order = new Order(
+                        rs.getString("order_number"),
+                        rs.getDate("order_date"));
+                order.setAccountId(accountId);
+                order.setId(rs.getInt("id"));
+                order.setOrderPrice(rs.getFloat("total_price"));
+                orders.add(order);
+            }
+            logger.debug("returning " + orders + "\n for accountId " + accountId);
+            return orders;
+        } catch (SQLException e) {
+            logger.error(e);
+            throw new Exception("Error finding order id by order number: " + e.getMessage(), e);
         }
     }
 

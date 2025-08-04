@@ -37,4 +37,12 @@ public class OrderMapper {
         order.setId(order.getId());
         return order;
     }
+
+    public static List<OrderDTO> toDTO(List<Order> orders) {
+        return orders.stream().map(OrderMapper::toDTO).collect(Collectors.toList());
+    }
+
+    public static List<Order> toModel(List<OrderDTO> orderDTOs) {
+        return orderDTOs.stream().map(OrderMapper::toModel).collect(Collectors.toList());
+    }
 }

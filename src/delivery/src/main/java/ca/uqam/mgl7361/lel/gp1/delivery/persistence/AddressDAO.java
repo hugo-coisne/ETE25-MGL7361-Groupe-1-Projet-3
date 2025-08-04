@@ -1,7 +1,7 @@
 package ca.uqam.mgl7361.lel.gp1.delivery.persistence;
 
+import ca.uqam.mgl7361.lel.gp1.delivery.DBConnection;
 import ca.uqam.mgl7361.lel.gp1.delivery.model.Address;
-import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -107,7 +107,7 @@ public class AddressDAO {
 
     public void update(Address address) throws Exception {
         logger.debug("Updating address: {}", address);
-        try (Connection connection = ca.uqam.mgl7361.lel.gp1.common.DBConnection.getConnection();
+        try (Connection connection = DBConnection.getConnection();
                 PreparedStatement stmt = connection.prepareStatement(UPDATE_SQL)) {
 
             stmt.setString(1, address.getFirstName());

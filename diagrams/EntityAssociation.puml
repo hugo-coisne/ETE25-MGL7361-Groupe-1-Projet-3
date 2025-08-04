@@ -1,7 +1,7 @@
 @startuml
 'https://plantuml.com/entity-diagram
 
-package "authentifier" {
+package "user" {
 
     entity Compte {
         - prenom
@@ -13,7 +13,7 @@ package "authentifier" {
 
 }
 
-package "magasiner" {
+package "shop" {
 
     entity Categorie {
         - nom
@@ -42,7 +42,7 @@ package "magasiner" {
     
 }
 
-package "Commander" {
+package "Order" {
 
     entity Commande {
         - no_commande
@@ -52,7 +52,7 @@ package "Commander" {
 
 }
 
-package Livrer {
+package Delivery {
 
     entity Adresse {
         - prenom
@@ -69,7 +69,7 @@ package Livrer {
 
 }
 
-package "Paiement" {
+package "Checkout" {
 
     entity Facture {
         - no_facture

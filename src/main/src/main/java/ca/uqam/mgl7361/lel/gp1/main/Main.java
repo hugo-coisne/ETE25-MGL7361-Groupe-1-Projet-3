@@ -594,20 +594,13 @@ public class Main {
                                 "Voir que la liste des commandes en transit (en cours de livraison) compte désormais la commande qui a été passée :");
                 pendingDeliveries = deliveryAPIClient.getAllOrdersInTransit();
                 Main.scenarioDetailsStep("Shipped Deliveries (" + pendingDeliveries.size() + ") :");
-                for (DeliveryDTO pendingDelivery : pendingDeliveries) {
-                        Main.scenarioDetailsStep("Order id : " + pendingDelivery.getOrderId() + ", Status: "
-                                        + pendingDelivery.getStatus());
-                }
+                pendingDeliveries.forEach(delivery -> System.out.println(delivery.toString()));
                 Main.scenarioStep(
                                 "Voir que l'historique des commandes livrées n'a pas encore changé : ");
-                deliveredDeliveries = deliveryAPIClient.getAllDeliveredOrders();
+                pendingDeliveries = deliveryAPIClient.getAllDeliveredOrders();
                 Main.scenarioDetailsStep("Delivered Deliveries (" +
                                 deliveredDeliveries.size() + ") :");
-                for (DeliveryDTO deliveredDelivery : deliveredDeliveries) {
-                        Main.scenarioDetailsStep("Order id : " +
-                                        deliveredDelivery.getOrderId() +
-                                        ", Status: " + deliveredDelivery.getStatus());
-                }
+                deliveredDeliveries.forEach(delivery -> System.out.println(delivery.toString()));
 
                 Main.scenarioStep("On simule cette fois-ci le passage de trois journées");
                 deliveryAPIClient.pass(60 * 60 * 24 * 3);
@@ -627,18 +620,13 @@ public class Main {
                                 "Voir que la liste des commandes en transit (en cours de livraison) ne compte plus la commande qui a été passée :");
                 pendingDeliveries = deliveryAPIClient.getAllOrdersInTransit();
                 Main.scenarioDetailsStep("Shipped Deliveries (" + pendingDeliveries.size() + ") :");
-                for (DeliveryDTO pendingDelivery : pendingDeliveries) {
-                        Main.scenarioDetailsStep("Order: " + pendingDelivery.getOrderId() + ", Status: "
-                                        + pendingDelivery.getStatus());
-                }
+                pendingDeliveries.forEach(delivery -> System.out.println(delivery.toString()));
                 Main.scenarioStep(
                                 "Et surtout constater que l'historique des commandes livrées compte désormais la commande qui a été passée : ");
                 deliveredDeliveries = deliveryAPIClient.getAllDeliveredOrders();
                 Main.scenarioDetailsStep("Delivered Deliveries (" +
                                 deliveredDeliveries.size() + ") :");
-                for (DeliveryDTO deliveredDelivery : deliveredDeliveries) {
-                        System.out.println(" - " + deliveredDelivery);
-                }
+                deliveredDeliveries.forEach(delivery -> System.out.println(delivery.toString()));
         }
 
         public static void main(String[] args) {

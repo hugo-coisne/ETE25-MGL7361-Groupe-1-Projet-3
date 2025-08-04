@@ -1,7 +1,7 @@
 package ca.uqam.mgl7361.lel.gp1.checkout.persistence;
 
-import ca.uqam.mgl7361.lel.gp1.common.DBConnection;
 import ca.uqam.mgl7361.lel.gp1.common.dtos.checkout.PaymentMethod;
+import ca.uqam.mgl7361.lel.gp1.checkout.DBConnection;
 import ca.uqam.mgl7361.lel.gp1.checkout.model.Invoice;
 
 import java.sql.Connection;
